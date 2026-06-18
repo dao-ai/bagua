@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>八卦 · 入门</title>
+<script src="data.js"></script>
+<script src="hexagrams.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Serif SC",serif;min-height:100vh;transition:background .4s,color .4s;background:var(--bg);color:var(--fg)}
+[data-theme="dark"]{--bg:#0b1120;--bg2:#141d33;--bg3:#1e2a45;--fg:#e2e8f0;--muted:#7e8ba3;--accent:#d97706;--accent2:#f59e0b;--card:#141d33;--border:#1e2a45;--yang:#f59e0b;--yin:#4a5a7a;--shadow:rgba(0,0,0,.4);--glow:rgba(245,158,11,.15);--risk:#f87171}
+[data-theme="classic"]{--bg:#f5f0e8;--bg2:#efe8d8;--bg3:#e0d5c0;--fg:#3d2b1f;--muted:#8b7355;--accent:#c23b22;--accent2:#a52a2a;--card:#faf6ee;--border:#d4c5a9;--yang:#3d2b1f;--yin:#a09070;--shadow:rgba(60,40,20,.12);--glow:rgba(194,59,34,.1);--risk:#c23b22}
+[data-theme="classic"] body{font-family:"Noto Serif SC","Source Han Serif SC","STSong","SimSun",serif}
+a{color:var(--accent2)}
+.app{max-width:960px;margin:0 auto;padding:0 20px}
+header{display:flex;align-items:center;gap:12px;padding:24px 0 16px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+header h1{font-size:22px;font-weight:700;letter-spacing:2px;background:linear-gradient(135deg,var(--yang),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+header .sub{font-size:13px;color:var(--muted)}
+.hr{margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.theme-btn{background:var(--bg2);color:var(--muted);border:1px solid var(--border);width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:.3s}
+.theme-btn:hover{border-color:var(--accent);color:var(--fg)}
+nav{display:flex;gap:6px}
+nav button{background:var(--bg2);color:var(--muted);border:1px solid var(--border);padding:6px 16px;border-radius:8px;cursor:pointer;font-size:13px;transition:.25s}
+nav button:hover{border-color:var(--accent);color:var(--fg)}
+nav button.active{background:var(--accent);color:var(--bg);border-color:var(--accent);font-weight:600}
+.page{display:none;padding:32px 0 60px;animation:fadeIn .4s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.hero{text-align:center;padding:24px 0}
+.hero h2{font-size:26px;margin-bottom:6px}
+.hero p{color:var(--muted);max-width:520px;margin:0 auto;font-size:14px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px;margin-top:20px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 14px 18px;cursor:pointer;transition:.3s;text-align:center;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0;transition:.3s}
+.card:hover::before{opacity:1}
+.card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 8px 30px var(--shadow)}
+.card .symbol{font-size:44px}
+.card h3{font-size:20px;margin:4px 0 2px}
+.card .pinyin{color:var(--muted);font-size:12px}
+.card .kw{display:flex;gap:5px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.card .kw span{background:var(--bg3);padding:2px 10px;border-radius:12px;font-size:12px;color:var(--accent2)}
+.card .st{font-size:13px;color:var(--muted);margin-top:10px;border-top:1px solid var(--border);padding-top:10px}
+
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:100;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:16px;max-width:520px;width:100%;padding:36px 32px 32px;max-height:90vh;overflow-y:auto;animation:slideUp .3s ease;position:relative}
+@keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.modal .close{position:absolute;top:12px;right:16px;background:none;border:none;color:var(--muted);font-size:28px;cursor:pointer;line-height:1;transition:.2s}
+.modal .close:hover{color:var(--fg)}
+.modal .sb{font-size:60px;text-align:center;display:block}
+.modal h2{text-align:center;font-size:26px;margin:6px 0 2px}
+.modal .pb{text-align:center;color:var(--muted);font-size:14px}
+.modal .desc{text-align:center;color:var(--accent2);margin:10px 0 18px;font-size:14px;line-height:1.5}
+.modal .ig{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
+.modal .ig .it{padding:10px 14px;background:var(--bg3);border-radius:10px;font-size:13px;display:flex;flex-direction:column;gap:2px}
+.modal .ig .it .k{color:var(--muted);font-size:11px}
+.modal .ig .it .v{color:var(--fg);font-weight:600}
+
+.yd{display:flex;flex-direction:column;align-items:center;gap:4px;margin:12px 0}
+.yl{height:8px;border-radius:4px;transition:.3s}
+.yl.yg{width:80px;background:var(--yang)}
+.yl.yn{width:80px;height:8px;background-image:linear-gradient(to right,var(--yin) 0,var(--yin) 30px,transparent 30px,transparent 50px,var(--yin) 50px,var(--yin) 80px);background-size:80px 8px}
+
+.binary-table{width:100%;border-collapse:separate;border-spacing:0;margin-top:20px}
+.binary-table th,.binary-table td{padding:14px 16px;text-align:center;border-bottom:1px solid var(--border);font-size:14px}
+.binary-table th{color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;border-bottom:2px solid var(--border)}
+.binary-table tr:hover td{background:var(--bg2)}
+.binary-table .bs{font-size:28px}
+.binary-table .bb{font-family:"SF Mono","Fira Code",monospace;font-size:16px;letter-spacing:4px;color:var(--accent2)}
+.binary-table .bd{font-weight:700;font-size:18px}
+.binary-table .bn{font-weight:600;font-size:16px}
+.binary-table .bp{color:var(--muted);font-size:12px;font-weight:400}
+.binary-table .bk{color:var(--muted);font-size:13px}
+
+.hex-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-top:20px}
+.hc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;cursor:pointer;transition:.25s;display:flex;align-items:center;gap:10px}
+.hc:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 4px 20px var(--shadow)}
+.hc .hs{font-size:26px;flex-shrink:0}
+.hc .hi{flex:1;min-width:0}
+.hc .hn{font-weight:600;font-size:14px}
+.hc .hn .hs2{font-weight:400;color:var(--muted);font-size:11px}
+.hc .hj{font-size:11px;color:var(--accent2);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.hd{margin-top:20px;padding:20px;background:var(--bg3);border-radius:12px;border-left:3px solid var(--accent);animation:fadeIn .3s ease}
+.hd .hl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.hd .hj2{font-size:16px;font-weight:600;margin-bottom:8px;color:var(--accent2)}
+.hd .hi2{font-size:14px;font-style:italic;color:var(--muted);margin-bottom:8px}
+.hd .hm{font-size:14px;line-height:1.6}
+.hd.hdi{border-left:none;padding:12px;margin-top:10px;background:var(--bg2);border-radius:8px}
+
+.tip{font-size:12px;color:var(--muted);text-align:center;margin-top:14px}
+.tip strong{color:var(--accent2)}
+
+@keyframes yp{0%,100%{box-shadow:0 0 4px var(--accent),0 0 12px var(--glow);transform:scaleY(1)}50%{box-shadow:0 0 12px var(--accent),0 0 30px var(--glow);transform:scaleY(1.3)}}
+@keyframes fl{0%,100%{opacity:1}50%{opacity:.15}}
+@keyframes fy{0%{background:var(--yang)}30%{background:var(--yang);transform:scaleY(1.4);box-shadow:0 0 20px var(--accent)}60%{background:var(--yin);transform:scaleY(.2)}100%{background:var(--yin);transform:scaleY(1)}}
+@keyframes fn{0%{background:var(--yin)}30%{background:var(--yin);transform:scaleY(1.4);box-shadow:0 0 20px var(--accent)}60%{background:var(--yang);transform:scaleY(.2)}100%{background:var(--yang);transform:scaleY(1)}}
+.yl.mp{animation:yp 1.2s ease-in-out infinite}
+.yl.fs{animation:fl .15s ease-in-out 6}
+.yl.fy{animation:fy .7s ease-in-out forwards}
+.yl.fn2{animation:fn .7s ease-in-out forwards}
+
+.dbx{max-width:500px;margin:32px auto;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px 28px}
+.dbx h3{text-align:center;font-size:18px;margin-bottom:4px}
+.dbx .nt{text-align:center;color:var(--muted);font-size:13px;margin-bottom:22px}
+.di{display:flex;gap:12px;justify-content:center;margin-bottom:20px}
+.di input{width:80px;padding:10px;text-align:center;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--fg);font-size:20px;font-weight:600;outline:none;transition:.25s;caret-color:var(--accent)}
+.di input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--glow)}
+.di input::placeholder{color:var(--muted);font-size:12px}
+.db{display:block;width:100%;padding:14px;font-size:16px;font-weight:600;letter-spacing:2px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--bg);border:none;border-radius:10px;cursor:pointer;transition:.3s}
+.db:hover{transform:translateY(-1px);box-shadow:0 4px 16px var(--glow)}
+.db:active{transform:translateY(0)}
+
+.dr{margin-top:24px;padding:24px;background:var(--bg2);border-radius:12px;display:none}
+.dr.show{display:block;animation:fadeIn .4s ease}
+.dr .rg{display:flex;justify-content:center;gap:32px;align-items:center;text-align:center}
+.dr .rc{flex:1}
+.dr .rc h4{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px}
+.dr .rc .hn2{font-size:22px;font-weight:700;margin-top:6px}
+.dr .rc .hn2 .sb2{font-size:13px;color:var(--muted);font-weight:400}
+.dr .ar{font-size:28px;color:var(--accent2)}
+.dr .ml{text-align:center;margin-top:18px;padding:12px;background:var(--bg3);border-radius:10px;font-size:14px}
+.dr .ml strong{color:var(--accent2)}
+
+.dmb{display:inline-block;margin-top:10px;margin-left:8px;padding:5px 16px;font-size:12px;font-weight:600;background:var(--bg3);color:var(--accent2);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:.3s;vertical-align:middle}
+.dmb:hover{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.dmb:disabled{opacity:.4;cursor:not-allowed}
+.dmb .ai{display:inline-block;transition:.3s}
+.dmb:hover .ai{transform:translateX(4px)}
+
+@media(max-width:580px){
+.grid{grid-template-columns:repeat(2,1fr);gap:10px}
+.card{padding:16px 10px 14px}
+.card .symbol{font-size:36px}
+.modal{padding:24px 20px}
+.modal .ig{grid-template-columns:1fr}
+.binary-table th,.binary-table td{padding:10px 8px;font-size:12px}
+.di input{width:60px;font-size:16px}
+.dr .rg{gap:16px;flex-direction:column}
+.dr .ar{transform:rotate(90deg)}
+}
+</style>
+</head>
+<body data-theme="dark">
+
+<div class="app">
+<header>
+<h1>☰ 八卦入门</h1>
+<span class="sub">每天15分钟，搞懂八卦</span>
+<div class="hr">
+<button class="theme-btn" id="themeToggle">🌙</button>
+<nav>
+<button class="active" data-p="home">八卦</button>
+<button data-p="binary">二进制</button>
+<button data-p="hexagrams">64卦</button>
+<button data-p="divine">起卦</button>
+</nav>
+</div>
+</header>
+
+<div id="pg-home" class="page active">
+<div class="hero"><h2>认识八卦</h2><p>八卦不是符号，是一家八口。把每个卦当成一个人来认识，不用背也能记住。</p></div>
+<div class="grid" id="bg-grid"></div>
+</div>
+
+<div id="pg-binary" class="page">
+<div class="hero"><h2>二进制 · 八卦对照</h2><p>阳为 1，阴为 0，从下往上读。莱布尼茨受此启发发明了二进制。</p></div>
+<table class="binary-table" id="bt"></table>
+<div class="tip">💡 从 <strong>7 → 0</strong>，步进 -1，正是八卦的先天数排列规律</div>
+</div>
+
+<div id="pg-hexagrams" class="page">
+<div class="hero"><h2>六十四卦</h2><p>八卦两两相叠，成六十四卦。点击任一卦，查看卦辞与解读。</p></div>
+<div class="hex-grid" id="hg"></div>
+</div>
+
+<div id="pg-divine" class="page">
+<div class="hero"><h2>起卦 · 数字法</h2><p>心里想一件事，输入三个数字，看看卦象怎么说。</p></div>
+<div class="dbx">
+<h3>✍️ 输入三个数字</h3>
+<p class="nt">第一个数定上卦 · 第二个数定下卦 · 第三个数定动爻</p>
+<div class="di">
+<input type="number" id="n1" placeholder="如 3" min="0">
+<input type="number" id="n2" placeholder="如 5" min="0">
+<input type="number" id="n3" placeholder="如 8" min="0">
+</div>
+<button class="db" id="db" onclick="doDivine()">☰ 起 卦</button>
+<div class="dr" id="dr"></div>
+<div class="tip" style="margin-top:14px">⚠️ 易学是思维模型，不是算命。卦象是参考，不是宿命。</div>
+</div>
+</div>
+</div>
+
+<div class="modal-overlay" id="modal">
+<div class="modal"><button class="close" id="mc">×</button><div id="mcnt"></div></div>
+</div>
+
+<script>
+// ===== YAO Render =====
+function ry(yao,b){const w=b?100:80,h=b?10:8,g=b?6:4,d=document.createElement('div');d.className='yd';d.style.gap=g+'px';for(let i=yao.length-1;i>=0;i--){const l=document.createElement('div');l.className='yl '+(yao[i]==1?'yg':'yn');l.style.width=w+'px';l.style.height=h+'px';d.appendChild(l)}return d}
+function rh(y6,c,mi){c.innerHTML='';const d=document.createElement('div');d.className='yd';d.style.gap='3px';for(let i=5;i>=0;i--){const l=document.createElement('div');l.className='yl '+(y6[i]==1?'yg':'yn')+(mi!==undefined&&i===mi?' mp':'');l.style.width='80px';l.style.height='6px';d.appendChild(l)}c.appendChild(d)}
+
+// ===== Home Grid =====
+baguaData.forEach(b=>{const c=document.createElement('div');c.className='card';c.innerHTML='<div class="symbol">'+b.symbol+'</div><h3>'+b.name+'</h3><div class="pinyin">'+b.pinyin+'</div><div class="kw">'+b.keywords.map(k=>'<span>'+k+'</span>').join('')+'</div><div class="st">'+b.short+'</div>';c.addEventListener('click',()=>openM(b));document.getElementById('bg-grid').appendChild(c)})
+
+// ===== Modal =====
+const modal=document.getElementById('modal'),mcnt=document.getElementById('mcnt');
+document.getElementById('mc').addEventListener('click',()=>modal.classList.remove('open'));
+modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('open')});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')modal.classList.remove('open')});
+function openM(b){mcnt.innerHTML='<span class="sb">'+b.symbol+'</span><h2>'+b.name+'</h2><div class="pb">'+b.pinyin+'</div><div class="desc">'+b.description+'</div>'+ry(b.yao,true).outerHTML+'<div class="ig">'+[['自然',b.nature],['属性',b.attribute],['家庭',b.family],['动物',b.animal],['身体',b.body],['方向',b.direction],['季节',b.season],['关键词',b.keywords.join(' · ')]].map(p=>'<div class="it"><span class="k">'+p[0]+'</span><span class="v">'+p[1]+'</span></div>').join('')+'</div>';modal.classList.add('open')}
+function openHM(name,symbol,detail,uData,lData){mcnt.innerHTML='<span class="sb">'+symbol+'</span><h2>'+name+'</h2><div class="pb">上'+uData.name+'（'+uData.symbol+'）· 下'+lData.name+'（'+lData.symbol+'）</div>'+(detail?'<div class="hd" style="margin-top:24px"><div class="hl">卦辞</div><div class="hj2">'+detail.judgment+'</div><div class="hl" style="margin-top:14px">大象</div><div class="hi2">'+detail.image+'</div><div class="hl" style="margin-top:14px">简释</div><div class="hm">'+detail.meaning+'</div></div>':'<p style="text-align:center;color:var(--muted);margin-top:24px">解读待补充</p>');modal.classList.add('open')}
+
+// ===== Binary Table =====
+function rbt(){const t=document.getElementById('bt');const s=[...baguaData].sort((a,b)=>b.decimal-a.decimal);let h='<thead><tr><th>卦</th><th>符号</th><th>卦名</th><th>二进制</th><th>十进制</th><th>关键词</th></tr></thead><tbody>';s.forEach(b=>{h+='<tr><td>'+ry(b.yao).outerHTML+'</td><td class="bs">'+b.symbol+'</td><td class="bn">'+b.name+' <span class="bp">'+b.pinyin+'</span></td><td class="bb">'+b.binary+'</td><td class="bd">'+b.decimal+'</td><td class="bk">'+b.keywords.join(' · ')+'</td></tr>'});h+='</tbody>';t.innerHTML=h}
+rbt();
+
+// ===== Navigation =====
+document.querySelectorAll('nav button').forEach(b=>{b.addEventListener('click',()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('pg-'+b.dataset.p).classList.add('active')})})
+
+// ===== Theme =====
+const tt=document.getElementById('themeToggle');
+function gt(){return document.body.dataset.theme||'dark'}
+function st(t){document.body.dataset.theme=t;tt.textContent=t==='dark'?'🌙':'☀️';tt.title=t==='dark'?'切换到古风主题':'切换到暗色主题';localStorage.setItem('bg-theme',t)}
+const sv=localStorage.getItem('bg-theme');st(sv||'dark')
+tt.addEventListener('click',()=>st(gt()==='dark'?'classic':'dark'))
+
+// ===== Divination =====
+function doDivine(){
+  const dr=document.getElementById('dr');
+  const n1=parseInt(document.getElementById('n1').value),n2=parseInt(document.getElementById('n2').value),n3=parseInt(document.getElementById('n3').value);
+  if(isNaN(n1)||isNaN(n2)||isNaN(n3)){dr.innerHTML='<div style="text-align:center;color:var(--risk);padding:12px">⚠️ 请输入三个有效数字</div>';dr.classList.add('show');return}
+  const uk=n1%8,lk=n2%8,mk=n3%6||6;
+  const ui=numToBagua[uk],li=numToBagua[lk];
+  if(!ui||!li){dr.innerHTML='<div style="text-align:center;color:var(--risk);padding:12px">⚠️ 数字无效，请重试</div>';dr.classList.add('show');return}
+  const ub=baguaData.find(b=>b.id===ui),lb=baguaData.find(b=>b.id===li);
+  const hn=getHexagramName(ui,li);
+  const nd=getHexagramDetail(ui,li);
+
+  const y6=[...ub.yao.slice().reverse(),...lb.yao.slice().reverse()];
+  const mi=6-mk,cy6=[...y6];cy6[mi]=cy6[mi]===1?0:1;
+  const cuy=cy6.slice(0,3).reverse(),cly=cy6.slice(3,6).reverse();
+  const cui=baguaData.find(b=>b.yao[0]===cuy[0]&&b.yao[1]===cuy[1]&&b.yao[2]===cuy[2])?.id;
+  const cli=baguaData.find(b=>b.yao[0]===cly[0]&&b.yao[1]===cly[1]&&b.yao[2]===cly[2])?.id;
+  const chn=getHexagramName(cui,cli);
+  const cd=getHexagramDetail(cui,cli);
+  const cub=baguaData.find(b=>b.id===cui),clb=baguaData.find(b=>b.id===cli);
+  const ns=getHexagramSymbol(ui,li),cs=getHexagramSymbol(cui,cli);
+  const mn=['初爻','二爻','三爻','四爻','五爻','上爻'][mk-1],mc=y6[mi]===1?'阳变阴':'阴变阳';
+
+  function fd(d){return d?'<div class="hd hdi"><div class="hj2">'+d.judgment+'</div><div class="hi2">《象》曰：'+d.image+'</div><div class="hm">'+d.meaning+'</div></div>':''}
+
+  const nc=document.createElement('div'),cc=document.createElement('div');
+  rh(y6,nc,mi);rh(cy6,cc);
+
+  dr.innerHTML='<div class="rg"><div class="rc"><h4>本卦</h4><div id="hn"></div><div class="hn2">'+ns+' '+hn+'<br><span class="sb2">上'+ub.name+' 下'+lb.name+'</span></div>'+fd(nd)+'</div><div class="ar">→</div><div class="rc"><h4 id="cct">变卦</h4><div id="hc"></div><div class="hn2">'+cs+' '+chn+'<br><span class="sb2">上'+cub.name+' 下'+clb.name+'</span></div>'+fd(cd)+'</div></div><div class="ml">⚡ <strong>'+mn+'</strong> '+mc+'<button class="dmb" id="db2" data-from="'+y6[mi]+'" data-target="'+cy6[mi]+'" data-idx="'+mi+'"><span class="ai">▶</span> 演示变爻</button></div>';
+  document.getElementById('hn').appendChild(nc);document.getElementById('hc').appendChild(cc);
+  document.getElementById('cct').parentElement.style.opacity='0.6';
+  dr.classList.add('show');
+
+  // Demo button
+  const db2=document.getElementById('db2');if(!db2)return;let an=false;
+  db2.addEventListener('click',function(){
+    if(an)return;an=true;this.disabled=true;this.innerHTML='⋯ 变爻中';
+    const idx=parseInt(this.dataset.idx),from=parseInt(this.dataset.from),to=parseInt(this.dataset.target);
+    const el=document.querySelectorAll('#hn .yl')[5-idx];if(!el){an=false;this.disabled=false;this.innerHTML='▶ 演示变爻';return}
+    el.classList.remove('mp');el.classList.add('fs');
+    setTimeout(()=>{
+      el.classList.remove('fs');el.classList.add(from===1?'fy':'fn2');
+      setTimeout(()=>{
+        el.classList.remove('fy','fn2');el.className='yl '+(to===1?'yg':'yn');
+        el.style.boxShadow='0 0 8px var(--accent)';setTimeout(()=>{el.style.boxShadow=''},600);
+        const p=document.getElementById('cct').parentElement;p.style.transition='opacity .4s ease';p.style.opacity='1';
+        this.innerHTML='✓ 变爻完成';
+        setTimeout(()=>{an=false;this.disabled=false;this.innerHTML='<span class="ai">▶</span> 再演一次'},1500)
+      },750)
+    },1000)
+  });
+}
+document.querySelectorAll('.di input').forEach((inp,i,arr)=>{inp.addEventListener('keydown',e=>{if(e.key==='Enter'){if(i<arr.length-1)arr[i+1].focus();else document.getElementById('db').click()}})})
+
+// ===== 64 Hexagrams Grid =====
+function rHg(){
+  const g=document.getElementById('hg');
+  const order=[
+    ['qian','qian'],['kun','kun'],['kan','zhen'],['gen','kan'],['kan','qian'],['qian','kan'],
+    ['kun','kan'],['kan','kun'],['xun','qian'],['qian','dui'],['kun','qian'],['qian','kun'],
+    ['li','qian'],['qian','li'],['kun','gen'],['zhen','kun'],
+    ['dui','zhen'],['gen','xun'],['kun','dui'],['xun','kun'],
+    ['li','zhen'],['gen','li'],['kun','zhen'],['kun','zhen'],
+    ['qian','zhen'],['gen','qian'],['gen','zhen'],['dui','xun'],
+    ['kan','kan'],['li','li'],
+    ['dui','gen'],['zhen','xun'],['qian','gen'],['zhen','qian'],
+    ['li','kun'],['kun','li'],['xun','li'],['li','dui'],
+    ['kan','gen'],['zhen','kan'],['gen','dui'],['xun','zhen'],
+    ['dui','qian'],['qian','xun'],['dui','kun'],['kun','xun'],
+    ['dui','kan'],['kan','xun'],['dui','li'],['li','xun'],
+    ['zhen','zhen'],['gen','gen'],['xun','gen'],['zhen','dui'],
+    ['zhen','li'],['li','gen'],['xun','xun'],['dui','dui'],
+    ['xun','kan'],['kan','dui'],['xun','dui'],['zhen','gen'],
+    ['li','kan'],['kan','li']
+  ];
+  order.forEach(([u,l])=>{
+    const hn=getHexagramName(u,l),d=getHexagramDetail(u,l),s=getHexagramSymbol(u,l);
+    const ud=baguaData.find(b=>b.id===u),ld=baguaData.find(b=>b.id===l);
+    const c=document.createElement('div');c.className='hc';
+    c.innerHTML='<div class="hs">'+s+'</div><div class="hi"><div class="hn">'+hn+' <span class="hs2">上'+ud.name+'下'+ld.name+'</span></div><div class="hj">'+(d?d.judgment:'')+'</div></div>';
+    c.addEventListener('click',()=>openHM(hn,s,d,ud,ld));g.appendChild(c)
+  })
+}
+rHg();
+</script>
+</body>
+</html>
