@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import Header from '@/components/Header'
 
 export const metadata: Metadata = {
   title: '八卦 · 入门',
@@ -10,7 +11,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="zh-CN">
       <body className="min-h-screen" style={{ background: 'var(--bg)', color: 'var(--fg)' }}>
-        {children}
+        <div className="max-w-[960px] mx-auto px-5">
+          <Header />
+          <main className="py-8">{children}</main>
+        </div>
       </body>
     </html>
   )
