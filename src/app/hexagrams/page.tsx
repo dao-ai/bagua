@@ -1,4 +1,5 @@
 'use client'
+import usePageTitle from '@/hooks/usePageTitle'
 
 import { useState, useEffect } from 'react'
 import Modal from '@/components/Modal'
@@ -6,6 +7,7 @@ import { baguaMap, getHexagramName, getHexagramSymbol, type HexagramDetail } fro
 import { getHexagramDetail, hexagramOrder } from '@/data/hexagrams'
 
 export default function HexagramsPage() {
+  usePageTitle()
   const [modal, setModal] = useState<React.ReactNode | null>(null)
 
   useEffect(() => {

@@ -1,4 +1,5 @@
 'use client'
+import usePageTitle from '@/hooks/usePageTitle'
 
 import { useState, useCallback } from 'react'
 import { HexagramDisplay } from '@/components/Yao'
@@ -6,6 +7,7 @@ import { baguaList, baguaMap, numToBagua, getHexagramName, getHexagramSymbol, ty
 import { getHexagramDetail } from '@/data/hexagrams'
 
 export default function DivinePage() {
+  usePageTitle()
   const [n1, setN1] = useState('')
   const [n2, setN2] = useState('')
   const [n3, setN3] = useState('')

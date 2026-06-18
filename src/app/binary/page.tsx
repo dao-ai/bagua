@@ -1,9 +1,11 @@
 'use client'
+import usePageTitle from '@/hooks/usePageTitle'
 
 import { YaoDisplay } from '@/components/Yao'
 import { baguaList } from '@/data/bagua'
 
 export default function BinaryPage() {
+  usePageTitle()
   const sorted = [...baguaList].sort((a, b) => b.decimal - a.decimal)
 
   return (

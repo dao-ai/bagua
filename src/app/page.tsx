@@ -1,4 +1,5 @@
 'use client'
+import usePageTitle from '@/hooks/usePageTitle'
 
 import { useState, useEffect } from 'react'
 import Modal from '@/components/Modal'
@@ -14,6 +15,7 @@ function fmtInfo(b: Bagua) {
 }
 
 export default function HomePage() {
+  usePageTitle()
   const [modal, setModal] = useState<Bagua | null>(null)
 
   useEffect(() => {
