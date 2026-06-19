@@ -5,7 +5,7 @@ import usePageTitle from '@/hooks/usePageTitle'
 import { HexagramDisplay } from '@/components/Yao'
 import { RubyText, Ruby } from '@/components/Ruby'
 import { getHexagramDetail } from '@/data/hexagrams'
-import { useDivineHistory, formatDateLabel, formatTime, type DivineRecord } from '@/hooks/useDivineHistory'
+import { useDivineHistory, formatDateLabel, formatTime, yao6ToTrigramIds, type DivineRecord } from '@/hooks/useDivineHistory'
 
 export default function HistoryPage() {
   usePageTitle()
@@ -143,9 +143,15 @@ function HistoryCard({ record: r, onDelete }: { record: DivineRecord; onDelete: 
 }
 
 function HistoryDetail({ record: r }: { record: DivineRecord }) {
-  const nowDetail = getHexagramDetail(r.upperId, r.lowerId)
+  // 兼容旧记录：如果缺少 ID 字段，从 yao6 反推
+  const upperId = r.upperId || (() => { const t = yao6ToTrigramIds(r.yao6); return t.upperId })()
+  const lowerId = r.lowerId || (() => { const t = yao6ToTrigramIds(r.yao6); return t.lowerId })()
+  const changedUpperId = r.changedUpperId || upperId
+  const changedLowerId = r.changedLowerId || lowerId
+
+  const nowDetail = getHexagramDetail(upperId, lowerId)
   const changedDetail = r.changedHexName !== r.hexName
-    ? getHexagramDetail(r.changedUpperId, r.changedLowerId)
+    ? getHexagramDetail(changedUpperId, changedLowerId)
     : undefined
   const movingYao = nowDetail?.yaoLines?.[5 - r.movingIndex]
 
