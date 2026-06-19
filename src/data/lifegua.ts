@@ -1,38 +1,125 @@
-// 本命卦 — 三元命卦简化版推算与解读
+// 本命卦 — 三元命卦简化版 + 四柱补充卦推算
 
 import { baguaMap } from './bagua'
 
-export interface LifeGuaResult {
+/** 单个卦结果 */
+export interface GuaResult {
   baguaId: string
   name: string
   symbol: string
   number: number
   element: string
+}
+
+/** 完整本命卦结果 */
+export interface LifeGuaResult {
+  year: GuaResult      // 年卦 — 主命卦
+  month: GuaResult     // 月卦 — 当下能量
+  day: GuaResult       // 日卦 — 日常表现
+  hour: GuaResult      // 时卦 — 深层本质
+
   personality: string
   advice: string
   interpretation: string
 }
 
-// 余数 → 八卦 ID 映射（洛书九宫数）
-// 5 为特例，由 calculateLifeGua 处理
+// 余数 → 八卦 ID（洛书九宫数）
 const remainderToBagua: Record<number, string> = {
-  1: 'kan',
-  2: 'kun',
-  3: 'zhen',
-  4: 'xun',
-  6: 'qian',
-  7: 'dui',
-  8: 'gen',
-  9: 'li',
+  1: 'kan', 2: 'kun', 3: 'zhen', 4: 'xun',
+  6: 'qian', 7: 'dui', 8: 'gen', 9: 'li',
 }
 
-// 五行对应
+// 五行
 const elementMap: Record<string, string> = {
   qian: '金', kun: '土', zhen: '木', xun: '木',
   kan: '水', li: '火', gen: '土', dui: '金',
 }
 
-// 简化解读
+// ═══════════════════════════════════════
+//  余数 → 卦（处理 5 的寄宫 + 0→9）
+// ═══════════════════════════════════════
+function remainderToGua(rem: number, gender: 'male' | 'female'): GuaResult {
+  let r = rem
+  // 余0 → 9（离）
+  if (r === 0) r = 9
+  // 余5 → 寄宫
+  if (r === 5) r = gender === 'male' ? 2 : 8
+
+  const baguaId = remainderToBagua[r]
+  const target = baguaMap[baguaId]
+  return {
+    baguaId,
+    name: target.name,
+    symbol: target.symbol,
+    number: r,
+    element: elementMap[baguaId],
+  }
+}
+
+// ═══════════════════════════════════════
+//  时辰索引
+// ═══════════════════════════════════════
+export const shichenList = [
+  { index: 0, name: '子时', range: '23:00 — 00:59' },
+  { index: 1, name: '丑时', range: '01:00 — 02:59' },
+  { index: 2, name: '寅时', range: '03:00 — 04:59' },
+  { index: 3, name: '卯时', range: '05:00 — 06:59' },
+  { index: 4, name: '辰时', range: '07:00 — 08:59' },
+  { index: 5, name: '巳时', range: '09:00 — 10:59' },
+  { index: 6, name: '午时', range: '11:00 — 12:59' },
+  { index: 7, name: '未时', range: '13:00 — 14:59' },
+  { index: 8, name: '申时', range: '15:00 — 16:59' },
+  { index: 9, name: '酉时', range: '17:00 — 18:59' },
+  { index: 10, name: '戌时', range: '19:00 — 20:59' },
+  { index: 11, name: '亥时', range: '21:00 — 22:59' },
+]
+
+// ═══════════════════════════════════════
+//  四柱命卦推算
+// ═══════════════════════════════════════
+
+/**
+ * 年卦 — 本命卦（三元命卦）
+ *
+ * 男命：(100 − 年后两位) % 9，余5寄坤
+ * 女命：(年后两位 − 4) % 9，余0→9，余5寄艮
+ */
+function calcYearGua(year: number, gender: 'male' | 'female'): GuaResult {
+  const lastTwo = year % 100
+  let r = gender === 'male'
+    ? ((100 - lastTwo) % 9 + 9) % 9
+    : ((lastTwo - 4) % 9 + 9) % 9
+  return remainderToGua(r, gender)
+}
+
+/**
+ * 月卦 — 月份洛书数
+ * 月份数 % 9，余0→9
+ */
+function calcMonthGua(month: number, gender: 'male' | 'female'): GuaResult {
+  return remainderToGua(month % 9, gender)
+}
+
+/**
+ * 日卦 — 日期洛书数
+ * 日期数 % 9，余0→9
+ */
+function calcDayGua(day: number, gender: 'male' | 'female'): GuaResult {
+  return remainderToGua(day % 9, gender)
+}
+
+/**
+ * 时卦 — 时辰洛书数
+ * (时辰索引 + 1) % 9，余0→9
+ */
+function calcHourGua(shichenIndex: number, gender: 'male' | 'female'): GuaResult {
+  return remainderToGua((shichenIndex + 1) % 9, gender)
+}
+
+// ═══════════════════════════════════════
+//  解读文案
+// ═══════════════════════════════════════
+
 const personalityMap: Record<string, string> = {
   qian: '刚健自强，天生领导者。独立、果断，有强烈的使命感和推动力。做事讲究效率，目标感极强。',
   kun: '厚德载物，天生承载者。包容、稳重，擅长让事情落地。看似低调，实则是团队的定海神针。',
@@ -66,46 +153,65 @@ const interpretationMap: Record<string, string> = {
   dui: '兑卦是你的"喜悦密码"。你天生知道怎么让别人开心，怎么让气氛活跃起来。你的笑容和表达有感染力，跟你在一起的人会觉得轻松。但兑卦也告诉你：真正的快乐来自内心深处——别只做别人的阳光，也要找到属于自己的光。',
 }
 
-/**
- * 计算本命卦（三元命卦简化版）
- *
- * 算法来源：八宅风水的三元命卦推算
- * - 男命：(100 − 出生年后两位) ÷ 9 取余数；余5寄坤
- * - 女命：(出生年后两位 − 4) ÷ 9 取余数；余数0→9，余5寄艮
- *
- * @param year 出生年份（四位数字，如 1990）
- * @param gender 性别
- * @returns 本命卦结果
- */
-export function calculateLifeGua(year: number, gender: 'male' | 'female'): LifeGuaResult {
-  const lastTwo = year % 100
-  let remainder: number
+/** 四柱各卦的简短解读 */
+export const pillarInterpretation: Record<string, Record<string, string>> = {
+  month: {
+    qian: '月入乾宫，这个月你思路清晰、行动力强，适合推动关键事务。',
+    kun:  '月入坤宫，本月宜包容等待，不适合硬闯。顺势而为，自有结果。',
+    zhen: '月入震宫，这个月有新的机会开启，勇敢迈出第一步。',
+    xun:  '月入巽宫，本月人际关系活跃，适合沟通协商、拓展人脉。',
+    kan:  '月入坎宫，本月内心易有波动，适合沉淀思考，不宜冒进。',
+    li:   '月入离宫，这个月求知欲强，适合学习、写作、表达创意。',
+    gen:  '月入艮宫，本月宜守不宜攻，稳扎稳打比激进更重要。',
+    dui:  '月入兑宫，这个月社交运好，适合聚会、交流、开心地做事。',
+  },
+  day: {
+    qian: '日入乾宫，今天你精力充沛，适合做决策、推进关键事项。',
+    kun:  '日入坤宫，今天宜沉下心来，做好手头的每一件小事。',
+    zhen: '日入震宫，今天行动力在线，适合启动新任务、运动锻炼。',
+    xun:  '日入巽宫，今天适合沟通交流，多听听别人的想法。',
+    kan:  '日入坎宫，今天需要多留个心眼，细节处容易出问题。',
+    li:   '日入离宫，今天灵感不错，适合创作、阅读、表达。',
+    gen:  '日入艮宫，今天不宜变动，按计划行事就是最好的节奏。',
+    dui:  '日入兑宫，今天心情不错，适合和朋友分享、吃顿好的。',
+  },
+  hour: {
+    qian: '时入乾宫，你内心深处有强烈的进取心，不甘平庸。',
+    kun:  '时入坤宫，你内心渴望被理解和接纳，需要一个安定的归属。',
+    zhen: '时入震宫，你的潜意识里藏着不安分的能量，随时准备突破。',
+    xun:  '时入巽宫，你内心敏感细腻，能察觉到别人忽略的细节。',
+    kan:  '时入坎宫，独处时你会想很多，需要学会在安静中安放自己。',
+    li:   '时入离宫，你的精神世界丰富，独处时总有想不完的灵感。',
+    gen:  '时入艮宫，你内心追求稳定和平静，不轻易向外人敞开。',
+    dui:  '时入兑宫，你骨子里乐观开朗，即使独处也能自得其乐。',
+  },
+}
 
-  if (gender === 'male') {
-    // (100 - lastTwo) % 9
-    remainder = ((100 - lastTwo) % 9 + 9) % 9
-    // 余5 → 男寄坤（余数2）
-    if (remainder === 5) remainder = 2
-  } else {
-    // (lastTwo - 4) % 9
-    remainder = ((lastTwo - 4) % 9 + 9) % 9
-    // 余0 → 9（离卦）
-    if (remainder === 0) remainder = 9
-    // 余5 → 女寄艮（余数8）
-    if (remainder === 5) remainder = 8
-  }
+// ═══════════════════════════════════════
+//  主入口
+// ═══════════════════════════════════════
 
-  const baguaId = remainderToBagua[remainder]
-  const target = baguaMap[baguaId]
+export function calculateLifeGua(
+  year: number,
+  month: number,
+  day: number,
+  shichenIndex: number,
+  gender: 'male' | 'female',
+): LifeGuaResult {
+  const yearGua = calcYearGua(year, gender)
+  const monthGua = calcMonthGua(month, gender)
+  const dayGua = calcDayGua(day, gender)
+  const hourGua = calcHourGua(shichenIndex, gender)
+
+  const bid = yearGua.baguaId
 
   return {
-    baguaId,
-    name: target.name,
-    symbol: target.symbol,
-    number: remainder === 5 ? (gender === 'male' ? 2 : 8) : remainder,
-    element: elementMap[baguaId],
-    personality: personalityMap[baguaId],
-    advice: adviceMap[baguaId],
-    interpretation: interpretationMap[baguaId],
+    year: yearGua,
+    month: monthGua,
+    day: dayGua,
+    hour: hourGua,
+    personality: personalityMap[bid],
+    advice: adviceMap[bid],
+    interpretation: interpretationMap[bid],
   }
 }
