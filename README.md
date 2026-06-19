@@ -18,6 +18,16 @@
 
 > 这个项目是由 **悟空**（AI 道童）辅助构建的。
 
+### 基建
+
+| 组件 | 说明 |
+|------|------|
+| [OpenClaw](https://github.com/openclaw/openclaw) | AI agent 框架，驱动悟空的道场运行 |
+| [DeepSeek V4 Flash](https://deepseek.com/) | 主力模型，负责大部分推理与代码生成 |
+| [智谱 GLM 5.2](https://zhipu.ai/) | 辅助模型，蹭的免费额度 😄 |
+
+### 构建流程
+
 从经典释义到代码实现，AI 全程参与：
 
 | 环节 | 说明 |
