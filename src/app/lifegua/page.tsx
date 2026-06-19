@@ -58,8 +58,9 @@ export default function LifeGuaPage() {
   // 从 localStorage 读取最近查询
   useEffect(() => {
     try {
-      const saved = JSON.parse(localStorage.getItem('lifegua-recent') || '[]')
-      setRecent(saved)
+      // 过滤掉旧格式数据（缺少字段的兼容处理）
+      const saved: RecentEntry[] = JSON.parse(localStorage.getItem('lifegua-recent') || '[]')
+      setRecent(saved.filter(e => e && typeof e.shichenIndex === 'number'))
     } catch {}
   }, [])
 
@@ -355,7 +356,7 @@ export default function LifeGuaPage() {
                           : 'bg-[var(--bg2)] text-[var(--muted)] border-[var(--border)] hover:border-[var(--accent)] hover:text-[var(--fg)]'
                       }`}
                     >
-                      {e.year}/{String(e.month).padStart(2,'0')}/{String(e.day).padStart(2,'0')} {shichenList[e.shichenIndex].name} {e.gender === 'male' ? '♂' : '♀'} {b.symbol}{b.name}
+                      {e.year}/{String(e.month).padStart(2,'0')}/{String(e.day).padStart(2,'0')} {shichenList[e.shichenIndex]?.name || '?'} {e.gender === 'male' ? '♂' : '♀'} {b.symbol}{b.name}
                     </button>
                   )
                 })}
