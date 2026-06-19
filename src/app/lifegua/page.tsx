@@ -1,7 +1,7 @@
 'use client'
 import usePageTitle from '@/hooks/usePageTitle'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import { RubyText } from '@/components/Ruby'
 import { YaoDisplay } from '@/components/Yao'
@@ -42,6 +42,18 @@ export default function LifeGuaPage() {
   const [result, setResult] = useState<LifeGuaResult | null>(null)
   const [error, setError] = useState('')
   const [recent, setRecent] = useState<RecentEntry[]>([])
+
+  // 根据年月计算当月天数
+  const maxDay = useMemo(() => {
+    const y = parseInt(year)
+    if (isNaN(y)) return 31
+    return new Date(y, month, 0).getDate()
+  }, [year, month])
+
+  // 当月天数变化时，自动调整日期
+  useEffect(() => {
+    if (day > maxDay) setDay(maxDay)
+  }, [maxDay, day])
 
   // 从 localStorage 读取最近查询
   useEffect(() => {
@@ -162,7 +174,7 @@ export default function LifeGuaPage() {
                 onChange={e => setDay(Number(e.target.value))}
                 className="w-full p-2.5 pr-7 bg-[var(--bg3)] border border-[var(--border)] rounded-xl text-[var(--fg)] text-sm text-center outline-none transition-all duration-300 focus:border-[var(--accent)] focus:shadow-[0_0_0_3px_var(--glow)] cursor-pointer appearance-none"
               >
-                {Array.from({ length: 31 }, (_, i) => (
+                {Array.from({ length: maxDay }, (_, i) => (
                   <option key={i + 1} value={i + 1}>{i + 1}日</option>
                 ))}
               </select>
