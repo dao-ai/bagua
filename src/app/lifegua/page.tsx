@@ -34,7 +34,7 @@ function GuaBadge({ symbol, name, number }: { symbol: string; name: string; numb
 
 export default function LifeGuaPage() {
   usePageTitle()
-  const [year, setYear] = useState('')
+  const [year, setYear] = useState('1980')
   const [month, setMonth] = useState(1)
   const [day, setDay] = useState(15)
   const [shichenIndex, setShichenIndex] = useState(3) // 默认卯时
@@ -136,7 +136,7 @@ export default function LifeGuaPage() {
                 onChange={e => setYear(e.target.value)}
                 className="w-full p-2.5 pr-7 bg-[var(--bg3)] border border-[var(--border)] rounded-xl text-[var(--fg)] text-sm text-center outline-none transition-all duration-300 focus:border-[var(--accent)] focus:shadow-[0_0_0_3px_var(--glow)] cursor-pointer appearance-none"
               >
-                <option value="">—</option>
+
                 {Array.from({ length: 100 }, (_, i) => 2000 - i).map(y => (
                   <option key={y} value={y}>{y}年</option>
                 ))}
