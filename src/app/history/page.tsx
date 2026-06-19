@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import usePageTitle from '@/hooks/usePageTitle'
 import { HexagramDisplay } from '@/components/Yao'
-import { RubyText } from '@/components/Ruby'
+import { RubyText, Ruby } from '@/components/Ruby'
+import { getHexagramDetail } from '@/data/hexagrams'
 import { useDivineHistory, formatDateLabel, formatTime, type DivineRecord } from '@/hooks/useDivineHistory'
 
 export default function HistoryPage() {
@@ -136,23 +137,67 @@ function HistoryCard({ record: r, onDelete }: { record: DivineRecord; onDelete: 
       </div>
 
       {/* 展开详情 */}
-      {expanded && (
-        <div className="mt-3 pt-3 border-t border-[var(--border)]">
-          <div className="flex justify-center gap-6 items-center">
-            <div className="text-center">
-              <div className="text-[10px] text-[var(--muted)] mb-1">本卦</div>
-              <HexagramDisplay yao6={r.yao6} />
-              <div className="text-xs mt-1">{r.nowSymbol} <RubyText text={r.hexName} /></div>
-            </div>
-            <div className="text-[11px] text-[var(--accent2)]">
-              {r.movingName}<br />{r.movingChange}
-            </div>
-            <div className="text-center">
-              <div className="text-[10px] text-[var(--muted)] mb-1">变卦</div>
-              <HexagramDisplay yao6={r.changedYao6} />
-              <div className="text-xs mt-1">{r.changedSymbol} <RubyText text={r.changedHexName} /></div>
-            </div>
-          </div>
+      {expanded && <HistoryDetail record={r} />}
+    </div>
+  )
+}
+
+function HistoryDetail({ record: r }: { record: DivineRecord }) {
+  const nowDetail = getHexagramDetail(r.upperId, r.lowerId)
+  const changedDetail = r.changedHexName !== r.hexName
+    ? getHexagramDetail(r.changedUpperId, r.changedLowerId)
+    : undefined
+  const movingYao = nowDetail?.yaoLines?.[5 - r.movingIndex]
+
+  return (
+    <div className="mt-3 pt-3 border-t border-[var(--border)] animate-[fadeIn_0.3s_ease]">
+      {/* 卦象对比 */}
+      <div className="flex justify-center gap-6 items-start mb-4">
+        <div className="text-center flex-1">
+          <div className="text-[10px] text-[var(--muted)] mb-1">本卦</div>
+          <HexagramDisplay yao6={r.yao6} />
+          <div className="text-sm font-semibold mt-1">{r.nowSymbol} <RubyText text={r.hexName} /></div>
+          <div className="text-[11px] text-[var(--muted)]">上<Ruby char={r.upperName} /> 下<Ruby char={r.lowerName} /></div>
+        </div>
+        <div className="flex flex-col items-center gap-1 pt-6">
+          <div className="text-[11px] text-[var(--accent2)] font-semibold">{r.movingName}</div>
+          <div className="text-[10px] text-[var(--muted)]">{r.movingChange}</div>
+        </div>
+        <div className="text-center flex-1">
+          <div className="text-[10px] text-[var(--muted)] mb-1">变卦</div>
+          <HexagramDisplay yao6={r.changedYao6} />
+          <div className="text-sm font-semibold mt-1">{r.changedSymbol} <RubyText text={r.changedHexName} /></div>
+          {r.changedHexName !== r.hexName && (
+            <div className="text-[11px] text-[var(--muted)]">上<Ruby char={r.changedUpperName} /> 下<Ruby char={r.changedLowerName} /></div>
+          )}
+        </div>
+      </div>
+
+      {/* 本卦卦辞解读 */}
+      {nowDetail && (
+        <div className="p-3 rounded-lg bg-[var(--bg3)] text-left mb-2.5">
+          <div className="text-[11px] text-[var(--muted)] uppercase tracking-wider mb-1">卦辞</div>
+          <div className="text-sm font-semibold text-[var(--accent2)] mb-1"><RubyText text={nowDetail.judgment} /></div>
+          <div className="text-xs italic text-[var(--muted)] mb-1"><RubyText text={nowDetail.image} /></div>
+          <div className="text-xs leading-relaxed"><RubyText text={nowDetail.meaning} /></div>
+        </div>
+      )}
+
+      {/* 变卦卦辞 */}
+      {changedDetail && (
+        <div className="p-3 rounded-lg bg-[var(--bg3)] text-left mb-2.5 opacity-80">
+          <div className="text-[11px] text-[var(--muted)] uppercase tracking-wider mb-1">变卦 · 卦辞</div>
+          <div className="text-sm font-semibold text-[var(--accent2)] mb-1"><RubyText text={changedDetail.judgment} /></div>
+          <div className="text-xs leading-relaxed"><RubyText text={changedDetail.meaning} /></div>
+        </div>
+      )}
+
+      {/* 动爻爻辞 */}
+      {movingYao && (
+        <div className="p-3 rounded-lg bg-[var(--bg3)] border-l-[3px] border-[var(--accent2)] text-left">
+          <div className="text-[11px] text-[var(--muted)] uppercase tracking-wider mb-1">{movingYao.pos}</div>
+          <div className="text-sm font-semibold text-[var(--accent2)] mb-1"><RubyText text={movingYao.text} /></div>
+          <div className="text-xs leading-relaxed"><RubyText text={movingYao.meaning} /></div>
         </div>
       )}
     </div>

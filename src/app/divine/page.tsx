@@ -41,6 +41,8 @@ function computeResult(y6: number[], mk: number): DivineResult {
     nowSymbol: ns, changedSymbol: cs,
     movingName: mn, movingChange: mc,
     yao6: y6, changedYao6: cy6, movingIndex: mi,
+    upperId: ui, lowerId: li,
+    changedUpperId: cui, changedLowerId: cli,
   }
 }
 

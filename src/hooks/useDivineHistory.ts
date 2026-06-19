@@ -21,6 +21,10 @@ export interface DivineRecord {
   yao6: number[]
   changedYao6: number[]
   movingIndex: number
+  upperId: string
+  lowerId: string
+  changedUpperId: string
+  changedLowerId: string
 }
 
 function generateId(): string {
@@ -111,6 +115,10 @@ export function resultToRecord(
     yao6: result.yao6,
     changedYao6: result.changedYao6,
     movingIndex: result.movingIndex,
+    upperId: result.upperId,
+    lowerId: result.lowerId,
+    changedUpperId: result.changedUpperId,
+    changedLowerId: result.changedLowerId,
   }
 }
 

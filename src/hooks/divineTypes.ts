@@ -10,4 +10,6 @@ export interface DivineResult {
   movingName: string; movingChange: string
   yao6: number[]; changedYao6: number[]
   movingIndex: number
+  upperId: string; lowerId: string
+  changedUpperId: string; changedLowerId: string
 }
