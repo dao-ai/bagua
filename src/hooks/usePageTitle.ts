@@ -9,6 +9,7 @@ const titles: Record<string, string> = {
   '/eight/': '认识八卦 · 八卦入门',
   '/hexagrams/': '六十四卦 · 八卦入门',
   '/divine/': '起卦 · 八卦入门',
+  '/lifegua/': '本命卦 · 八卦入门',
   '/glossary/': '术语解释 · 八卦入门',
   '/history/': '起卦历史 · 八卦入门',
 }
