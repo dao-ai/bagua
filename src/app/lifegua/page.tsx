@@ -74,11 +74,6 @@ export default function LifeGuaPage() {
     localStorage.setItem('lifegua-recent', JSON.stringify(updated))
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') handleCalculate()
-  }
-
-  const currentShichen = shichenList[shichenIndex]
   const target = result ? baguaMap[result.year.baguaId] : null
 
   return (
@@ -118,91 +113,80 @@ export default function LifeGuaPage() {
           </button>
         </div>
 
-        {/* 年月日时 四行 */}
-        <div className="space-y-3.5 mb-5">
+        {/* 年月日时 — 全部下拉框 */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
           {/* 年 */}
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-[var(--muted)] w-8 shrink-0">年</span>
-            <div className="relative flex-1 max-w-[160px]">
-              <input
-                type="number"
-                inputMode="numeric"
+          <div>
+            <div className="text-[11px] text-[var(--muted)] mb-1.5 text-center">年</div>
+            <div className="relative">
+              <select
                 value={year}
                 onChange={e => setYear(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="如 1990"
-                maxLength={4}
-                className="w-full p-2.5 text-center bg-[var(--bg3)] border border-[var(--border)] rounded-xl text-[var(--fg)] text-base font-semibold outline-none transition-all duration-300 caret-[var(--accent)] focus:border-[var(--accent)] focus:shadow-[0_0_0_3px_var(--glow)] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-              />
+                className="w-full p-2.5 pr-7 bg-[var(--bg3)] border border-[var(--border)] rounded-xl text-[var(--fg)] text-sm text-center outline-none transition-all duration-300 focus:border-[var(--accent)] focus:shadow-[0_0_0_3px_var(--glow)] cursor-pointer appearance-none"
+              >
+                <option value="">—</option>
+                {Array.from({ length: 100 }, (_, i) => 2000 - i).map(y => (
+                  <option key={y} value={y}>{y}年</option>
+                ))}
+                {Array.from({ length: 100 }, (_, i) => 1999 - i).map(y => (
+                  <option key={y} value={y}>{y}年</option>
+                ))}
+              </select>
+              <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-[var(--muted)] pointer-events-none">▼</span>
             </div>
           </div>
 
           {/* 月 */}
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-[var(--muted)] w-8 shrink-0">月</span>
-            <div className="flex gap-1.5 flex-wrap">
-              {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
-                <button
-                  key={m}
-                  onClick={() => setMonth(m)}
-                  className={`px-2.5 py-1.5 rounded-lg text-xs border cursor-pointer transition-colors ${
-                    month === m
-                      ? 'bg-[var(--accent)] text-[var(--bg)] border-[var(--accent)] font-semibold'
-                      : 'bg-[var(--bg2)] text-[var(--muted)] border-[var(--border)] hover:border-[var(--accent)] hover:text-[var(--fg)]'
-                  }`}
-                >
-                  {m}月
-                </button>
-              ))}
+          <div>
+            <div className="text-[11px] text-[var(--muted)] mb-1.5 text-center">月</div>
+            <div className="relative">
+              <select
+                value={month}
+                onChange={e => setMonth(Number(e.target.value))}
+                className="w-full p-2.5 pr-7 bg-[var(--bg3)] border border-[var(--border)] rounded-xl text-[var(--fg)] text-sm text-center outline-none transition-all duration-300 focus:border-[var(--accent)] focus:shadow-[0_0_0_3px_var(--glow)] cursor-pointer appearance-none"
+              >
+                {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
+                  <option key={m} value={m}>{m}月</option>
+                ))}
+              </select>
+              <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-[var(--muted)] pointer-events-none">▼</span>
             </div>
           </div>
 
           {/* 日 */}
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-[var(--muted)] w-8 shrink-0">日</span>
+          <div>
+            <div className="text-[11px] text-[var(--muted)] mb-1.5 text-center">日</div>
             <div className="relative">
               <select
                 value={day}
                 onChange={e => setDay(Number(e.target.value))}
-                className="p-2.5 pr-8 bg-[var(--bg3)] border border-[var(--border)] rounded-xl text-[var(--fg)] text-sm outline-none transition-all duration-300 focus:border-[var(--accent)] focus:shadow-[0_0_0_3px_var(--glow)] cursor-pointer appearance-none"
+                className="w-full p-2.5 pr-7 bg-[var(--bg3)] border border-[var(--border)] rounded-xl text-[var(--fg)] text-sm text-center outline-none transition-all duration-300 focus:border-[var(--accent)] focus:shadow-[0_0_0_3px_var(--glow)] cursor-pointer appearance-none"
               >
                 {Array.from({ length: 31 }, (_, i) => (
                   <option key={i + 1} value={i + 1}>{i + 1}日</option>
                 ))}
               </select>
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-[var(--muted)] pointer-events-none">▼</span>
+              <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-[var(--muted)] pointer-events-none">▼</span>
             </div>
-            <span className="text-xs text-[var(--muted)]">
-              {['上旬', '中旬', '下旬'][day <= 10 ? 0 : day <= 20 ? 1 : 2]}
-            </span>
           </div>
 
           {/* 时辰 */}
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-[var(--muted)] w-8 shrink-0">时</span>
-            <div className="flex gap-1 flex-wrap">
-              {shichenList.map(s => (
-                <button
-                  key={s.index}
-                  onClick={() => setShichenIndex(s.index)}
-                  className={`px-2 py-1.5 rounded-lg text-[11px] border cursor-pointer transition-colors ${
-                    shichenIndex === s.index
-                      ? 'bg-[var(--accent)] text-[var(--bg)] border-[var(--accent)] font-semibold'
-                      : 'bg-[var(--bg2)] text-[var(--muted)] border-[var(--border)] hover:border-[var(--accent)] hover:text-[var(--fg)]'
-                  }`}
-                  title={s.range}
-                >
-                  {s.name}
-                </button>
-              ))}
+          <div>
+            <div className="text-[11px] text-[var(--muted)] mb-1.5 text-center">时</div>
+            <div className="relative">
+              <select
+                value={shichenIndex}
+                onChange={e => setShichenIndex(Number(e.target.value))}
+                className="w-full p-2.5 pr-7 bg-[var(--bg3)] border border-[var(--border)] rounded-xl text-[var(--fg)] text-sm text-center outline-none transition-all duration-300 focus:border-[var(--accent)] focus:shadow-[0_0_0_3px_var(--glow)] cursor-pointer appearance-none"
+              >
+                {shichenList.map(s => (
+                  <option key={s.index} value={s.index}>{s.name} {s.range}</option>
+                ))}
+              </select>
+              <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-[var(--muted)] pointer-events-none">▼</span>
             </div>
           </div>
         </div>
-
-        {/* 当前时辰说明 */}
-        <p className="text-center text-[11px] text-[var(--muted)] -mt-2 mb-4">
-          {currentShichen.name} · {currentShichen.range}
-        </p>
 
         {/* 计算按钮 */}
         <button
