@@ -111,9 +111,16 @@ export function getHexagramSymbol(upperId: string, lowerId: string): string {
 
 // 六十四卦卦辞数据类型
 // 在 bagua 中定义以免循环依赖
+export interface YaoLine {
+  pos: string
+  text: string
+  meaning: string
+}
+
 export interface HexagramDetail {
   judgment: string
   image: string
   meaning: string
+  yaoLines?: YaoLine[]
 }
 

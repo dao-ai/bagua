@@ -3,10 +3,10 @@
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
+import { usePinyin } from '@/contexts/PinyinContext'
 
 const tabs = [
   { href: '/', label: '八卦', exact: true },
-  { href: '/binary', label: '二进制', exact: false },
   { href: '/hexagrams', label: '64卦', exact: false },
   { href: '/divine', label: '起卦', exact: false },
 ]
@@ -18,10 +18,23 @@ export default function Header() {
   const isActive = (t: typeof tabs[number]) =>
     t.exact ? pathname === t.href : pathname.startsWith(t.href)
 
+  // 初始化：从 localStorage 读取主题
   useEffect(() => {
     const saved = localStorage.getItem('bg-theme')
     const isDark = saved !== 'classic'
-    setDark(isDark)
+    if (isDark !== dark) setDark(isDark)
+    applyTheme(isDark)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // 用户切换时：保存并应用
+  useEffect(() => {
+    localStorage.setItem('bg-theme', dark ? 'dark' : 'classic')
+    applyTheme(dark)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dark])
+
+  function applyTheme(isDark: boolean) {
     const vars: [string, string, string][] = [
       ['--bg', '#0b1120', '#f5f0e8'],
       ['--bg2', '#141d33', '#efe8d8'],
@@ -39,7 +52,7 @@ export default function Header() {
       ['--shadow', 'rgba(0,0,0,.4)', 'rgba(60,40,20,.12)'],
     ]
     vars.forEach(([k, d, c]) => document.documentElement.style.setProperty(k, isDark ? d : c))
-  }, [dark])
+  }
 
   const toggleTheme = () => setDark(d => !d)
 
@@ -57,6 +70,7 @@ export default function Header() {
         >
           {dark ? '🌙' : '☀️'}
         </button>
+        <PinyinBtn />
         <nav className="flex gap-1.5">
           {tabs.map(t => (
             <Link
@@ -74,5 +88,22 @@ export default function Header() {
         </nav>
       </div>
     </header>
+  )
+}
+
+function PinyinBtn() {
+  const { showPinyin, toggle } = usePinyin()
+  return (
+    <button
+      onClick={toggle}
+      className={`w-9 h-9 rounded-full border text-base flex items-center justify-center cursor-pointer transition-colors ${
+        showPinyin
+          ? 'bg-[var(--accent)] text-[var(--bg)] border-[var(--accent)]'
+          : 'bg-[var(--bg2)] text-[var(--muted)] border-[var(--border)] hover:border-[var(--accent)] hover:text-[var(--fg)]'
+      }`}
+      aria-label="切换注音"
+    >
+      🔤
+    </button>
   )
 }

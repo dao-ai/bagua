@@ -3,6 +3,7 @@ import usePageTitle from '@/hooks/usePageTitle'
 
 import { useState, useEffect } from 'react'
 import Modal from '@/components/Modal'
+import { RubyText, Ruby } from '@/components/Ruby'
 import { baguaMap, getHexagramName, getHexagramSymbol, type HexagramDetail } from '@/data/bagua'
 import { getHexagramDetail, hexagramOrder } from '@/data/hexagrams'
 
@@ -24,16 +25,30 @@ export default function HexagramsPage() {
     setModal(
       <div>
         <div className="text-[60px] text-center block">{sym}</div>
-        <h2 className="text-center text-2xl mt-1.5 mb-0.5">{name}</h2>
-        <p className="text-center text-sm text-[var(--muted)]">上{ud.name}（{ud.symbol}）· 下{ld.name}（{ld.symbol}）</p>
+        <h2 className="text-center text-2xl mt-1.5 mb-0.5"><RubyText text={name} /></h2>
+        <p className="text-center text-sm text-[var(--muted)]">上<Ruby char={ud.name} />（{ud.symbol}）· 下<Ruby char={ld.name} />（{ld.symbol}）</p>
         {detail ? (
           <div className="mt-6 p-5 rounded-xl bg-[var(--bg3)] border-l-[3px] border-[var(--accent)]">
             <div className="text-[11px] text-[var(--muted)] uppercase tracking-wider mb-1">卦辞</div>
-            <div className="text-base font-semibold mb-2 text-[var(--accent2)]">{detail.judgment}</div>
-            <div className="text-sm italic text-[var(--muted)] mb-2">{detail.image}</div>
-            <div className="text-sm leading-relaxed">{detail.meaning}</div>
+            <div className="text-base font-semibold mb-2 text-[var(--accent2)]"><RubyText text={detail.judgment} /></div>
+            <div className="text-sm italic text-[var(--muted)] mb-2"><RubyText text={detail.image} /></div>
+            <div className="text-sm leading-relaxed"><RubyText text={detail.meaning} /></div>
           </div>
         ) : <p className="text-center text-[var(--muted)] mt-6">解读待补充</p>}
+        {detail?.yaoLines && (
+          <div className="mt-4">
+            <div className="text-[11px] text-[var(--muted)] uppercase tracking-wider mb-2">爻辞</div>
+            {detail.yaoLines.map((yl, i) => (
+              <div key={i} className={`p-3 rounded-lg mb-1.5 text-sm ${i === 5 ? '' : 'border-b border-[var(--border)]'}`}>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-[11px] font-mono text-[var(--accent2)]">{yl.pos}</span>
+                  <span className="font-semibold text-[var(--fg)]"><RubyText text={yl.text} /></span>
+                </div>
+                <div className="text-xs text-[var(--muted)] mt-0.5"><RubyText text={yl.meaning} /></div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     )
   }
@@ -59,8 +74,8 @@ export default function HexagramsPage() {
             >
               <div className="text-[26px] shrink-0">{sym}</div>
               <div className="min-w-0 flex-1">
-                <div className="font-semibold text-sm">{name} <span className="font-normal text-[11px] text-[var(--muted)]">上{ud.name}下{ld.name}</span></div>
-                <div className="text-[11px] text-[var(--accent2)] mt-0.5 truncate">{detail?.judgment}</div>
+                <div className="font-semibold text-sm"><RubyText text={name} /> <span className="font-normal text-[11px] text-[var(--muted)]">上<Ruby char={ud.name} />下<Ruby char={ld.name} /></span></div>
+                <div className="text-[11px] text-[var(--accent2)] mt-0.5 truncate"><RubyText text={detail?.judgment || ''} /></div>
               </div>
             </div>
           )

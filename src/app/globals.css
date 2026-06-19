@@ -24,6 +24,112 @@
   --color-classic-accent2: #a52a2a;
 }
 
+/* ===== 关键帧动画 ===== */
+
+/* 变爻闪烁 — 动爻快速闪烁提示 */
+@keyframes fl {
+  0%, 100% { opacity: 1; box-shadow: 0 0 12px var(--accent), 0 0 28px var(--glow); }
+  50% { opacity: 0.15; box-shadow: 0 0 4px var(--accent); }
+}
+
+/* 阳变阴 — 实线变为虚线 */
+@keyframes fy {
+  0% {
+    background-image: none !important;
+    background-color: var(--yang);
+    transform: scaleX(1);
+  }
+  45% {
+    transform: scaleX(0.08);
+    opacity: 0.3;
+  }
+  55% {
+    transform: scaleX(0.08);
+    opacity: 0.3;
+  }
+  100% {
+    background-color: transparent;
+    background-image: linear-gradient(to right, var(--yin) 0, var(--yin) 30px, transparent 30px, transparent 50px, var(--yin) 50px, var(--yin) 80px) !important;
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+/* 阴变阳 — 虚线变为实线 */
+@keyframes fn {
+  0% {
+    background-image: linear-gradient(to right, var(--yin) 0, var(--yin) 30px, transparent 30px, transparent 50px, var(--yin) 50px, var(--yin) 80px) !important;
+    background-color: transparent;
+    transform: scaleX(1);
+  }
+  45% {
+    transform: scaleX(0.08);
+    opacity: 0.3;
+  }
+  55% {
+    transform: scaleX(0.08);
+    opacity: 0.3;
+  }
+  100% {
+    background-image: none !important;
+    background-color: var(--yang);
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+/* 结果淡入 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 变爻复原 — 动画完成后渐变回原卦 */
+@keyframes yr {
+  0% { transform: scaleX(0.15); opacity: 0.4; }
+  60% { transform: scaleX(1.05); opacity: 0.9; }
+  100% { transform: scaleX(1); opacity: 1; }
+}
+.yl-revert {
+  animation: yr 0.45s ease-in-out;
+}
+
+/* ===== 变爻动画 utility classes ===== */
+.yl-flash {
+  animation: fl 0.15s ease-in-out 6;
+}
+.yl-flip-yang {
+  animation: fy 0.7s ease-in-out forwards;
+}
+.yl-flip-yin {
+  animation: fn 0.7s ease-in-out forwards;
+}
+.yl-done-yang {
+  background-color: var(--yang) !important;
+  background-image: none !important;
+}
+.yl-done-yin {
+  background-color: transparent !important;
+  background-image: linear-gradient(to right, var(--yin) 0, var(--yin) 30px, transparent 30px, transparent 50px, var(--yin) 50px, var(--yin) 80px) !important;
+}
+
+/* ===== 注音样式 ===== */
+rt {
+  font-size: 0;
+  opacity: 0;
+  transition: font-size 0.15s ease, opacity 0.15s ease;
+}
+.show-pinyin rt {
+  font-size: 0.6em;
+  opacity: 1;
+  color: var(--accent2);
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.show-pinyin ruby {
+  ruby-position: over;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Serif SC", serif;
   transition: background-color 0.4s, color 0.4s;

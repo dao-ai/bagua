@@ -2,6 +2,7 @@
 import usePageTitle from '@/hooks/usePageTitle'
 
 import { YaoDisplay } from '@/components/Yao'
+import { RubyText } from '@/components/Ruby'
 import { baguaList } from '@/data/bagua'
 
 export default function BinaryPage() {
@@ -31,7 +32,7 @@ export default function BinaryPage() {
               <tr key={b.id} className="hover:bg-[var(--bg2)] transition-colors">
                 <td className="p-3.5 text-center border-b border-[var(--border)]"><YaoDisplay yao={b.yao} /></td>
                 <td className="p-3.5 text-center text-[28px] border-b border-[var(--border)]">{b.symbol}</td>
-                <td className="p-3.5 text-center font-semibold text-base border-b border-[var(--border)]">{b.name} <span className="text-xs font-normal text-[var(--muted)]">{b.pinyin}</span></td>
+                <td className="p-3.5 text-center font-semibold text-base border-b border-[var(--border)]"><RubyText text={b.name} /></td>
                 <td className="p-3.5 text-center font-mono text-base tracking-widest text-[var(--accent2)] border-b border-[var(--border)]">{b.binary}</td>
                 <td className="p-3.5 text-center font-bold text-lg border-b border-[var(--border)]">{b.decimal}</td>
                 <td className="p-3.5 text-center text-[13px] text-[var(--muted)] border-b border-[var(--border)]">{b.keywords.join(' · ')}</td>

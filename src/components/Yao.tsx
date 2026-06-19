@@ -1,16 +1,17 @@
 'use client'
 
 // 爻线组件
-export default function YaoLine({ yang, big, className = '' }: {
+export default function YaoLine({ yang, big, className = '', animClass }: {
   yang: boolean
   big?: boolean
   className?: string
+  animClass?: string
 }) {
   const w = big ? 100 : 80
   const h = big ? 10 : 8
   return (
     <div
-      className={`rounded-sm transition-all duration-300 ${yang ? 'bg-[var(--yang)]' : ''} ${className}`}
+      className={`rounded-sm transition-all duration-300 ${yang ? 'bg-[var(--yang)]' : ''} ${className}${animClass ? ' ' + animClass : ''}`}
       style={{
         width: w,
         height: h,
@@ -23,10 +24,11 @@ export default function YaoLine({ yang, big, className = '' }: {
 }
 
 // 八卦三爻显示
-export function YaoDisplay({ yao, big = false, movingIndex }: {
+export function YaoDisplay({ yao, big = false, movingIndex, animClass }: {
   yao: number[]
   big?: boolean
   movingIndex?: number
+  animClass?: string
 }) {
   const reversed = [...yao].reverse()
   return (
@@ -36,6 +38,7 @@ export function YaoDisplay({ yao, big = false, movingIndex }: {
           key={i}
           yang={v === 1}
           big={big}
+          animClass={movingIndex !== undefined && i === movingIndex ? animClass : undefined}
           className={movingIndex !== undefined && i === movingIndex ? 'animate-pulse' : ''}
         />
       ))}
@@ -44,18 +47,20 @@ export function YaoDisplay({ yao, big = false, movingIndex }: {
 }
 
 // 六爻显示
-export function HexagramDisplay({ yao6, movingIndex }: {
+export function HexagramDisplay({ yao6, movingIndex, animClass }: {
   yao6: number[]
   movingIndex?: number
+  animClass?: string
 }) {
   return (
     <div className="flex flex-col items-center gap-[3px] my-2">
-      {[5,4,3,2,1,0].map(i => (
+      {[0,1,2,3,4,5].map(i => (
         <YaoLine
           key={i}
           yang={yao6[i] === 1}
+          animClass={movingIndex !== undefined && i === movingIndex ? animClass : undefined}
           className={movingIndex !== undefined && i === movingIndex
-            ? 'shadow-[0_0_12px_var(--accent),0_0_28px_var(--glow)]' : ''}
+            ? 'shadow-[0_0_12px_var(--accent),0_0_28px_var(--glow)] yl-moving' : ''}
         />
       ))}
     </div>
