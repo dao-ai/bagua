@@ -64,12 +64,12 @@ export default function HexagramsPage() {
   return (
     <>
       <div className="text-center pb-6">
-        <h2 className="text-[26px] mb-1.5">六十四卦</h2>
+        <h2 className="text-[26px] mb-1.5 font-heading">六十四卦</h2>
         <p className="text-sm text-[var(--muted)] max-w-[520px] mx-auto">八卦两两相叠，成六十四卦。点击任一卦，查看卦辞与解读。</p>
       </div>
 
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(210px,1fr))] gap-2.5">
-        {hexagramOrder.map(([u, l]) => {
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(230px,1fr))] gap-3">
+        {hexagramOrder.map(([u, l], idx) => {
           const name = getHexagramName(u, l)
           const detail = getHexagramDetail(u, l)
           const sym = getHexagramSymbol(u, l)
@@ -78,12 +78,30 @@ export default function HexagramsPage() {
             <div
               key={u + l}
               onClick={() => openDetail(u, l)}
-              className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-3 cursor-pointer transition-all duration-300 flex items-center gap-2.5 hover:border-[var(--accent)] hover:-translate-y-0.5 hover:shadow-[0_4px_20px_var(--shadow)]"
+              className="group relative bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 cursor-pointer transition-all duration-300 hover:border-[var(--accent)] hover:-translate-y-0.5 hover:shadow-[0_4px_20px_var(--shadow)]
+                before:content-[''] before:absolute before:top-0 before:left-3 before:right-3 before:h-[2.5px] before:bg-gradient-to-r before:from-transparent before:via-[var(--accent)] before:to-transparent before:rounded-b before:opacity-0 before:transition-opacity before:duration-300
+                group-hover:before:opacity-100"
             >
-              <div className="text-[26px] shrink-0">{sym}</div>
-              <div className="min-w-0 flex-1">
-                <div className="font-semibold text-sm"><RubyText text={name} /> <span className="font-normal text-[11px] text-[var(--muted)]">上<Ruby char={ud.name} />下<Ruby char={ld.name} /></span></div>
-                <div className="text-[11px] text-[var(--accent2)] mt-0.5 truncate"><RubyText text={detail?.judgment || ''} /></div>
+              {/* 卦序号 */}
+              <div className="text-[10px] font-mono text-[var(--muted)] mb-1 tracking-wider">
+                #{String(idx + 1).padStart(2, '0')}
+              </div>
+
+              <div className="flex items-start gap-3">
+                <div className="text-[28px] shrink-0 leading-none pt-0.5">{sym}</div>
+                <div className="min-w-0 flex-1">
+                  <div className="font-semibold text-base leading-tight">
+                    <RubyText text={name} />
+                  </div>
+                  <div className="text-[11px] text-[var(--muted)] mt-0.5">
+                    上<Ruby char={ud.name} /> · 下<Ruby char={ld.name} />
+                  </div>
+                  {detail?.judgment && (
+                    <div className="text-[11px] text-[var(--accent2)] mt-1.5 truncate leading-relaxed opacity-80 group-hover:opacity-100 transition-opacity">
+                      <RubyText text={detail.judgment} />
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           )

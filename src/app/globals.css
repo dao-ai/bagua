@@ -24,6 +24,21 @@
   --color-classic-accent2: #a52a2a;
 }
 
+/* ===== 字体 ===== */
+.font-heading {
+  font-family: var(--font-heading), "Noto Serif SC", "Songti SC", serif;
+}
+
+/* ===== 响应式汉堡菜单 ===== */
+@media (max-width: 767px) {
+  .mobile-nav-open {
+    display: flex !important;
+  }
+  .mobile-nav-closed {
+    display: none !important;
+  }
+}
+
 /* ===== 关键帧动画 ===== */
 
 /* 变爻闪烁 — 动爻快速闪烁提示 */
@@ -131,6 +146,6 @@ rt {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Serif SC", serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", system-ui, sans-serif;
   transition: background-color 0.4s, color 0.4s;
 }

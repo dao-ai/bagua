@@ -31,7 +31,7 @@ export default function EightPage() {
   return (
     <>
       <div className="text-center pb-6">
-        <h2 className="text-[26px] mb-1.5">认识八卦</h2>
+        <h2 className="text-[26px] mb-1.5 font-heading">认识八卦</h2>
         <p className="text-sm text-[var(--muted)] max-w-[520px] mx-auto">
           八卦不是符号，是一家八口。把每个卦当成一个人来认识，不用背也能记住。
         </p>
@@ -59,7 +59,7 @@ export default function EightPage() {
 
       {view === 'cards' ? (
         <>
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(190px,1fr))] gap-3.5">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {baguaList.map(b => (
               <div key={b.id} onClick={() => setModal(b)}
                 className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 pb-4 text-center cursor-pointer transition-all duration-300 relative overflow-hidden hover:border-[var(--accent)] hover:-translate-y-1 hover:shadow-[0_8px_30px_var(--shadow)] before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-[3px] before:bg-gradient-to-r before:from-transparent before:via-[var(--accent)] before:to-transparent before:opacity-0 before:transition-opacity before:duration-300 hover:before:opacity-100"
@@ -106,7 +106,7 @@ export default function EightPage() {
             <thead>
               <tr>
                 {['卦', '符号', '卦名', '二进制', '十进制', '关键词'].map(h => (
-                  <th key={h} className="p-3.5 text-center text-[11px] uppercase tracking-widest text-[var(--muted)] border-b-2 border-[var(--border)]">{h}</th>
+                  <th key={h} className="p-3.5 text-center text-[11px] uppercase tracking-widest text-[var(--muted)] border-b-2 border-[var(--border)] bg-[var(--bg3)]">{h}</th>
                 ))}
               </tr>
             </thead>

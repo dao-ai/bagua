@@ -116,7 +116,7 @@ export default function DivinePage() {
   return (
     <>
       <div className="text-center pb-6">
-        <h2 className="text-[26px] mb-1.5">起卦</h2>
+        <h2 className="text-[26px] mb-1.5 font-heading">起卦</h2>
         <p className="text-sm text-[var(--muted)] max-w-[520px] mx-auto">心里想一件事，选择一种方式起卦。</p>
       </div>
 

@@ -80,15 +80,20 @@ export default function DailyHexagram() {
     markSeen(k)
   }, [mounted, markSeen])
 
+  const [picking, setPicking] = useState(false)
+
   // 换一卦
   const pickAnother = useCallback(() => {
+    if (picking) return
+    setPicking(true)
     const seed = dateSeed() + (extra ? extra.idx + 1 : 1)
     const rng = seededRandom(seed)
     const idx = Math.floor(rng() * ALL_KEYS.length)
     const k = ALL_KEYS[idx]
     setExtra({ key: k, idx: seed })
     markSeen(k)
-  }, [extra, markSeen])
+    setTimeout(() => setPicking(false), 400)
+  }, [extra, markSeen, picking])
 
   // 当前展示的卦 key
   const displayKey = extra ? extra.key : dailyKey
@@ -140,7 +145,7 @@ export default function DailyHexagram() {
         {/* 卦象区 */}
         <div className="flex flex-col items-center mb-6">
           <div className="text-[72px] leading-none mb-2 select-none">{symbol}</div>
-          <h3 className="text-[28px] font-bold tracking-wider mb-1">
+          <h3 className="text-[28px] font-bold tracking-wider mb-1 font-heading">
             <RubyText text={name} />
           </h3>
           <HexagramDisplay yao6={
@@ -199,17 +204,26 @@ export default function DailyHexagram() {
         <div className="flex items-center justify-center gap-4 mt-6 pt-4 border-t border-[var(--border)]">
           <button
             onClick={pickAnother}
-            className="px-5 py-2 rounded-xl text-sm font-semibold border border-[var(--border)] bg-[var(--bg2)] text-[var(--fg)] cursor-pointer transition-all duration-200 hover:border-[var(--accent)] hover:bg-[var(--accent)]/10 hover:-translate-y-0.5 flex items-center gap-2"
+            disabled={picking}
+            className={`px-5 py-2 rounded-xl text-sm font-semibold border cursor-pointer transition-all duration-200 flex items-center gap-2 ${
+              picking
+                ? 'border-[var(--border)] bg-[var(--bg3)] text-[var(--muted)]'
+                : 'border-[var(--border)] bg-[var(--bg2)] text-[var(--fg)] hover:border-[var(--accent)] hover:bg-[var(--accent)]/10 hover:-translate-y-0.5'
+            }`}
           >
-            <span>🔄</span>
+            <span className={`inline-block transition-transform duration-300 ${picking ? 'animate-spin' : ''}`}>🔄</span>
             换一卦
           </button>
 
           {/* 探索进度 */}
           <div className="text-[11px] text-[var(--muted)]">
-            已阅 <strong className="text-[var(--accent2)]">{seenKeys.size}</strong> / 64 卦
-            {unseenCount > 0 && (
-              <span className="ml-0.5">· 还有 <strong className="text-[var(--accent)]">{unseenCount}</strong> 卦未读</span>
+            {unseenCount === 0 ? (
+              <span className="text-[var(--accent2)] font-semibold">🎉 六十四卦全阅！</span>
+            ) : (
+              <>
+                已阅 <strong className="text-[var(--accent2)]">{seenKeys.size}</strong> / 64 卦
+                <span className="ml-0.5">· 还有 <strong className="text-[var(--accent)]">{unseenCount}</strong> 卦未读</span>
+              </>
             )}
           </div>
         </div>

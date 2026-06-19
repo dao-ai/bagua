@@ -18,7 +18,7 @@ export default function HistoryPage() {
   return (
     <>
       <div className="text-center pb-6">
-        <h2 className="text-[26px] mb-1.5">起卦历史</h2>
+        <h2 className="text-[26px] mb-1.5 font-heading">起卦历史</h2>
         {total > 0 ? (
           <p className="text-sm text-[var(--muted)] max-w-[520px] mx-auto">
             共 <strong className="text-[var(--accent2)]">{total}</strong> 次起卦记录

@@ -36,7 +36,7 @@ export default function GlossaryPage() {
   return (
     <>
       <div className="text-center pb-6">
-        <h2 className="text-[26px] mb-1.5">易学术语解释</h2>
+        <h2 className="text-[26px] mb-1.5 font-heading">易学术语解释</h2>
         <p className="text-sm text-[var(--muted)] max-w-[520px] mx-auto">
           爻位、卦象、断辞……遇到不懂的词，来这里查。
         </p>

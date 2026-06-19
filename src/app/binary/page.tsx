@@ -12,7 +12,7 @@ export default function BinaryPage() {
   return (
     <>
       <div className="text-center pb-6">
-        <h2 className="text-[26px] mb-1.5">二进制 · 八卦对照</h2>
+        <h2 className="text-[26px] mb-1.5 font-heading">二进制 · 八卦对照</h2>
         <p className="text-sm text-[var(--muted)] max-w-[520px] mx-auto">
           阳为 1，阴为 0，从下往上读。莱布尼茨受此启发发明了二进制。
         </p>
