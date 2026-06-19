@@ -36,8 +36,8 @@ export default function LifeGuaPage() {
   usePageTitle()
   const [year, setYear] = useState('1980')
   const [month, setMonth] = useState(1)
-  const [day, setDay] = useState(15)
-  const [shichenIndex, setShichenIndex] = useState(3) // 默认卯时
+  const [day, setDay] = useState(11)
+  const [shichenIndex, setShichenIndex] = useState(9) // 默认酉时
   const [gender, setGender] = useState<'male' | 'female'>('male')
   const [result, setResult] = useState<LifeGuaResult | null>(null)
   const [error, setError] = useState('')
