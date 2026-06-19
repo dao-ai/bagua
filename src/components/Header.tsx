@@ -9,6 +9,7 @@ const tabs = [
   { href: '/', label: '八卦', exact: true },
   { href: '/hexagrams', label: '64卦', exact: false },
   { href: '/divine', label: '起卦', exact: false },
+  { href: '/history', label: '历史', exact: false },
 ]
 
 export default function Header() {

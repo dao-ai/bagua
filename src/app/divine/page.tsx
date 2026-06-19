@@ -1,23 +1,14 @@
 'use client'
 import usePageTitle from '@/hooks/usePageTitle'
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import YaoLine, { HexagramDisplay } from '@/components/Yao'
 import { RubyText, Ruby } from '@/components/Ruby'
 import Coin from '@/components/Coin'
-import { baguaList, baguaMap, numToBagua, getHexagramName, getHexagramSymbol, type HexagramDetail } from '@/data/bagua'
+import { baguaList, baguaMap, numToBagua, getHexagramName, getHexagramSymbol } from '@/data/bagua'
 import { getHexagramDetail } from '@/data/hexagrams'
-
-interface DivineResult {
-  hexName: string; changedHexName: string
-  upperName: string; lowerName: string
-  changedUpperName: string; changedLowerName: string
-  nowDetail?: HexagramDetail; changedDetail?: HexagramDetail
-  nowSymbol: string; changedSymbol: string
-  movingName: string; movingChange: string
-  yao6: number[]; changedYao6: number[]
-  movingIndex: number
-}
+import type { DivineResult } from '@/hooks/divineTypes'
+import { useDivineHistory, resultToRecord } from '@/hooks/useDivineHistory'
 
 function computeResult(y6: number[], mk: number): DivineResult {
   const mi = 6 - mk
@@ -70,6 +61,8 @@ function tossCoins(): CoinToss {
 
 export default function DivinePage() {
   usePageTitle()
+  const { addRecord } = useDivineHistory()
+  const savedRef = useRef(false)
   const [method, setMethod] = useState<'number' | 'coin'>('coin')
   const [n1, setN1] = useState('')
   const [n2, setN2] = useState('')
@@ -106,6 +99,15 @@ export default function DivinePage() {
       try { setResult(computeResult(y6, movingLine)) } catch {}
     }
   }, [tosses])
+
+  // 自动保存起卦历史
+  useEffect(() => {
+    if (result && !savedRef.current) {
+      savedRef.current = true
+      addRecord(resultToRecord(result, method))
+    }
+    if (!result) savedRef.current = false
+  }, [result, method, addRecord])
 
   const resetCoins = () => { setTosses([]); setResult(null) }
 
@@ -339,6 +341,11 @@ function DivineResultComponent({ result }: { result: DivineResult }) {
           </div>
         )
       })()}
+
+      {/* 已保存标记 */}
+      <div className="mt-4 flex items-center justify-center gap-1.5 text-[11px] text-[var(--muted)]">
+        <span>✓ 已保存到历史记录</span>
+      </div>
     </div>
   )
 }
