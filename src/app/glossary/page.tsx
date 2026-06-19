@@ -4,6 +4,7 @@ import usePageTitle from '@/hooks/usePageTitle'
 import { useState, useMemo } from 'react'
 import { RubyText } from '@/components/Ruby'
 import glossary, { categories } from '@/data/glossary'
+import YaoPositionDiagram from '@/components/YaoPositionDiagram'
 
 export default function GlossaryPage() {
   usePageTitle()
@@ -79,6 +80,9 @@ export default function GlossaryPage() {
           </button>
         ))}
       </div>
+
+      {/* 爻位示意图 */}
+      {activeCategory === 'yao' && <YaoPositionDiagram />}
 
       {/* 术语列表 */}
       {filtered.length === 0 ? (
