@@ -1,5 +1,10 @@
 # 更新日志
 
+## [0.2.0] - 2026-06-19
+
+### 新增
+- README 增加 AI 构建说明（OpenClaw / DeepSeek / GLM 基建）
+
 ## [Unreleased]
 
 ### 新增
