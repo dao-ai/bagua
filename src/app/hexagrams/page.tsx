@@ -28,11 +28,19 @@ export default function HexagramsPage() {
         <h2 className="text-center text-2xl mt-1.5 mb-0.5"><RubyText text={name} /></h2>
         <p className="text-center text-sm text-[var(--muted)]">上<Ruby char={ud.name} />（{ud.symbol}）· 下<Ruby char={ld.name} />（{ld.symbol}）</p>
         {detail ? (
-          <div className="mt-6 p-5 rounded-xl bg-[var(--bg3)] border-l-[3px] border-[var(--accent)]">
-            <div className="text-[11px] text-[var(--muted)] uppercase tracking-wider mb-1">卦辞</div>
-            <div className="text-base font-semibold mb-2 text-[var(--accent2)]"><RubyText text={detail.judgment} /></div>
-            <div className="text-sm italic text-[var(--muted)] mb-2"><RubyText text={detail.image} /></div>
-            <div className="text-sm leading-relaxed"><RubyText text={detail.meaning} /></div>
+          <div className="mt-6 space-y-3">
+            <div className="p-5 rounded-xl bg-[var(--bg3)] border-l-[3px] border-[var(--accent)]">
+              <div className="text-[11px] text-[var(--muted)] uppercase tracking-wider mb-1">卦辞</div>
+              <div className="text-base font-semibold text-[var(--accent2)]"><RubyText text={detail.judgment} /></div>
+            </div>
+            <div className="p-5 rounded-xl bg-[var(--bg3)] border-l-[3px] border-[var(--accent2)]">
+              <div className="text-[11px] text-[var(--muted)] uppercase tracking-wider mb-1">象辞</div>
+              <div className="text-sm italic text-[var(--fg)]"><RubyText text={detail.image} /></div>
+            </div>
+            <div className="p-5 rounded-xl bg-[var(--bg3)] border-l-[3px] border-[var(--border)]">
+              <div className="text-[11px] text-[var(--muted)] uppercase tracking-wider mb-2">现代解读</div>
+              <div className="text-sm leading-relaxed"><RubyText text={detail.meaning} /></div>
+            </div>
           </div>
         ) : <p className="text-center text-[var(--muted)] mt-6">解读待补充</p>}
         {detail?.yaoLines && (

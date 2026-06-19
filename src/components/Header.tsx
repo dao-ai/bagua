@@ -6,7 +6,8 @@ import Link from 'next/link'
 import { usePinyin } from '@/contexts/PinyinContext'
 
 const tabs = [
-  { href: '/', label: '八卦', exact: true },
+  { href: '/', label: '日签', exact: true },
+  { href: '/eight', label: '八卦', exact: false },
   { href: '/hexagrams', label: '64卦', exact: false },
   { href: '/divine', label: '起卦', exact: false },
   { href: '/history', label: '历史', exact: false },
