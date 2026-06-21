@@ -1,5 +1,6 @@
 'use client'
 import usePageTitle from '@/hooks/usePageTitle'
+import PageHeader from '@/components/PageHeader'
 
 import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
@@ -91,12 +92,7 @@ export default function LifeGuaPage() {
 
   return (
     <>
-      <div className="text-center pb-6">
-        <h2 className="text-[26px] mb-1.5">本命卦 · 四柱命卦</h2>
-        <p className="text-sm text-[var(--muted)] max-w-[560px] mx-auto">
-          输入出生年月日时，推算你的本命卦。年柱定主命，月日时柱看变局。
-        </p>
-      </div>
+      <PageHeader title="本命卦 · 四柱命卦" subtitle="输入出生年月日时，推算你的本命卦。年柱定主命，月日时柱看变局。" />
 
       {/* ===== 输入区 ===== */}
       <div className="max-w-[520px] mx-auto bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 sm:p-8">

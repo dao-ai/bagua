@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import usePageTitle from '@/hooks/usePageTitle'
+import PageHeader from '@/components/PageHeader'
 import { RubyText } from '@/components/Ruby'
 import { baguaList, baguaMap, getHexagramName, getHexagramSymbol } from '@/data/bagua'
 import { hexagramOrder, getHexagramDetail } from '@/data/hexagrams'
@@ -63,12 +64,7 @@ export default function ComparePage() {
 
   return (
     <>
-      <div className="text-center pb-6">
-        <h2 className="text-[26px] mb-1.5 font-heading">双卦对比</h2>
-        <p className="text-sm text-[var(--muted)] max-w-[520px] mx-auto">
-          左右各选一卦，对比卦象、卦辞、五行属性。
-        </p>
-      </div>
+      <PageHeader title="双卦对比" subtitle="左右各选一卦，对比卦象、卦辞、五行属性。" />
 
       {/* 对比区 */}
       <div className="flex justify-center gap-2 items-stretch max-sm:flex-col max-w-[800px] mx-auto mb-6">

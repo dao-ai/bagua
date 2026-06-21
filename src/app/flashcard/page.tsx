@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback } from 'react'
 import usePageTitle from '@/hooks/usePageTitle'
+import PageHeader from '@/components/PageHeader'
 import { RubyText } from '@/components/Ruby'
 import { baguaList, getHexagramName, getHexagramSymbol } from '@/data/bagua'
 import { hexagramOrder, getHexagramDetail } from '@/data/hexagrams'
@@ -121,12 +122,7 @@ export default function FlashcardPage() {
 
   return (
     <>
-      <div className="text-center pb-6">
-        <h2 className="text-[26px] mb-1.5 font-heading">闪卡复习</h2>
-        <p className="text-sm text-[var(--muted)] max-w-[520px] mx-auto">
-          点击卡片翻转 · 看卦符猜卦名
-        </p>
-      </div>
+      <PageHeader title="闪卡复习" subtitle="点击卡片翻转 · 看卦符猜卦名" />
 
       {/* 模式切换 */}
       <div className="flex justify-center gap-2 mb-4">

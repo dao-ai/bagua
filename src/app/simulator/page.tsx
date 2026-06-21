@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import usePageTitle from '@/hooks/usePageTitle'
+import PageHeader from '@/components/PageHeader'
 import YaoLine, { HexagramDisplay } from '@/components/Yao'
 import { RubyText, Ruby } from '@/components/Ruby'
 import { baguaList, baguaMap, getHexagramName, getHexagramSymbol } from '@/data/bagua'
@@ -128,12 +129,7 @@ export default function SimulatorPage() {
 
   return (
     <>
-      <div className="text-center pb-6">
-        <h2 className="text-[26px] mb-1.5 font-heading">变爻模拟器</h2>
-        <p className="text-sm text-[var(--muted)] max-w-[520px] mx-auto">
-          选择一卦，点击任意爻线，看"一爻动则全卦变"。
-        </p>
-      </div>
+      <PageHeader title="变爻模拟器" subtitle="选择一卦，点击任意爻线，看「一爻动则全卦变」。" />
 
       {/* 选择器 */}
       <div className="max-w-[500px] mx-auto mb-6">
