@@ -128,6 +128,20 @@
   background-image: linear-gradient(to right, var(--yin) 0, var(--yin) 30px, transparent 30px, transparent 50px, var(--yin) 50px, var(--yin) 80px) !important;
 }
 
+/* ===== 闪卡 3D 翻转 ===== */
+.perspective-\[1000px\] {
+  perspective: 1000px;
+}
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+.backface-hidden {
+  backface-visibility: hidden;
+}
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
 /* ===== 注音样式 ===== */
 rt {
   font-size: 0;

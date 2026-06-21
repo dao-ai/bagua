@@ -11,6 +11,7 @@ const tabs = [
   { href: '/hexagrams', label: '64卦', exact: false },
   { href: '/divine', label: '起卦', exact: false },
   { href: '/simulator', label: '变爻模拟', exact: false },
+  { href: '/flashcard', label: '闪卡', exact: false },
   { href: '/lifegua', label: '本命卦', exact: false },
   { href: '/glossary', label: '术语', exact: false },
   { href: '/history', label: '历史', exact: false },
