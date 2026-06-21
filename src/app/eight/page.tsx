@@ -83,18 +83,21 @@ export default function EightPage() {
                 <div className="text-[60px] text-center block">{modal.symbol}</div>
                 <h2 className="text-center text-2xl mt-1.5 mb-0.5"><RubyText text={modal.name} /></h2>
                 <p className="text-center text-sm text-[var(--accent2)] my-3 leading-relaxed">{modal.description}</p>
-                <YaoDisplay yao={modal.yao} big />
-                <div className="text-center text-xs text-[var(--muted)] mb-3 font-mono">
-                  二进制：<span className="text-[var(--accent2)]">{modal.binary}</span>
-                  &nbsp;·&nbsp; 十进制：<span className="text-[var(--accent2)]">{modal.decimal}</span>
-                </div>
-                <div className="grid grid-cols-2 gap-2 mt-4">
+                <div className="grid grid-cols-2 gap-2">
                   {fmtInfo(modal).map(([k, v]) => (
                     <div key={k} className="p-2.5 rounded-xl bg-[var(--bg3)] text-sm flex flex-col gap-0.5">
                       <span className="text-[11px] text-[var(--muted)]">{k}</span>
                       <span className="font-semibold text-[var(--fg)]">{v}</span>
                     </div>
                   ))}
+                </div>
+                {/* 底部：爻线图标 + 二进制 + 十进制 */}
+                <div className="mt-5 pt-4 border-t border-[var(--border)] text-center">
+                  <YaoDisplay yao={modal.yao} big />
+                  <div className="text-xs text-[var(--muted)] mt-2 font-mono">
+                    二进制：<span className="text-[var(--accent2)]">{modal.binary}</span>
+                    &nbsp;·&nbsp; 十进制：<span className="text-[var(--accent2)]">{modal.decimal}</span>
+                  </div>
                 </div>
               </div>
             )}

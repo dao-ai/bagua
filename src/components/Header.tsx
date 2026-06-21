@@ -1,29 +1,41 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { usePinyin } from '@/contexts/PinyinContext'
 
 const tabs = [
-  { href: '/', label: '日签', exact: true },
-  { href: '/eight', label: '八卦', exact: false },
-  { href: '/hexagrams', label: '64卦', exact: false },
-  { href: '/divine', label: '起卦', exact: false },
-  { href: '/simulator', label: '变爻模拟', exact: false },
-  { href: '/contrast', label: '先后天', exact: false },
-  { href: '/compare', label: '卦对比', exact: false },
-  { href: '/ai-reading', label: 'AI解卦', exact: false },
-  { href: '/flashcard', label: '闪卡', exact: false },
-  { href: '/lifegua', label: '本命卦', exact: false },
-  { href: '/glossary', label: '术语', exact: false },
-  { href: '/history', label: '历史', exact: false },
+  { href: '/', label: '首页', exact: true, group: '学习' },
+  { href: '/eight', label: '八卦', exact: false, group: '学习' },
+  { href: '/hexagrams', label: '64卦', exact: false, group: '学习' },
+  { href: '/divine', label: '起卦', exact: false, group: '工具' },
+  { href: '/simulator', label: '变爻模拟', exact: false, group: '工具' },
+  { href: '/contrast', label: '先后天', exact: false, group: '探索' },
+  { href: '/compare', label: '卦对比', exact: false, group: '工具' },
+  { href: '/ai-reading', label: 'AI解卦', exact: false, group: '工具' },
+  { href: '/flashcard', label: '闪卡', exact: false, group: '学习' },
+  { href: '/lifegua', label: '本命卦', exact: false, group: '工具' },
+  { href: '/glossary', label: '术语', exact: false, group: '学习' },
+  { href: '/history', label: '占卜记录', exact: false, group: '探索' },
+]
+
+const visibleTabs = tabs.filter(t => ['/', '/eight', '/hexagrams', '/divine'].includes(t.href))
+const moreTabs = tabs.filter(t => !['/', '/eight', '/hexagrams', '/divine'].includes(t.href))
+
+const mobileGroups = [
+  { title: '📖 学习', items: tabs.filter(t => t.group === '学习') },
+  { title: '🔧 工具', items: tabs.filter(t => t.group === '工具') },
+  { title: '📊 探索', items: tabs.filter(t => t.group === '探索') },
 ]
 
 export default function Header() {
   const pathname = usePathname()
   const [dark, setDark] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [moreOpen, setMoreOpen] = useState(false)
+  const moreRef = useRef<HTMLDivElement>(null)
+  const moreBtnRef = useRef<HTMLButtonElement>(null)
 
   const isActive = (t: typeof tabs[number]) =>
     t.exact ? pathname === t.href : pathname.startsWith(t.href)
@@ -44,10 +56,28 @@ export default function Header() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dark])
 
-  // 页面切换时关闭移动端菜单
+  // 页面切换时关闭移动端菜单和更多下拉
   useEffect(() => {
     setMobileMenuOpen(false)
+    setMoreOpen(false)
   }, [pathname])
+
+  // 点击外部关闭更多下拉
+  useEffect(() => {
+    if (!moreOpen) return
+    const handleClick = (e: MouseEvent) => {
+      if (
+        moreRef.current &&
+        !moreRef.current.contains(e.target as Node) &&
+        moreBtnRef.current &&
+        !moreBtnRef.current.contains(e.target as Node)
+      ) {
+        setMoreOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [moreOpen])
 
   function applyTheme(isDark: boolean) {
     const vars: [string, string, string][] = [
@@ -71,10 +101,17 @@ export default function Header() {
 
   const toggleTheme = () => setDark(d => !d)
 
+  const tabLinkClass = (t: typeof tabs[number], base = 'px-4 py-1.5 rounded-lg text-[13px] border no-underline transition-colors') =>
+    `${base} ${
+      isActive(t)
+        ? 'bg-[var(--accent)] text-[var(--bg)] border-[var(--accent)] font-semibold'
+        : 'bg-[var(--bg2)] text-[var(--muted)] border-[var(--border)] hover:border-[var(--accent)] hover:text-[var(--fg)] hover:bg-[var(--glow)]'
+    }`
+
   return (
-    <header className="flex items-center gap-3 px-5 py-6 border-b border-[var(--border)] max-w-[960px] mx-auto flex-wrap relative">
+    <header className="flex items-center gap-3 px-5 py-3 md:py-6 border-b border-[var(--border)] max-w-[960px] mx-auto flex-wrap relative">
       <Link href="/" className="text-[22px] font-bold tracking-wider bg-gradient-to-r from-[var(--yang)] to-[var(--accent2)] bg-clip-text text-transparent no-underline shrink-0">
-        ☰ 八卦入门
+        🌀 八卦入门
       </Link>
       <span className="text-[13px] text-[var(--muted)] hidden sm:inline">每天15分钟，搞懂八卦</span>
 
@@ -88,20 +125,51 @@ export default function Header() {
           {dark ? '🌙' : '☀️'}
         </button>
         <PinyinBtn />
-        <nav className="flex gap-1.5">
-          {tabs.map(t => (
+        <nav className="flex gap-1.5 items-center">
+          {visibleTabs.map(t => (
             <Link
               key={t.href}
               href={t.href}
-              className={`px-4 py-1.5 rounded-lg text-[13px] border no-underline transition-colors ${
-                isActive(t)
-                  ? 'bg-[var(--accent)] text-[var(--bg)] border-[var(--accent)] font-semibold'
-                  : 'bg-[var(--bg2)] text-[var(--muted)] border-[var(--border)] hover:border-[var(--accent)] hover:text-[var(--fg)]'
-              }`}
+              className={tabLinkClass(t)}
             >
               {t.label}
             </Link>
           ))}
+
+          {/* 更多下拉 */}
+          <div className="relative">
+            <button
+              ref={moreBtnRef}
+              onClick={() => setMoreOpen(o => !o)}
+              className={`px-4 py-1.5 rounded-lg text-[13px] border no-underline transition-colors cursor-pointer ${
+                moreTabs.some(t => isActive(t))
+                  ? 'bg-[var(--accent)] text-[var(--bg)] border-[var(--accent)] font-semibold'
+                  : 'bg-[var(--bg2)] text-[var(--muted)] border-[var(--border)] hover:border-[var(--accent)] hover:text-[var(--fg)] hover:bg-[var(--glow)]'
+              }`}
+            >
+              更多 {moreOpen ? '▲' : '▼'}
+            </button>
+            {moreOpen && (
+              <div
+                ref={moreRef}
+                className="absolute right-0 top-full mt-2 z-50 p-2 rounded-xl bg-[var(--bg2)] border border-[var(--border)] shadow-[0_8px_32px_var(--shadow)] flex flex-col gap-1 min-w-[140px]"
+              >
+                {moreTabs.map(t => (
+                  <Link
+                    key={t.href}
+                    href={t.href}
+                    className={`px-4 py-2 rounded-lg text-[13px] border no-underline transition-colors whitespace-nowrap ${
+                      isActive(t)
+                        ? 'bg-[var(--accent)] text-[var(--bg)] border-[var(--accent)] font-semibold'
+                        : 'bg-[var(--card)] text-[var(--fg)] border-[var(--border)] hover:border-[var(--accent)] hover:bg-[var(--glow)]'
+                    }`}
+                  >
+                    {t.label}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
         </nav>
       </div>
 
@@ -129,20 +197,26 @@ export default function Header() {
 
       {/* 移动端导航下拉 */}
       {mobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 z-50 mt-0 px-5 pb-5 animate-[fadeIn_0.2s_ease]">
-          <nav className="flex flex-col gap-1.5 p-3 rounded-2xl bg-[var(--bg2)] border border-[var(--border)] shadow-[0_8px_32px_var(--shadow)]">
-            {tabs.map(t => (
-              <Link
-                key={t.href}
-                href={t.href}
-                className={`px-4 py-2.5 rounded-lg text-[14px] border no-underline transition-colors ${
-                  isActive(t)
-                    ? 'bg-[var(--accent)] text-[var(--bg)] border-[var(--accent)] font-semibold'
-                    : 'bg-[var(--card)] text-[var(--fg)] border-[var(--border)] hover:border-[var(--accent)]'
-                }`}
-              >
-                {t.label}
-              </Link>
+        <div className="md:hidden absolute top-full left-0 right-0 z-50 mt-0 px-5 pb-5 origin-top animate-[menuSlide_0.2s_ease-out]">
+          <nav className="flex flex-col p-3 rounded-2xl bg-[var(--bg2)] border border-[var(--border)] shadow-[0_8px_32px_var(--shadow)]">
+            {mobileGroups.map((group, gi) => (
+              <div key={group.title}>
+                {gi > 0 && <div className="mx-3 my-2 h-px bg-[var(--border)]" />}
+                <div className="px-3 py-1.5 text-[12px] text-[var(--muted)] font-medium tracking-wider">{group.title}</div>
+                {group.items.map(t => (
+                  <Link
+                    key={t.href}
+                    href={t.href}
+                    className={`px-4 py-2.5 rounded-lg text-[14px] border no-underline transition-colors ${
+                      isActive(t)
+                        ? 'bg-[var(--accent)] text-[var(--bg)] border-[var(--accent)] font-semibold'
+                        : 'bg-[var(--card)] text-[var(--fg)] border-[var(--border)] hover:border-[var(--accent)] hover:bg-[var(--glow)]'
+                    }`}
+                  >
+                    {t.label}
+                  </Link>
+                ))}
+              </div>
             ))}
           </nav>
         </div>
