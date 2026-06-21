@@ -313,8 +313,8 @@ export default function SimulatorPage() {
                   <div className="flex flex-col items-center gap-[3px] my-3">
                     {result.changedYao6.map((v, i) => (
                       <div key={i} className="flex items-center gap-3">
-                        {/* 占位，保持与本卦高度一致 */}
-                        <div className="w-8 shrink-0" />
+                        {/* 占位文字（不可见），保持与本卦行高一致 */}
+                        <div className="w-8 shrink-0 text-[10px] text-right invisible">{YAO_LABELS[5 - i]}</div>
                         <YaoLine
                           yang={v === 1}
                           className={`${i === result.movingIndex ? 'shadow-[0_0_10px_var(--accent)]' : ''} rounded-sm`}
@@ -337,7 +337,7 @@ export default function SimulatorPage() {
                   <div className="flex flex-col items-center gap-[3px] my-3">
                     {currentYao6.map((v, i) => (
                       <div key={i} className="flex items-center gap-3">
-                        <div className="w-8 shrink-0" />
+                        <div className="w-8 shrink-0 text-[10px] text-right invisible">{YAO_LABELS[5 - i]}</div>
                         <YaoLine yang={v === 1} className="rounded-sm" />
                       </div>
                     ))}
