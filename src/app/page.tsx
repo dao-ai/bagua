@@ -42,7 +42,7 @@ export default function HomePage() {
   usePageTitle()
 
   return (
-    <div className="animate-[fadeIn_0.5s_ease]">
+    <div>
       {/* 欢迎区 */}
       <div className="text-center pb-8 mb-6 border-b border-[var(--border)]">
         <div className="flex items-center justify-center gap-2 mb-4">

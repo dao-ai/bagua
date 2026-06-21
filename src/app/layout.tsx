@@ -25,7 +25,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>
           <div className="max-w-[960px] mx-auto px-5">
             <Header />
-            <main className="py-8">{children}</main>
+            <main className="py-8 animate-[fadeIn_0.4s_ease]">{children}</main>
             {/* 底部反馈区 */}
             <footer className="pt-10 pb-8 border-t border-[var(--border)]">
               {/* 装饰线 — 阴阳爻 */}
