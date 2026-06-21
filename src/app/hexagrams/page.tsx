@@ -68,7 +68,7 @@ export default function HexagramsPage() {
     <>
       <PageHeader title="六十四卦" subtitle="八卦两两相叠，成六十四卦。点击任一卦，查看卦辞与解读。" />
 
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(230px,1fr))] gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
         {hexagramOrder.map(([u, l], idx) => {
           const name = getHexagramName(u, l)
           const detail = getHexagramDetail(u, l)
