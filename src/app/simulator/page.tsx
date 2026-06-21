@@ -243,7 +243,7 @@ export default function SimulatorPage() {
                       }}
                     >
                       {/* 爻位标签 */}
-                      <div className="text-[10px] text-[var(--muted)] w-4 text-right shrink-0 group-hover:text-[var(--accent2)] transition-colors">
+                      <div className="text-[10px] text-[var(--muted)] w-8 text-right shrink-0 group-hover:text-[var(--accent2)] transition-colors whitespace-nowrap">
                         {YAO_LABELS[5 - i]}
                       </div>
 
