@@ -311,12 +311,15 @@ export default function SimulatorPage() {
                 <>
                   <div className="text-[48px] mb-2">{result.changedSymbol}</div>
                   <div className="flex flex-col items-center gap-[3px] my-3">
-                    {[0,1,2,3,4,5].map(i => (
-                      <YaoLine
-                        key={i}
-                        yang={result.changedYao6[i] === 1}
-                        className={i === result.movingIndex ? 'shadow-[0_0_10px_var(--accent)] rounded-sm' : 'rounded-sm'}
-                      />
+                    {result.changedYao6.map((v, i) => (
+                      <div key={i} className="flex items-center gap-3">
+                        {/* 占位，保持与本卦高度一致 */}
+                        <div className="w-8 shrink-0" />
+                        <YaoLine
+                          yang={v === 1}
+                          className={`${i === result.movingIndex ? 'shadow-[0_0_10px_var(--accent)]' : ''} rounded-sm`}
+                        />
+                      </div>
                     ))}
                   </div>
                   <div className="mt-2">
@@ -332,8 +335,11 @@ export default function SimulatorPage() {
                 <div className="opacity-20">
                   <div className="text-[48px] mb-2">{currentSymbol}</div>
                   <div className="flex flex-col items-center gap-[3px] my-3">
-                    {[0,1,2,3,4,5].map(i => (
-                      <YaoLine key={i} yang={currentYao6[i] === 1} className="rounded-sm" />
+                    {currentYao6.map((v, i) => (
+                      <div key={i} className="flex items-center gap-3">
+                        <div className="w-8 shrink-0" />
+                        <YaoLine yang={v === 1} className="rounded-sm" />
+                      </div>
                     ))}
                   </div>
                   <div className="mt-2">
