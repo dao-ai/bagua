@@ -264,13 +264,23 @@ export default function SimulatorPage() {
                 })}
               </div>
 
-              {/* 卦名 */}
+              {/* 卦名 — 使用与爻线相同的flex偏移，保证对齐 */}
               <div className="mt-2">
-                <div className="text-[18px] font-bold">
-                  <RubyText text={currentName} />
+                <div className="flex items-center gap-3 justify-center">
+                  <div className="w-8 shrink-0" />
+                  <div className="w-20 text-center">
+                    <div className="text-[18px] font-bold">
+                      <RubyText text={currentName} />
+                    </div>
+                  </div>
                 </div>
-                <div className="text-xs text-[var(--muted)]">
-                  上<Ruby char={ub.name} /> · 下<Ruby char={lb.name} />
+                <div className="flex items-center gap-3 justify-center">
+                  <div className="w-8 shrink-0" />
+                  <div className="w-20 text-center">
+                    <div className="text-xs text-[var(--muted)]">
+                      上<Ruby char={ub.name} /> · 下<Ruby char={lb.name} />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -323,11 +333,21 @@ export default function SimulatorPage() {
                     ))}
                   </div>
                   <div className="mt-2">
-                    <div className="text-[18px] font-bold text-[var(--accent2)]">
-                      <RubyText text={result.changedHexName} />
+                    <div className="flex items-center gap-3 justify-center">
+                      <div className="w-8 shrink-0 text-[10px] text-right invisible">{YAO_LABELS[5]}</div>
+                      <div className="w-20 text-center">
+                        <div className="text-[18px] font-bold text-[var(--accent2)]">
+                          <RubyText text={result.changedHexName} />
+                        </div>
+                      </div>
                     </div>
-                    <div className="text-xs text-[var(--muted)]">
-                      上<Ruby char={result.changedUpperName} /> · 下<Ruby char={result.changedLowerName} />
+                    <div className="flex items-center gap-3 justify-center">
+                      <div className="w-8 shrink-0 text-[10px] text-right invisible">{YAO_LABELS[5]}</div>
+                      <div className="w-20 text-center">
+                        <div className="text-xs text-[var(--muted)]">
+                          上<Ruby char={result.changedUpperName} /> · 下<Ruby char={result.changedLowerName} />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </>
@@ -343,7 +363,12 @@ export default function SimulatorPage() {
                     ))}
                   </div>
                   <div className="mt-2">
-                    <div className="text-[18px] font-bold">{currentName}</div>
+                    <div className="flex items-center gap-3 justify-center">
+                      <div className="w-8 shrink-0 text-[10px] text-right invisible">{YAO_LABELS[5]}</div>
+                      <div className="w-20 text-center">
+                        <div className="text-[18px] font-bold">{currentName}</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
