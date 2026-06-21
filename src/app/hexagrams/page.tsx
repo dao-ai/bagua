@@ -6,6 +6,7 @@ import Modal from '@/components/Modal'
 import { RubyText, Ruby } from '@/components/Ruby'
 import { baguaMap, getHexagramName, getHexagramSymbol, type HexagramDetail } from '@/data/bagua'
 import { getHexagramDetail, hexagramOrder } from '@/data/hexagrams'
+import HexagramRelations from '@/components/HexagramRelations'
 
 export default function HexagramsPage() {
   usePageTitle()
@@ -57,6 +58,7 @@ export default function HexagramsPage() {
             ))}
           </div>
         )}
+        <HexagramRelations upperId={u} lowerId={l} onNavigate={(nu, nl) => openDetail(nu, nl)} />
       </div>
     )
   }

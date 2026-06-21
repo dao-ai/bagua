@@ -8,6 +8,7 @@ import Coin from '@/components/Coin'
 import { baguaList, baguaMap, numToBagua, getHexagramName, getHexagramSymbol } from '@/data/bagua'
 import { getHexagramDetail } from '@/data/hexagrams'
 import type { DivineResult } from '@/hooks/divineTypes'
+import HexagramRelations from '@/components/HexagramRelations'
 import { useDivineHistory, resultToRecord } from '@/hooks/useDivineHistory'
 
 function computeResult(y6: number[], mk: number): DivineResult {
@@ -348,6 +349,8 @@ function DivineResultComponent({ result }: { result: DivineResult }) {
       <div className="mt-4 flex items-center justify-center gap-1.5 text-[11px] text-[var(--muted)]">
         <span>✓ 已保存到历史记录</span>
       </div>
+
+      <HexagramRelations upperId={r.upperId} lowerId={r.lowerId} />
     </div>
   )
 }
