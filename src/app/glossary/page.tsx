@@ -2,6 +2,7 @@
 import usePageTitle from '@/hooks/usePageTitle'
 
 import { useState, useMemo } from 'react'
+import PageHeader from '@/components/PageHeader'
 import { RubyText } from '@/components/Ruby'
 import glossary, { categories } from '@/data/glossary'
 import YaoPositionDiagram from '@/components/YaoPositionDiagram'
@@ -35,12 +36,7 @@ export default function GlossaryPage() {
 
   return (
     <>
-      <div className="text-center pb-6">
-        <h2 className="text-[26px] mb-1.5 font-heading">易学术语解释</h2>
-        <p className="text-sm text-[var(--muted)] max-w-[520px] mx-auto">
-          爻位、卦象、断辞……遇到不懂的词，来这里查。
-        </p>
-      </div>
+      <PageHeader title="易学术语解释" subtitle="爻位、卦象、断辞……遇到不懂的词，来这里查。" />
 
       {/* 搜索框 */}
       <div className="relative max-w-md mx-auto mb-5">

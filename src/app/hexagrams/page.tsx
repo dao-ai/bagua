@@ -2,6 +2,7 @@
 import usePageTitle from '@/hooks/usePageTitle'
 
 import { useState, useEffect } from 'react'
+import PageHeader from '@/components/PageHeader'
 import Modal from '@/components/Modal'
 import { RubyText, Ruby } from '@/components/Ruby'
 import { baguaMap, getHexagramName, getHexagramSymbol, type HexagramDetail } from '@/data/bagua'
@@ -65,10 +66,7 @@ export default function HexagramsPage() {
 
   return (
     <>
-      <div className="text-center pb-6">
-        <h2 className="text-[26px] mb-1.5 font-heading">六十四卦</h2>
-        <p className="text-sm text-[var(--muted)] max-w-[520px] mx-auto">八卦两两相叠，成六十四卦。点击任一卦，查看卦辞与解读。</p>
-      </div>
+      <PageHeader title="六十四卦" subtitle="八卦两两相叠，成六十四卦。点击任一卦，查看卦辞与解读。" />
 
       <div className="grid grid-cols-[repeat(auto-fill,minmax(230px,1fr))] gap-3">
         {hexagramOrder.map(([u, l], idx) => {

@@ -3,6 +3,7 @@ import usePageTitle from '@/hooks/usePageTitle'
 
 import { useState, useEffect } from 'react'
 import Modal from '@/components/Modal'
+import PageHeader from '@/components/PageHeader'
 import { RubyText, Ruby } from '@/components/Ruby'
 import { YaoDisplay } from '@/components/Yao'
 import { baguaList, type Bagua } from '@/data/bagua'
@@ -30,12 +31,7 @@ export default function EightPage() {
 
   return (
     <>
-      <div className="text-center pb-6">
-        <h2 className="text-[26px] mb-1.5 font-heading">认识八卦</h2>
-        <p className="text-sm text-[var(--muted)] max-w-[520px] mx-auto">
-          八卦不是符号，是一家八口。把每个卦当成一个人来认识，不用背也能记住。
-        </p>
-      </div>
+      <PageHeader title="认识八卦" subtitle="八卦不是符号，是一家八口。把每个卦当成一个人来认识，不用背也能记住。" />
 
       {/* 视图切换 */}
       <div className="flex justify-center gap-1.5 mb-6">

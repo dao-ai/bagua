@@ -2,6 +2,7 @@
 import usePageTitle from '@/hooks/usePageTitle'
 
 import { useState, useCallback, useEffect, useRef } from 'react'
+import PageHeader from '@/components/PageHeader'
 import YaoLine, { HexagramDisplay } from '@/components/Yao'
 import { RubyText, Ruby } from '@/components/Ruby'
 import Coin from '@/components/Coin'
@@ -116,10 +117,7 @@ export default function DivinePage() {
 
   return (
     <>
-      <div className="text-center pb-6">
-        <h2 className="text-[26px] mb-1.5 font-heading">起卦</h2>
-        <p className="text-sm text-[var(--muted)] max-w-[520px] mx-auto">心里想一件事，选择一种方式起卦。</p>
-      </div>
+      <PageHeader title="起卦" subtitle="心里想一件事，选择一种方式起卦。" />
 
       <div className="flex justify-center gap-1.5 mb-5">
         <button onClick={() => { setMethod('coin'); setResult(null) }}

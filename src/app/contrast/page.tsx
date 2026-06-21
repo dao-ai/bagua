@@ -1,7 +1,8 @@
 'use client'
+import usePageTitle from '@/hooks/usePageTitle'
 
 import { useState, useMemo } from 'react'
-import usePageTitle from '@/hooks/usePageTitle'
+import PageHeader from '@/components/PageHeader'
 import { RubyText } from '@/components/Ruby'
 import { baguaList, baguaMap, numToBagua } from '@/data/bagua'
 
@@ -55,12 +56,7 @@ export default function ContrastPage() {
 
   return (
     <>
-      <div className="text-center pb-6">
-        <h2 className="text-[26px] mb-1.5 font-heading">先天 · 后天</h2>
-        <p className="text-sm text-[var(--muted)] max-w-[600px] mx-auto">
-          同一个八卦，两套图谱。先天说"本来如此"，后天讲"如何应用"。
-        </p>
-      </div>
+      <PageHeader title="先天 · 后天" subtitle="同一个八卦，两套图谱。先天说「本来如此」，后天讲「如何应用」。" />
 
       {/* 两列对比 */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-[800px] mx-auto mb-8">

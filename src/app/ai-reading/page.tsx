@@ -1,7 +1,8 @@
 'use client'
+import usePageTitle from '@/hooks/usePageTitle'
 
 import { useState, useMemo, useRef } from 'react'
-import usePageTitle from '@/hooks/usePageTitle'
+import PageHeader from '@/components/PageHeader'
 import { RubyText } from '@/components/Ruby'
 import { baguaList, baguaMap, getHexagramName, getHexagramSymbol } from '@/data/bagua'
 import { hexagramOrder, getHexagramDetail } from '@/data/hexagrams'
@@ -144,12 +145,7 @@ export default function AIReadingPage() {
 
   return (
     <>
-      <div className="text-center pb-6">
-        <h2 className="text-[26px] mb-1.5 font-heading">AI 解卦</h2>
-        <p className="text-sm text-[var(--muted)] max-w-[520px] mx-auto">
-          选一个卦，让人工智能从现代视角解读古人的智慧。
-        </p>
-      </div>
+      <PageHeader title="AI 解卦" subtitle="选一个卦，让人工智能从现代视角解读古人的智慧。" />
 
       {/* API Key 配置 */}
       {showKeyInput && (
