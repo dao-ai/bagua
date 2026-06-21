@@ -71,6 +71,7 @@ export default function FlashcardPage() {
   const [cardMode, setCardMode] = useState<CardMode>('bagua')
   const [browseMode, setBrowseMode] = useState<BrowseMode>('sequential')
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [randomIndex, setRandomIndex] = useState(0)
   const [flipped, setFlipped] = useState(false)
 
   // 卡片数据
@@ -78,32 +79,37 @@ export default function FlashcardPage() {
     cardMode === 'bagua' ? buildBaguaCards() : buildHexagramCards(),
   [cardMode])
 
-  // 当前卡片（根据浏览模式）
+  // 当前卡片 — 翻转不换卡
   const currentCard = useMemo(() => {
     if (cards.length === 0) return null
     if (browseMode === 'random') {
-      return cards[Math.floor(Math.random() * cards.length)]
+      return cards[randomIndex % cards.length]
     }
     return cards[currentIndex % cards.length]
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cards, currentIndex, browseMode, flipped])
+  }, [cards, currentIndex, browseMode, randomIndex])
 
   // 下一张
   const next = useCallback(() => {
     setFlipped(false)
-    setCurrentIndex(i => i + 1)
-  }, [])
+    if (browseMode === 'random') {
+      setRandomIndex(Math.floor(Math.random() * cards.length))
+    } else {
+      setCurrentIndex(i => i + 1)
+    }
+  }, [browseMode, cards.length])
 
   // 切换卡组时重置
   const switchMode = useCallback((m: CardMode) => {
     setCardMode(m)
     setCurrentIndex(0)
+    setRandomIndex(0)
     setFlipped(false)
   }, [])
 
   const switchBrowse = useCallback((m: BrowseMode) => {
     setBrowseMode(m)
     setCurrentIndex(0)
+    setRandomIndex(0)
     setFlipped(false)
   }, [])
 
