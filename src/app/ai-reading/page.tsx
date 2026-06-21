@@ -8,7 +8,6 @@ import { hexagramOrder, getHexagramDetail } from '@/data/hexagrams'
 
 // DeepSeek API 配置
 const API_URL = 'https://api.deepseek.com/chat/completions'
-const BUILT_IN_KEY = (typeof process !== 'undefined' ? process.env.NEXT_PUBLIC_DEEPSEEK_API_KEY : '') || ''
 
 interface HexData {
   upperId: string; lowerId: string
@@ -22,8 +21,8 @@ export default function AIReadingPage() {
   const [hex, setHex] = useState<HexData | null>(null)
   const [reading, setReading] = useState('')
   const [loading, setLoading] = useState(false)
-  const [apiKey, setApiKey] = useState(BUILT_IN_KEY)
-  const [showKeyInput, setShowKeyInput] = useState(!BUILT_IN_KEY)
+  const [apiKey, setApiKey] = useState("")
+  const [showKeyInput, setShowKeyInput] = useState(true)
   const [picker, setPicker] = useState(false)
   const [search, setSearch] = useState('')
   const abortRef = useRef<AbortController | null>(null)
@@ -157,15 +156,11 @@ export default function AIReadingPage() {
         <div className="max-w-[500px] mx-auto mb-4 p-3 rounded-xl bg-[var(--bg3)] border border-[var(--border)]">
           <div className="text-[11px] text-[var(--muted)] mb-1.5">
             需要 DeepSeek API Key 才能解卦
-            {BUILT_IN_KEY && (
-              <button onClick={() => { setShowKeyInput(false); setApiKey(BUILT_IN_KEY) }}
-                className="ml-2 text-[var(--accent)] underline cursor-pointer">使用内置 Key</button>
-            )}
           </div>
           <div className="flex gap-2">
             <input
               type="password"
-              value={apiKey === BUILT_IN_KEY ? '' : apiKey}
+              value={apiKey}
               onChange={e => setApiKey(e.target.value)}
               placeholder="sk-..."
               className="flex-1 px-3 py-2 rounded-lg bg-[var(--bg2)] border border-[var(--border)] text-[var(--fg)] text-sm outline-none focus:border-[var(--accent)] caret-[var(--accent)]"
