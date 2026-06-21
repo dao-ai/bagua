@@ -204,7 +204,7 @@ export default function SimulatorPage() {
       <div className="max-w-[700px] mx-auto">
         {/* 卦象 + 爻线 */}
         <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-8">
-          <div className="flex justify-center gap-12 items-start max-sm:flex-col max-sm:gap-8">
+          <div className="flex justify-center gap-12 items-center max-sm:flex-col max-sm:gap-8">
             {/* 本卦 */}
             <div className="flex-1 text-center">
               <div className="text-[11px] text-[var(--muted)] uppercase tracking-wider mb-3">
@@ -329,9 +329,16 @@ export default function SimulatorPage() {
                   </div>
                 </>
               ) : (
-                <div className="py-12 text-[var(--muted)]">
-                  <div className="text-[36px] mb-2 opacity-30">{currentSymbol}</div>
-                  <div className="text-[11px]">点击上方爻线</div>
+                <div className="opacity-20">
+                  <div className="text-[48px] mb-2">{currentSymbol}</div>
+                  <div className="flex flex-col items-center gap-[3px] my-3">
+                    {[0,1,2,3,4,5].map(i => (
+                      <YaoLine key={i} yang={currentYao6[i] === 1} className="rounded-sm" />
+                    ))}
+                  </div>
+                  <div className="mt-2">
+                    <div className="text-[18px] font-bold">{currentName}</div>
+                  </div>
                 </div>
               )}
             </div>
