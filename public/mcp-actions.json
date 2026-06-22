@@ -1,0 +1,102 @@
+{
+  "version": "1.0",
+  "site": "https://dao-ai.github.io/bagua",
+  "name": "八卦入门 · Bagua",
+  "description": "交互式《易经》学习网站——认识八卦、浏览六十四卦、起卦占卜、AI 解卦、本命卦生成。",
+  "actions": [
+    {
+      "id": "divine-by-numbers",
+      "name": "数字起卦",
+      "description": "输入三个数字起卦。第一个数字定上卦，第二个数字定下卦，第三个数定动爻。自动生成本卦、变卦并保存到历史。",
+      "method": "declarative",
+      "endpoint": "/divine",
+      "parameters": {
+        "required": ["num1", "num2", "num3"],
+        "properties": {
+          "num1": { "type": "integer", "description": "第一个数字，定上卦" },
+          "num2": { "type": "integer", "description": "第二个数字，定下卦" },
+          "num3": { "type": "integer", "description": "第三个数，定动爻" }
+        }
+      }
+    },
+    {
+      "id": "divine-by-coins",
+      "name": "金钱起卦",
+      "description": "通过抛6次铜钱起卦。每次抛3枚铜钱，正面=3反面=2。6次完成后自动生成卦象。",
+      "method": "declarative",
+      "endpoint": "/divine",
+      "parameters": {
+        "required": [],
+        "properties": {}
+      }
+    },
+    {
+      "id": "configure-api-key",
+      "name": "配置 DeepSeek API Key",
+      "description": "配置 DeepSeek API Key 以使用 AI 解卦功能",
+      "method": "declarative",
+      "endpoint": "/ai-reading",
+      "parameters": {
+        "required": ["apiKey"],
+        "properties": {
+          "apiKey": { "type": "string", "description": "DeepSeek API Key，以 sk- 开头" }
+        }
+      }
+    },
+    {
+      "id": "ai-hexagram-reading",
+      "name": "AI 解卦",
+      "description": "使用 DeepSeek AI 解读选定的卦象。需要先配置 API Key。流式输出解读结果。",
+      "method": "declarative",
+      "endpoint": "/ai-reading",
+      "parameters": {
+        "required": [],
+        "properties": {}
+      }
+    },
+    {
+      "id": "select-hexagram-for-reading",
+      "name": "选择卦象",
+      "description": "从64卦中搜索并选择要解读的卦",
+      "method": "declarative",
+      "endpoint": "/ai-reading",
+      "parameters": {
+        "optional": ["search"],
+        "properties": {}
+      }
+    },
+    {
+      "id": "calculate-life-gua",
+      "name": "本命卦推算",
+      "description": "根据出生年月日时推算本命卦及四柱卦象。年柱定主命，月日时柱看变局。",
+      "method": "declarative",
+      "endpoint": "/lifegua",
+      "parameters": {
+        "required": ["gender", "year", "month", "day", "shichen"],
+        "properties": {
+          "gender": { "type": "string", "enum": ["male", "female"], "description": "性别" },
+          "year": { "type": "integer", "description": "出生年份（1900-2099）" },
+          "month": { "type": "integer", "description": "出生月份（1-12）" },
+          "day": { "type": "integer", "description": "出生日期" },
+          "shichen": { "type": "integer", "description": "出生时辰索引（0-11，对应子时到亥时）" }
+        }
+      }
+    },
+    {
+      "id": "browse-hexagrams",
+      "name": "浏览64卦",
+      "description": "浏览六十四卦列表，点击查看每卦的卦辞、象辞、爻辞和现代释义",
+      "method": "declarative",
+      "endpoint": "/hexagrams",
+      "parameters": {}
+    },
+    {
+      "id": "daily-hexagram",
+      "name": "每日一签",
+      "description": "首页展示每日随机卦象推荐",
+      "method": "declarative",
+      "endpoint": "/",
+      "parameters": {}
+    }
+  ]
+}

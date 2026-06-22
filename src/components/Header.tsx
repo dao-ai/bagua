@@ -108,6 +108,22 @@ export default function Header() {
         : 'bg-[var(--bg2)] text-[var(--muted)] border-[var(--border)] hover:border-[var(--accent)] hover:text-[var(--fg)] hover:bg-[var(--glow)]'
     }`
 
+  // WebMCP descriptions for navigation links
+  const navDescriptions: Record<string, string> = {
+    '/': '首页 · 每日一签和功能导航',
+    '/eight': '八卦学习 · 八卦的象征、属性和对应关系',
+    '/hexagrams': '六十四卦浏览 · 全部卦辞、象辞、爻辞和现代释义',
+    '/divine': '起卦占卜 · 数字起卦或金钱起卦',
+    '/simulator': '变爻模拟器 · 选卦→点爻→变卦动画',
+    '/contrast': '先天后天对照 · 伏羲八卦 vs 文王八卦',
+    '/compare': '双卦对比工具 · 两卦并排对照',
+    '/ai-reading': 'AI 解卦 · 用 AI 解读卦象',
+    '/flashcard': '闪卡复习 · 八卦/64卦记忆卡片',
+    '/lifegua': '本命卦生成 · 根据生辰推算命卦',
+    '/glossary': '术语解释 · 易经核心术语速查',
+    '/history': '占卜记录 · 起卦历史查询',
+  }
+
   return (
     <header className="flex items-center gap-3 px-5 py-3 md:py-6 border-b border-[var(--border)] max-w-[960px] mx-auto flex-wrap relative">
       <Link href="/" className="text-[22px] font-bold tracking-wider bg-gradient-to-r from-[var(--yang)] to-[var(--accent2)] bg-clip-text text-transparent no-underline shrink-0">
@@ -131,6 +147,8 @@ export default function Header() {
               key={t.href}
               href={t.href}
               className={tabLinkClass(t)}
+              data-mcp-action="navigate"
+              data-mcp-description={navDescriptions[t.href] || `前往${t.label}页面`}
             >
               {t.label}
             </Link>
@@ -163,6 +181,8 @@ export default function Header() {
                         ? 'bg-[var(--accent)] text-[var(--bg)] border-[var(--accent)] font-semibold'
                         : 'bg-[var(--card)] text-[var(--fg)] border-[var(--border)] hover:border-[var(--accent)] hover:bg-[var(--glow)]'
                     }`}
+                    data-mcp-action="navigate"
+                    data-mcp-description={navDescriptions[t.href] || `前往${t.label}页面`}
                   >
                     {t.label}
                   </Link>
@@ -212,6 +232,8 @@ export default function Header() {
                         ? 'bg-[var(--accent)] text-[var(--bg)] border-[var(--accent)] font-semibold'
                         : 'bg-[var(--card)] text-[var(--fg)] border-[var(--border)] hover:border-[var(--accent)] hover:bg-[var(--glow)]'
                     }`}
+                    data-mcp-action="navigate"
+                    data-mcp-description={navDescriptions[t.href] || `前往${t.label}页面`}
                   >
                     {t.label}
                   </Link>

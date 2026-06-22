@@ -14,12 +14,17 @@ const notoSerif = Noto_Serif_SC({
 export const metadata: Metadata = {
   title: '八卦 · 入门',
   description: '每天15分钟，搞懂八卦 — 交互式八卦学习网站',
+  other: {
+    'mcp-actions': '/mcp-actions.json',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh-CN">
       <body className={`min-h-screen ${notoSerif.variable}`} style={{ background: 'var(--bg)', color: 'var(--fg)' }}>
+        {/* WebMCP — AI agent 动作发现 */}
+        <link rel="mcp-actions" href="/mcp-actions.json" />
         {/* GoatCounter 访问统计 — https://baguadao.goatcounter.com */}
         <script data-goatcounter={process.env.NEXT_PUBLIC_GOATCOUNTER_URL || 'https://baguadao.goatcounter.com/count'} async src={process.env.NEXT_PUBLIC_GOATCOUNTER_SCRIPT || '//gc.zgo.at/count.js'} />
         <Providers>

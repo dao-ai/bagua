@@ -119,14 +119,20 @@ export default function DivinePage() {
     <>
       <PageHeader title="起卦" subtitle="心里想一件事，选择一种方式起卦。" />
 
-      <div className="flex justify-center gap-1.5 mb-5">
+      <div className="flex justify-center gap-1.5 mb-5"
+        data-mcp-action="select-divination-method"
+        data-mcp-description="选择起卦方式：金钱起卦（抛6次铜钱）或数字起卦（输入3个数字）"
+        data-mcp-params='{"required": ["method"]}'
+      >
         <button onClick={() => { setMethod('coin'); setResult(null) }}
+          data-mcp-param="method" data-mcp-description="金钱起卦：抛6次铜钱，每次三枚，正面3反面2，累计得出卦象" data-mcp-param-value="coin"
           className={`px-4 py-1.5 rounded-lg text-xs border cursor-pointer transition-colors ${
             method === 'coin'
               ? 'bg-[var(--accent)] text-[var(--bg)] border-[var(--accent)] font-semibold'
               : 'bg-[var(--bg2)] text-[var(--muted)] border-[var(--border)] hover:border-[var(--accent)] hover:text-[var(--fg)]'
           }`}>🪙 金钱起卦</button>
         <button onClick={() => { setMethod('number'); setResult(null) }}
+          data-mcp-param="method" data-mcp-description="数字起卦：输入3个数字，第一个定上卦，第二个定下卦，第三个定动爻" data-mcp-param-value="number"
           className={`px-4 py-1.5 rounded-lg text-xs border cursor-pointer transition-colors ${
             method === 'number'
               ? 'bg-[var(--accent)] text-[var(--bg)] border-[var(--accent)] font-semibold'
@@ -135,14 +141,20 @@ export default function DivinePage() {
       </div>
 
       {/* ===== 起卦区 ===== */}
-      <div className="max-w-[500px] mx-auto bg-[var(--card)] border border-[var(--border)] rounded-2xl p-8">
+      <div className="max-w-[500px] mx-auto bg-[var(--card)] border border-[var(--border)] rounded-2xl p-8"
+        data-mcp-action="divine"
+        data-mcp-description="起卦占卜，支持数字起卦和金钱起卦两种方式。先选择起卦方式，然后输入数字或抛铜钱，自动生成卦象结果。"
+        data-mcp-params='{"required": ["method"], "optional": ["num1", "num2", "num3"]}'
+      >
         {method === 'number' ? (
           <>
-            <h3 className="text-center text-lg mb-1">✍️ 输入三个数字</h3>
+            <h3 className="text-center text-lg mb-1" data-mcp-param="method" data-mcp-description="当前起卦方式">✍️ 输入三个数字</h3>
             <p className="text-center text-sm text-[var(--muted)] mb-5">第一个数定上卦 · 第二个数定下卦 · 第三个数定动爻</p>
             <div className="flex gap-3 justify-center mb-5">
               {[n1, n2, n3].map((v, i) => (
                 <input key={i} type="number" value={v}
+                  data-mcp-param={['num1', 'num2', 'num3'][i]}
+                  data-mcp-description={['第一个数定上卦', '第二个数定下卦', '第三个数定动爻'][i]}
                   onChange={e => [setN1, setN2, setN3][i](e.target.value)}
                   placeholder={['如 3', '如 5', '如 8'][i]}
                   className="divine-input w-20 p-2.5 text-center bg-[var(--bg3)] border border-[var(--border)] rounded-xl text-[var(--fg)] text-xl font-semibold outline-none transition-all duration-300 caret-[var(--accent)] focus:border-[var(--accent)] focus:shadow-[0_0_0_3px_var(--glow)] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
@@ -150,6 +162,8 @@ export default function DivinePage() {
               ))}
             </div>
             <button onClick={doNumberDivine}
+              data-mcp-action="divine-by-numbers"
+              data-mcp-description="用三个数字起卦。第一个数字定上卦（余数0=坤），第二个数字定下卦，第三个数定动爻（余数0=上爻）。点击后自动生成本卦和变卦。"
               className="w-full py-3.5 text-base font-semibold tracking-wider bg-gradient-to-r from-[var(--accent)] to-[var(--accent2)] text-[var(--bg)] border-none rounded-xl cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_16px_var(--glow)] active:translate-y-0">
               ☰ 起 卦
             </button>
@@ -157,18 +171,26 @@ export default function DivinePage() {
         ) : (
           <>
             {/* 标题行 + 抛按钮固定在右上 */}
-            <div className="flex items-start justify-between mb-4">
+            <div className="flex items-start justify-between mb-4"
+              data-mcp-action="divine-by-coins"
+              data-mcp-description="金钱起卦：点击抛铜钱按钮，每次抛3枚。共需抛6次（初爻到上爻），完成后自动生成卦象。正面=3反面=2，老阳/老阴为变爻。"
+              data-mcp-params='{"required": [], "optional": []}'
+            >
               <div>
                 <h3 className="text-base mb-0.5">🪙 抛铜钱</h3>
                 <p className="text-xs text-[var(--muted)]">正=3 反=2 · 共抛六次</p>
               </div>
               {tosses.length < 6 ? (
                 <button onClick={doCoinToss} disabled={tossing}
+                  data-mcp-action="toss-coins"
+                  data-mcp-description="抛一次铜钱，三枚。需要连续抛6次完成起卦。"
                   className="px-4 py-2 text-sm font-semibold bg-gradient-to-r from-[var(--accent)] to-[var(--accent2)] text-[var(--bg)] border-none rounded-xl cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_16px_var(--glow)] active:translate-y-0 disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0 shrink-0">
                   {tossing ? '⋯ 抛掷中' : `抛第${['一','二','三','四','五','六'][tosses.length]}爻`}
                 </button>
               ) : (
                 <button onClick={resetCoins}
+                  data-mcp-action="reset-coin-divination"
+                  data-mcp-description="清空当前抛铜钱结果，重新起卦"
                   className="px-4 py-2 text-sm font-semibold bg-[var(--bg3)] text-[var(--accent2)] border border-[var(--border)] rounded-xl cursor-pointer transition-all duration-300 hover:border-[var(--accent)] shrink-0">
                   🔄 重来
                 </button>
@@ -176,7 +198,10 @@ export default function DivinePage() {
             </div>
 
             {/* 进度点 */}
-            <div className="flex gap-1 justify-center mb-4">
+            <div className="flex gap-1 justify-center mb-4"
+              data-mcp-param="divination-progress"
+              data-mcp-description="起卦进度：6个爻位，已完成数和当前步骤"
+            >
               {Array.from({length: 6}, (_, i) => (
                 <div key={i}
                   className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold border transition-all ${
@@ -212,7 +237,10 @@ export default function DivinePage() {
             {tosses.length > 0 && (
               <div className="flex flex-wrap gap-2 justify-center mb-2">
                 {tosses.map((t, i) => (
-                  <div key={i} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[var(--bg3)]">
+                  <div key={i} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[var(--bg3)]"
+                    data-mcp-param={`result-yao-${i}`}
+                    data-mcp-description={`第${['初','二','三','四','五','上'][i]}爻结果`}
+                  >
                     <span className="text-[10px] text-[var(--muted)]">{['初','二','三','四','五','上'][i]}</span>
                     <div className={`w-12 h-1.5 rounded-sm ${t.yao === 1 ? 'bg-[var(--yang)]' : ''}`}
                       style={{ backgroundImage: t.yao === 1 ? undefined :

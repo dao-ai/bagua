@@ -95,13 +95,24 @@ export default function LifeGuaPage() {
       <PageHeader title="本命卦 · 四柱命卦" subtitle="输入出生年月日时，推算你的本命卦。年柱定主命，月日时柱看变局。" />
 
       {/* ===== 输入区 ===== */}
-      <div className="max-w-[520px] mx-auto bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 sm:p-8">
+      <div className="max-w-[520px] mx-auto bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 sm:p-8"
+        data-mcp-action="calculate-life-gua"
+        data-mcp-description="根据出生年月日时推算本命卦。年柱定主命，月日时柱看变局。需提供性别、出生年、月、日、时辰。"
+        data-mcp-params='{"required": ["gender", "year", "month", "day", "shichen"]}'
+      >
         <h3 className="text-center text-lg mb-5">📅 出生时间</h3>
 
         {/* 性别切换 */}
-        <div className="flex justify-center gap-1.5 mb-5">
+        <div className="flex justify-center gap-1.5 mb-5"
+          data-mcp-action="select-gender"
+          data-mcp-description="选择性别，用于本命卦推算"
+          data-mcp-params='{"required": ["gender"]}'
+        >
           <button
             onClick={() => setGender('male')}
+            data-mcp-param="gender"
+            data-mcp-param-value="male"
+            data-mcp-description="男性"
             className={`px-5 py-1.5 rounded-lg text-sm border cursor-pointer transition-colors ${
               gender === 'male'
                 ? 'bg-[var(--accent)] text-[var(--bg)] border-[var(--accent)] font-semibold'
@@ -112,6 +123,9 @@ export default function LifeGuaPage() {
           </button>
           <button
             onClick={() => setGender('female')}
+            data-mcp-param="gender"
+            data-mcp-param-value="female"
+            data-mcp-description="女性"
             className={`px-5 py-1.5 rounded-lg text-sm border cursor-pointer transition-colors ${
               gender === 'female'
                 ? 'bg-[var(--accent)] text-[var(--bg)] border-[var(--accent)] font-semibold'
@@ -123,7 +137,11 @@ export default function LifeGuaPage() {
         </div>
 
         {/* 年月日时 — 全部下拉框 */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5"
+          data-mcp-action="set-birth-datetime"
+          data-mcp-description="设置出生年、月、日、时辰，用于推算本命卦"
+          data-mcp-params='{"required": ["year", "month", "day", "shichen"]}'
+        >
           {/* 年 */}
           <div>
             <div className="text-[11px] text-[var(--muted)] mb-1.5 text-center">年</div>
@@ -131,6 +149,8 @@ export default function LifeGuaPage() {
               <select
                 value={year}
                 onChange={e => setYear(e.target.value)}
+                data-mcp-param="year"
+                data-mcp-description="出生年份，范围1900-2099"
                 className="w-full p-2.5 pr-7 bg-[var(--bg3)] border border-[var(--border)] rounded-xl text-[var(--fg)] text-sm text-center outline-none transition-all duration-300 focus:border-[var(--accent)] focus:shadow-[0_0_0_3px_var(--glow)] cursor-pointer appearance-none"
               >
 
@@ -152,6 +172,8 @@ export default function LifeGuaPage() {
               <select
                 value={month}
                 onChange={e => setMonth(Number(e.target.value))}
+                data-mcp-param="month"
+                data-mcp-description="出生月份，1-12月"
                 className="w-full p-2.5 pr-7 bg-[var(--bg3)] border border-[var(--border)] rounded-xl text-[var(--fg)] text-sm text-center outline-none transition-all duration-300 focus:border-[var(--accent)] focus:shadow-[0_0_0_3px_var(--glow)] cursor-pointer appearance-none"
               >
                 {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
@@ -169,6 +191,8 @@ export default function LifeGuaPage() {
               <select
                 value={day}
                 onChange={e => setDay(Number(e.target.value))}
+                data-mcp-param="day"
+                data-mcp-description="出生日期，根据月份自动调整天数范围"
                 className="w-full p-2.5 pr-7 bg-[var(--bg3)] border border-[var(--border)] rounded-xl text-[var(--fg)] text-sm text-center outline-none transition-all duration-300 focus:border-[var(--accent)] focus:shadow-[0_0_0_3px_var(--glow)] cursor-pointer appearance-none"
               >
                 {Array.from({ length: maxDay }, (_, i) => (
@@ -186,6 +210,8 @@ export default function LifeGuaPage() {
               <select
                 value={shichenIndex}
                 onChange={e => setShichenIndex(Number(e.target.value))}
+                data-mcp-param="shichen"
+                data-mcp-description="出生时辰（12地支时辰），子时23:00-00:59，以此类推"
                 className="w-full p-2.5 pr-7 bg-[var(--bg3)] border border-[var(--border)] rounded-xl text-[var(--fg)] text-sm text-center outline-none transition-all duration-300 focus:border-[var(--accent)] focus:shadow-[0_0_0_3px_var(--glow)] cursor-pointer appearance-none"
               >
                 {shichenList.map(s => (
@@ -200,6 +226,8 @@ export default function LifeGuaPage() {
         {/* 计算按钮 */}
         <button
           onClick={handleCalculate}
+          data-mcp-action="calculate-life-gua-submit"
+          data-mcp-description="根据已填的性别和出生年月日时，推算本命卦及四柱（年月日时）卦象"
           className="w-full py-3.5 text-base font-semibold tracking-wider bg-gradient-to-r from-[var(--accent)] to-[var(--accent2)] text-[var(--bg)] border-none rounded-xl cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_16px_var(--glow)] active:translate-y-0"
         >
           ☰ 推算本命卦

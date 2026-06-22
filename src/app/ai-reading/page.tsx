@@ -149,7 +149,11 @@ export default function AIReadingPage() {
 
       {/* API Key 配置 */}
       {showKeyInput && (
-        <div className="max-w-[500px] mx-auto mb-4 p-3 rounded-xl bg-[var(--bg3)] border border-[var(--border)]">
+        <div className="max-w-[500px] mx-auto mb-4 p-3 rounded-xl bg-[var(--bg3)] border border-[var(--border)]"
+          data-mcp-action="configure-api-key"
+          data-mcp-description="配置 DeepSeek API Key。这是使用 AI 解卦功能的前提条件，需要用户提供自己的 DeepSeek API Key。"
+          data-mcp-params='{"required": ["apiKey"]}'
+        >
           <div className="text-[11px] text-[var(--muted)] mb-1.5">
             需要 DeepSeek API Key 才能解卦
           </div>
@@ -159,9 +163,13 @@ export default function AIReadingPage() {
               value={apiKey}
               onChange={e => setApiKey(e.target.value)}
               placeholder="sk-..."
+              data-mcp-param="apiKey"
+              data-mcp-description="DeepSeek API Key，以 sk- 开头。在 platform.deepseek.com 获取。"
               className="flex-1 px-3 py-2 rounded-lg bg-[var(--bg2)] border border-[var(--border)] text-[var(--fg)] text-sm outline-none focus:border-[var(--accent)] caret-[var(--accent)]"
             />
             <button onClick={() => setShowKeyInput(false)}
+              data-mcp-action="confirm-api-key"
+              data-mcp-description="确认并保存 DeepSeek API Key"
               className="px-3 py-2 text-xs bg-[var(--accent)] text-[var(--bg)] rounded-lg cursor-pointer font-semibold">确认</button>
           </div>
         </div>
@@ -171,6 +179,8 @@ export default function AIReadingPage() {
       <div className="max-w-[500px] mx-auto mb-4">
         <button
           onClick={() => setPicker(true)}
+          data-mcp-action="select-hexagram-for-reading"
+          data-mcp-description="从64卦中选择一个卦进行AI解读"
           className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-[var(--card)] border border-[var(--border)] cursor-pointer hover:border-[var(--accent)] transition-colors text-left"
         >
           {hex ? (
@@ -196,6 +206,8 @@ export default function AIReadingPage() {
           <button
             onClick={doReading}
             disabled={loading || !apiKey}
+            data-mcp-action="ai-hexagram-reading"
+            data-mcp-description="使用 DeepSeek AI 解读选定的卦象。需要先配置 API Key。调用后会流式输出解读结果，包含卦象解析、核心价值观、生活指引和总结。"
             className="px-8 py-3 text-sm font-semibold tracking-wider bg-gradient-to-r from-[var(--accent)] to-[var(--accent2)] text-[var(--bg)] border-none rounded-xl cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_16px_var(--glow)] active:translate-y-0 disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0"
           >
             {loading ? '🤔 解卦中…' : '🔮 AI 解卦'}
@@ -231,10 +243,16 @@ export default function AIReadingPage() {
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40"
           onClick={() => { setPicker(false); setSearch('') }}
+          role="dialog"
+          aria-modal="true"
+          aria-label="选择卦象"
         >
           <div
             className="bg-[var(--card)] border border-[var(--border)] rounded-2xl w-full max-w-[420px] max-h-[70vh] flex flex-col overflow-hidden animate-[fadeIn_0.15s_ease]"
             onClick={e => e.stopPropagation()}
+            data-mcp-action="pick-hexagram-from-list"
+            data-mcp-description="从64卦列表中搜索并选择一个卦"
+            data-mcp-params='{"optional": ["search"]}'
           >
             <div className="p-3 border-b border-[var(--border)]">
               <input
@@ -242,6 +260,8 @@ export default function AIReadingPage() {
                 onChange={e => setSearch(e.target.value)}
                 placeholder="搜索卦名…"
                 autoFocus
+                data-mcp-param="search"
+                data-mcp-description="按卦名搜索过滤"
                 className="w-full px-3 py-2 rounded-lg bg-[var(--bg3)] border border-[var(--border)] text-[var(--fg)] text-sm outline-none focus:border-[var(--accent)] transition-colors"
               />
             </div>
