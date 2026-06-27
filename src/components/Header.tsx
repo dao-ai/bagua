@@ -22,6 +22,8 @@ const tabs = [
   { href: '/lifegua', label: '本命卦', exact: false, group: '工具' },
   { href: '/liuyao', label: '六爻排盘', exact: false, group: '工具' },
   { href: '/yao-positions', label: '爻位体系', exact: false, group: '学习' },
+  { href: '/ten-wings', label: '十翼', exact: false, group: '学习' },
+  { href: '/hetu-luoshu', label: '河图洛书', exact: false, group: '学习' },
   { href: '/glossary', label: '术语', exact: false, group: '学习' },
   { href: '/history', label: '占卜记录', exact: false, group: '探索' },
 ]
@@ -143,6 +145,8 @@ export default function Header() {
     '/lifegua': '本命卦生成 · 根据生辰推算命卦',
     '/liuyao': '六爻排盘工具 · 传统装卦六步：八宫/纳甲/纳支/世应/六亲/六神',
   '/yao-positions': '爻位体系详解 · 六爻位置、当位中正、承乘比应互动学习',
+  '/ten-wings': '十翼专题 · 易传/彖传/象传/系辞传/文言传/说卦传/序卦传/杂卦传',
+  '/hetu-luoshu': '河图洛书专题 · 河图/洛书/九宫五行/八卦数理之源',
   '/glossary': '术语解释 · 易经核心术语速查',
     '/history': '占卜记录 · 起卦历史查询',
     '/fuxi': '伏羲六十四卦方圆图 · 邵雍皇极经世',
