@@ -24,11 +24,12 @@ const tabs = [
   { href: '/yao-positions', label: '爻位体系', exact: false, group: '学习' },
   { href: '/ten-wings', label: '十翼', exact: false, group: '学习' },
   { href: '/hetu-luoshu', label: '河图洛书', exact: false, group: '学习' },
+  { href: '/flying-stars', label: '九宫飞星', exact: false, group: '探索' },
   { href: '/glossary', label: '术语', exact: false, group: '学习' },
   { href: '/history', label: '占卜记录', exact: false, group: '探索' },
 ]
 
-const visibleTabs = tabs.filter(t => ['/', '/eight', '/relations', '/hexagrams', '/divine'].includes(t.href))
+const visibleTabs = tabs.filter(t => ['/', '/eight', '/relations', '/hexagrams', '/divine', '/flying-stars'].includes(t.href))
 const moreTabs = tabs.filter(t => !['/', '/eight', '/hexagrams', '/divine'].includes(t.href))
 
 const mobileGroups = [
@@ -147,6 +148,7 @@ export default function Header() {
   '/yao-positions': '爻位体系详解 · 六爻位置、当位中正、承乘比应互动学习',
   '/ten-wings': '十翼专题 · 易传/彖传/象传/系辞传/文言传/说卦传/序卦传/杂卦传',
   '/hetu-luoshu': '河图洛书专题 · 河图/洛书/九宫五行/八卦数理之源',
+  '/flying-stars': '九宫飞星沙盘 · 洛书九宫动态飞星推演交互工具',
   '/glossary': '术语解释 · 易经核心术语速查',
     '/history': '占卜记录 · 起卦历史查询',
     '/fuxi': '伏羲六十四卦方圆图 · 邵雍皇极经世',
