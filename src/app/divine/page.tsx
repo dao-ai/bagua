@@ -2,6 +2,7 @@
 import usePageTitle from '@/hooks/usePageTitle'
 
 import { useState, useCallback, useEffect, useRef } from 'react'
+import YarrowDivination from '@/components/YarrowDivination'
 import PageHeader from '@/components/PageHeader'
 import YaoLine, { HexagramDisplay } from '@/components/Yao'
 import { RubyText, Ruby } from '@/components/Ruby'
@@ -70,7 +71,7 @@ export default function DivinePage() {
   usePageTitle()
   const { addRecord } = useDivineHistory()
   const savedRef = useRef(false)
-  const [method, setMethod] = useState<'number' | 'coin'>('coin')
+  const [method, setMethod] = useState<'number' | 'coin' | 'yarrow'>('coin')
   const [n1, setN1] = useState('')
   const [n2, setN2] = useState('')
   const [n3, setN3] = useState('')
@@ -124,7 +125,7 @@ export default function DivinePage() {
 
       <div className="flex justify-center gap-1.5 mb-5"
         data-mcp-action="select-divination-method"
-        data-mcp-description="选择起卦方式：金钱起卦（抛6次铜钱）或数字起卦（输入3个数字）"
+        data-mcp-description="选择起卦方式：金钱起卦（抛6次铜钱）、数字起卦（输入3个数字）、或大衍揲蓍法（18步蓍草交互）"
         data-mcp-params='{"required": ["method"]}'
       >
         <button onClick={() => { setMethod('coin'); setResult(null) }}
@@ -141,9 +142,41 @@ export default function DivinePage() {
               ? 'bg-[var(--accent)] text-[var(--bg)] border-[var(--accent)] font-semibold'
               : 'bg-[var(--bg2)] text-[var(--muted)] border-[var(--border)] hover:border-[var(--accent)] hover:text-[var(--fg)]'
           }`}>🔢 数字起卦</button>
+        <button onClick={() => { setMethod('yarrow'); setResult(null) }}
+          data-mcp-param="method" data-mcp-description="大衍揲蓍法：用50根蓍草，经过「分二·挂一·揲四·归奇」三变得一爻，六爻共十八变后成卦。最古老的筮法，载于《系辞》。" data-mcp-param-value="yarrow"
+          className={`px-4 py-1.5 rounded-lg text-xs border cursor-pointer transition-colors ${
+            method === 'yarrow'
+              ? 'bg-[var(--accent)] text-[var(--bg)] border-[var(--accent)] font-semibold'
+              : 'bg-[var(--bg2)] text-[var(--muted)] border-[var(--border)] hover:border-[var(--accent)] hover:text-[var(--fg)]'
+          }`}>🌿 大衍揲蓍</button>
       </div>
 
-      {/* ===== 起卦区 ===== */}
+      {/* ===== 大衍揲蓍法 ===== */}
+      {method === 'yarrow' && (
+        <div className="max-w-[500px] mx-auto" data-mcp-action="divine-by-yarrow"
+          data-mcp-description="大衍揲蓍法：最古老的起卦方法。点击「开始揲蓍」进入交互流程，依次进行分二、挂一、揲四、归奇，三变得一爻，六爻共十八变后自动生成本卦和变卦。"
+        >
+          <YarrowDivination
+            onComplete={(yaoValues) => {
+              // yaoValues: [初爻, 二爻, 三爻, 四爻, 五爻, 上爻] 每个值为 6-9
+              const y6: number[] = []
+              // 转换为 {0,1} 系统：6老阴→0, 7少阳→1, 8少阴→0, 9老阳→1
+              // 同时上卦在上，下卦在下
+              yaoValues.forEach(v => {
+                y6.unshift(v === 6 || v === 8 ? 0 : 1)
+              })
+              // y6 现在为 [上卦3, 上卦2, 上卦1, 下卦3, 下卦2, 下卦1] = [0,1,2,3,4,5] 爻位
+              // 找变爻：6老阴或9老阳
+              const changingIndex = yaoValues.findIndex(v => v === 6 || v === 9)
+              const mk = changingIndex === -1 ? 1 : changingIndex + 1
+              try { setResult(computeResult(y6, mk)) } catch { setResult(null) }
+            }}
+          />
+        </div>
+      )}
+
+      {/* ===== 起卦区（数字/金钱） ===== */}
+      {method !== 'yarrow' && (
       <div className="max-w-[500px] mx-auto bg-[var(--card)] border border-[var(--border)] rounded-2xl p-8"
         data-mcp-action="divine"
         data-mcp-description="起卦占卜，支持数字起卦和金钱起卦两种方式。先选择起卦方式，然后输入数字或抛铜钱，自动生成卦象结果。"
@@ -259,6 +292,7 @@ export default function DivinePage() {
           </>
         )}
       </div>
+      )}
 
       {/* ===== 卦象结果 — 独立更宽 ===== */}
       {result && (

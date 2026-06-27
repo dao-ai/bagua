@@ -44,6 +44,12 @@ const pinyinMap: Record<string, string> = {
   '梏': 'gù', '桎': 'zhì',
   '牖': 'yǒu', '牀': 'chuáng',
   '筮': 'shì', '盥': 'guàn', '窒': 'zhì', '惕': 'tì',
+  // 大衍揲蓍法
+  '衍': 'yǎn', '揲': 'shé', '蓍': 'shī', '扐': 'lè',
+  '闰': 'rùn', '仪': 'yí', '极': 'jí', '两': 'liǎng',
+  '再': 'zài', '挂': 'guà', '岁': 'suì',
+  '七': 'qī', '八': 'bā', '九': 'jiǔ', '十': 'shí',
+  '五': 'wǔ', '六': 'liù',
 }
 
 export function getPinyin(char: string): string | undefined {

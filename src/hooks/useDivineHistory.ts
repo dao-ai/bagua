@@ -7,7 +7,7 @@ const STORAGE_KEY = 'bagua-divine-history'
 export interface DivineRecord {
   id: string
   timestamp: number
-  method: 'number' | 'coin'
+  method: 'number' | 'coin' | 'yarrow'
   hexName: string
   changedHexName: string
   nowSymbol: string
@@ -109,7 +109,7 @@ import type { DivineResult } from './divineTypes'
 
 export function resultToRecord(
   result: DivineResult,
-  method: 'number' | 'coin'
+  method: 'number' | 'coin' | 'yarrow'
 ): Omit<DivineRecord, 'id' | 'timestamp'> {
   return {
     method,
