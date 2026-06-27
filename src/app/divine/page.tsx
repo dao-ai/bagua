@@ -11,6 +11,9 @@ import { getHexagramDetail } from '@/data/hexagrams'
 import type { DivineResult } from '@/hooks/divineTypes'
 import HexagramRelations from '@/components/HexagramRelations'
 import { useDivineHistory, resultToRecord } from '@/hooks/useDivineHistory'
+import LiuyaoPan from '@/components/LiuyaoPan'
+import { computeLiuyao } from '@/data/liuyao'
+import type { LiuyaoResult } from '@/data/liuyao'
 
 function computeResult(y6: number[], mk: number): DivineResult {
   const mi = 6 - mk
@@ -270,6 +273,11 @@ export default function DivinePage() {
 }
 
 function DivineResultComponent({ result }: { result: DivineResult }) {
+  const [showLiuyao, setShowLiuyao] = useState(false)
+  const [dayStem, setDayStem] = useState('甲')
+  const liuyaoResult: LiuyaoResult | null = showLiuyao
+    ? computeLiuyao(result.upperId, result.lowerId, dayStem)
+    : null
   const [animPhase, setAnimPhase] = useState<'idle' | 'flash' | 'flip' | 'revert' | 'done'>('idle')
   const r = result
 
@@ -375,6 +383,48 @@ function DivineResultComponent({ result }: { result: DivineResult }) {
       <div className="mt-4 flex items-center justify-center gap-1.5 text-[11px] text-[var(--muted)]">
         <span>✓ 已保存到历史记录</span>
       </div>
+
+      {/* 六爻排盘切换按钮 */}
+      <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+        <button
+          onClick={() => setShowLiuyao(v => !v)}
+          data-mcp-action="toggle-liuyao-pan"
+          data-mcp-description="展开/收起传统六爻排盘（世应·纳甲·六亲·六神）"
+          className={`px-4 py-1.5 text-xs rounded-lg border cursor-pointer transition-all
+            ${showLiuyao
+              ? 'bg-[var(--accent)] text-[var(--bg)] border-[var(--accent)] font-semibold'
+              : 'bg-[var(--bg2)] text-[var(--muted)] border-[var(--border)] hover:border-[var(--accent)] hover:text-[var(--fg)]'
+            }`}
+        >
+          {showLiuyao ? '▲ 收起排盘' : '📋 六爻排盘'}
+        </button>
+      </div>
+
+      {/* 六爻排盘内容 */}
+      {showLiuyao && liuyaoResult && (
+        <div className="mt-3 animate-[fadeIn_0.3s_ease]">
+          {liuyaoResult && (
+            <>
+              {/* 日干选择 */}
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <span className="text-[11px] text-[var(--muted)]">日干：</span>
+                <select
+                  value={dayStem}
+                  onChange={e => setDayStem(e.target.value)}
+                  data-mcp-param="liuyao-day-stem"
+                  data-mcp-description="选择日干以确定六神排列"
+                  className="px-2 py-1 text-xs rounded-lg bg-[var(--bg3)] border border-[var(--border)] text-[var(--fg)] outline-none focus:border-[var(--accent)] cursor-pointer"
+                >
+                  {['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'].map(s => (
+                    <option key={s} value={s}>{s}日</option>
+                  ))}
+                </select>
+              </div>
+              <LiuyaoPan result={liuyaoResult} />
+            </>
+          )}
+        </div>
+      )}
 
       <HexagramRelations upperId={r.upperId} lowerId={r.lowerId} />
     </div>

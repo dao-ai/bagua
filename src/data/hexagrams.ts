@@ -2,7 +2,7 @@ import type { HexagramDetail } from './bagua'
 import { getYaoLines } from './yao_lines'
 
 // 六十四卦卦辞 · 大象 · 现代释义（傅佩荣风格）
-const hexagramDetail: Record<string, HexagramDetail> = {
+export const hexagramDetail: Record<string, HexagramDetail> = {
   'qian-qian': {
     judgment:'元亨利贞。',
     image:'天行健，君子以自强不息。',

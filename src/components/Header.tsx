@@ -4,14 +4,18 @@ import { useState, useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { usePinyin } from '@/contexts/PinyinContext'
+import SearchOverlay from '@/components/SearchOverlay'
+import HexagramDetailModal from '@/components/HexagramDetailModal'
 
 const tabs = [
   { href: '/', label: '首页', exact: true, group: '学习' },
   { href: '/eight', label: '八卦', exact: false, group: '学习' },
+  { href: '/relations', label: '关系图', exact: false, group: '学习' },
   { href: '/hexagrams', label: '64卦', exact: false, group: '学习' },
   { href: '/divine', label: '起卦', exact: false, group: '工具' },
   { href: '/simulator', label: '变爻模拟', exact: false, group: '工具' },
   { href: '/contrast', label: '先后天', exact: false, group: '探索' },
+  { href: '/fuxi', label: '方圆图', exact: false, group: '探索' },
   { href: '/compare', label: '卦对比', exact: false, group: '工具' },
   { href: '/ai-reading', label: 'AI解卦', exact: false, group: '工具' },
   { href: '/flashcard', label: '闪卡', exact: false, group: '学习' },
@@ -20,7 +24,7 @@ const tabs = [
   { href: '/history', label: '占卜记录', exact: false, group: '探索' },
 ]
 
-const visibleTabs = tabs.filter(t => ['/', '/eight', '/hexagrams', '/divine'].includes(t.href))
+const visibleTabs = tabs.filter(t => ['/', '/eight', '/relations', '/hexagrams', '/divine'].includes(t.href))
 const moreTabs = tabs.filter(t => !['/', '/eight', '/hexagrams', '/divine'].includes(t.href))
 
 const mobileGroups = [
@@ -34,6 +38,8 @@ export default function Header() {
   const [dark, setDark] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [moreOpen, setMoreOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [searchDetailKey, setSearchDetailKey] = useState<string | null>(null)
   const moreRef = useRef<HTMLDivElement>(null)
   const moreBtnRef = useRef<HTMLButtonElement>(null)
 
@@ -55,6 +61,18 @@ export default function Header() {
     applyTheme(dark)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dark])
+
+  // Ctrl+K 快捷键打开搜索
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault()
+        setSearchOpen(s => !s)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
 
   // 页面切换时关闭移动端菜单和更多下拉
   useEffect(() => {
@@ -112,6 +130,7 @@ export default function Header() {
   const navDescriptions: Record<string, string> = {
     '/': '首页 · 每日一签和功能导航',
     '/eight': '八卦学习 · 八卦的象征、属性和对应关系',
+  '/relations': '卦象关系图 · 先天八卦方位、阴阳对偶、五行相生、家庭角色',
     '/hexagrams': '六十四卦浏览 · 全部卦辞、象辞、爻辞和现代释义',
     '/divine': '起卦占卜 · 数字起卦或金钱起卦',
     '/simulator': '变爻模拟器 · 选卦→点爻→变卦动画',
@@ -122,9 +141,11 @@ export default function Header() {
     '/lifegua': '本命卦生成 · 根据生辰推算命卦',
     '/glossary': '术语解释 · 易经核心术语速查',
     '/history': '占卜记录 · 起卦历史查询',
+    '/fuxi': '伏羲六十四卦方圆图 · 邵雍皇极经世',
   }
 
   return (
+    <>
     <header className="flex items-center gap-3 px-5 py-3 md:py-6 border-b border-[var(--border)] max-w-[960px] mx-auto flex-wrap relative">
       <Link href="/" className="text-[22px] font-bold tracking-wider bg-gradient-to-r from-[var(--yang)] to-[var(--accent2)] bg-clip-text text-transparent no-underline shrink-0">
         🌀 八卦入门
@@ -133,6 +154,13 @@ export default function Header() {
 
       {/* 桌面端按钮 + 导航 */}
       <div className="ml-auto hidden md:flex items-center gap-2">
+        <button
+          onClick={() => setSearchOpen(true)}
+          className="w-9 h-9 rounded-full border border-[var(--border)] bg-[var(--bg2)] text-[var(--muted)] flex items-center justify-center cursor-pointer text-base hover:border-[var(--accent)] hover:text-[var(--fg)] transition-colors shrink-0"
+          aria-label="搜索"
+        >
+          🔍
+        </button>
         <button
           onClick={toggleTheme}
           className="w-9 h-9 rounded-full border border-[var(--border)] bg-[var(--bg2)] text-[var(--muted)] flex items-center justify-center cursor-pointer text-base hover:border-[var(--accent)] hover:text-[var(--fg)] transition-colors shrink-0"
@@ -196,6 +224,13 @@ export default function Header() {
       {/* 移动端操作按钮组 */}
       <div className="md:hidden ml-auto flex items-center gap-2">
         <button
+          onClick={() => setSearchOpen(true)}
+          className="w-9 h-9 rounded-full border border-[var(--border)] bg-[var(--bg2)] text-[var(--muted)] flex items-center justify-center cursor-pointer text-base hover:border-[var(--accent)] hover:text-[var(--fg)] transition-colors shrink-0"
+          aria-label="搜索"
+        >
+          🔍
+        </button>
+        <button
           onClick={toggleTheme}
           className="w-9 h-9 rounded-full border border-[var(--border)] bg-[var(--bg2)] text-[var(--muted)] flex items-center justify-center cursor-pointer text-base hover:border-[var(--accent)] hover:text-[var(--fg)] transition-colors shrink-0"
           aria-label="切换主题"
@@ -244,6 +279,18 @@ export default function Header() {
         </div>
       )}
     </header>
+
+      <SearchOverlay
+        open={searchOpen}
+        onClose={() => { setSearchOpen(false); setSearchDetailKey(null) }}
+        onOpenDetail={(key) => { setSearchOpen(false); setSearchDetailKey(key) }}
+      />
+
+      <HexagramDetailModal
+        hexagramKey={searchDetailKey}
+        onClose={() => setSearchDetailKey(null)}
+      />
+    </>
   )
 }
 

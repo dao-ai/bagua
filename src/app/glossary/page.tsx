@@ -6,6 +6,7 @@ import PageHeader from '@/components/PageHeader'
 import { RubyText } from '@/components/Ruby'
 import glossary, { categories } from '@/data/glossary'
 import YaoPositionDiagram from '@/components/YaoPositionDiagram'
+import MarkdownText from '@/components/MarkdownText'
 
 export default function GlossaryPage() {
   usePageTitle()
@@ -125,10 +126,10 @@ export default function GlossaryPage() {
                   <div className="px-5 pb-4 pt-0 animate-[fadeIn_0.25s_ease]">
                     <div className="p-4 rounded-xl bg-[var(--bg2)]">
                       <div className="text-xs text-[var(--accent2)] font-semibold mb-1.5 tracking-wider">一句话</div>
-                      <p className="text-sm text-[var(--fg)] mb-3 leading-relaxed">{term.brief}</p>
+                      <p className="text-sm text-[var(--fg)] mb-3 leading-relaxed"><MarkdownText text={term.brief} /></p>
 
                       <div className="text-xs text-[var(--accent2)] font-semibold mb-1.5 tracking-wider">详解</div>
-                      <p className="text-sm text-[var(--fg)] leading-relaxed whitespace-pre-line">{term.detail}</p>
+                      <p className="text-sm text-[var(--fg)] leading-relaxed whitespace-pre-line"><MarkdownText text={term.detail} /></p>
 
                       {term.example && (
                         <>
