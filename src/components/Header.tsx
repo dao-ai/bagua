@@ -24,7 +24,6 @@ const tabs = [
   { href: '/yao-positions', label: '爻位体系', exact: false, group: '学习' },
   { href: '/ten-wings', label: '十翼', exact: false, group: '学习' },
   { href: '/hetu-luoshu', label: '河图洛书', exact: false, group: '学习' },
-  { href: '/gallery', label: '卦象画廊', exact: false, group: '探索' },
   { href: '/flying-stars', label: '九宫飞星', exact: false, group: '探索' },
   { href: '/evolution', label: '易学流变', exact: false, group: '学习' },
   { href: '/yijing-computer', label: '易与计算机', exact: false, group: '探索' },
@@ -32,8 +31,8 @@ const tabs = [
   { href: '/history', label: '占卜记录', exact: false, group: '探索' },
 ]
 
-const visibleTabs = tabs.filter(t => ['/', '/eight', '/relations', '/hexagrams', '/divine', '/flying-stars'].includes(t.href))
-const moreTabs = tabs.filter(t => !['/', '/eight', '/hexagrams', '/divine', '/flying-stars'].includes(t.href))
+const visibleTabs = tabs.filter(t => ['/', '/eight', '/relations', '/hexagrams', '/divine'].includes(t.href))
+const moreTabs = tabs.filter(t => !['/', '/eight', '/relations', '/hexagrams', '/divine'].includes(t.href))
 
 const mobileGroups = [
   { title: '📖 学习', items: tabs.filter(t => t.group === '学习') },
@@ -41,15 +40,19 @@ const mobileGroups = [
   { title: '📊 探索', items: tabs.filter(t => t.group === '探索') },
 ]
 
+const moreGroups = [
+  { title: '📖 学习', items: moreTabs.filter(t => t.group === '学习') },
+  { title: '🔧 工具', items: moreTabs.filter(t => t.group === '工具') },
+  { title: '📊 探索', items: moreTabs.filter(t => t.group === '探索') },
+]
+
 export default function Header() {
   const pathname = usePathname()
   const [dark, setDark] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [moreOpen, setMoreOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchDetailKey, setSearchDetailKey] = useState<string | null>(null)
-  const moreRef = useRef<HTMLDivElement>(null)
-  const moreBtnRef = useRef<HTMLButtonElement>(null)
+  const moreRef = useRef<HTMLDetailsElement>(null)
 
   const isActive = (t: typeof tabs[number]) =>
     t.exact ? pathname === t.href : pathname.startsWith(t.href)
@@ -85,25 +88,8 @@ export default function Header() {
   // 页面切换时关闭移动端菜单和更多下拉
   useEffect(() => {
     setMobileMenuOpen(false)
-    setMoreOpen(false)
+    if (moreRef.current) moreRef.current.open = false
   }, [pathname])
-
-  // 点击外部关闭更多下拉
-  useEffect(() => {
-    if (!moreOpen) return
-    const handleClick = (e: MouseEvent) => {
-      if (
-        moreRef.current &&
-        !moreRef.current.contains(e.target as Node) &&
-        moreBtnRef.current &&
-        !moreBtnRef.current.contains(e.target as Node)
-      ) {
-        setMoreOpen(false)
-      }
-    }
-    document.addEventListener('mousedown', handleClick)
-    return () => document.removeEventListener('mousedown', handleClick)
-  }, [moreOpen])
 
   function applyTheme(isDark: boolean) {
     const vars: [string, string, string][] = [
@@ -127,18 +113,18 @@ export default function Header() {
 
   const toggleTheme = () => setDark(d => !d)
 
-  const tabLinkClass = (t: typeof tabs[number], base = 'px-4 py-1.5 rounded-lg text-[13px] border no-underline transition-colors') =>
+  const tabLinkClass = (t: typeof tabs[number], base = 'px-3 py-0.5 text-[13px] no-underline transition-colors') =>
     `${base} ${
       isActive(t)
-        ? 'bg-[var(--accent)] text-[var(--bg)] border-[var(--accent)] font-semibold'
-        : 'bg-[var(--bg2)] text-[var(--muted)] border-[var(--border)] hover:border-[var(--accent)] hover:text-[var(--fg)] hover:bg-[var(--glow)]'
+        ? 'text-[var(--accent)] font-semibold'
+        : 'text-[var(--muted)] hover:text-[var(--fg)]'
     }`
 
   // WebMCP descriptions for navigation links
   const navDescriptions: Record<string, string> = {
     '/': '首页 · 每日一签和功能导航',
     '/eight': '八卦学习 · 八卦的象征、属性和对应关系',
-  '/relations': '卦象关系图 · 先天八卦方位、阴阳对偶、五行相生、家庭角色',
+    '/relations': '卦象关系图 · 先天八卦方位、阴阳对偶、五行相生、家庭角色',
     '/hexagrams': '六十四卦浏览 · 全部卦辞、象辞、爻辞和现代释义',
     '/divine': '起卦占卜 · 数字起卦或金钱起卦',
     '/simulator': '变爻模拟器 · 选卦→点爻→变卦动画',
@@ -148,44 +134,70 @@ export default function Header() {
     '/flashcard': '闪卡复习 · 八卦/64卦记忆卡片',
     '/lifegua': '本命卦生成 · 根据生辰推算命卦',
     '/liuyao': '六爻排盘工具 · 传统装卦六步：八宫/纳甲/纳支/世应/六亲/六神',
-  '/yao-positions': '爻位体系详解 · 六爻位置、当位中正、承乘比应互动学习',
-  '/ten-wings': '十翼专题 · 易传/彖传/象传/系辞传/文言传/说卦传/序卦传/杂卦传',
-  '/hetu-luoshu': '河图洛书专题 · 河图/洛书/九宫五行/八卦数理之源',
-  '/gallery': '卦象画廊 · 禅意模式，全屏沉浸浏览64卦',
-  '/flying-stars': '九宫飞星沙盘 · 洛书九宫动态飞星推演交互工具',
-  '/evolution': '易学流变年表 · 从太极八卦到各门术数的演化史',
-  '/yijing-computer': '易与计算机 · 太极二进制/逻辑门/图灵完备',
-  '/glossary': '术语解释 · 易经核心术语速查',
+    '/yao-positions': '爻位体系详解 · 六爻位置、当位中正、承乘比应互动学习',
+    '/ten-wings': '十翼专题 · 易传/彖传/象传/系辞传/文言传/说卦传/序卦传/杂卦传',
+    '/hetu-luoshu': '河图洛书专题 · 河图/洛书/九宫五行/八卦数理之源',
+    '/flying-stars': '九宫飞星沙盘 · 洛书九宫动态飞星推演交互工具',
+    '/evolution': '易学流变年表 · 从太极八卦到各门术数的演化史',
+    '/yijing-computer': '易与计算机 · 太极二进制/逻辑门/图灵完备',
+    '/glossary': '术语解释 · 易经核心术语速查',
     '/history': '占卜记录 · 起卦历史查询',
     '/fuxi': '伏羲六十四卦方圆图 · 邵雍皇极经世',
   }
 
+  const btnBase = 'w-9 h-9 rounded-full border border-[var(--border)] bg-[var(--bg2)] text-[var(--muted)] flex items-center justify-center cursor-pointer text-base hover:border-[var(--accent)] hover:text-[var(--fg)] transition-colors shrink-0'
+
   return (
     <>
-    <header className="flex items-center gap-3 px-5 py-3 md:py-6 border-b border-[var(--border)] max-w-[960px] mx-auto flex-wrap relative">
-      <Link href="/" className="text-[22px] font-bold tracking-wider bg-gradient-to-r from-[var(--yang)] to-[var(--accent2)] bg-clip-text text-transparent no-underline shrink-0">
-        🌀 八卦入门
-      </Link>
-      <span className="text-[13px] text-[var(--muted)] hidden sm:inline">每天15分钟，搞懂八卦</span>
+    <header className="border-b border-[var(--border)] relative">
+      <div className="flex items-center py-3 lg:py-6 max-w-[960px] mx-auto px-5 gap-3">
+        {/* ── START: Hamburger (mobile) + Logo ── */}
+        <div className="flex flex-1 justify-start items-center gap-3">
+          <div className="lg:hidden relative">
+            <button
+              onClick={() => setMobileMenuOpen(o => !o)}
+              className={btnBase}
+              aria-label="菜单"
+            >
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d={mobileMenuOpen ? 'M4 4l10 10M14 4L4 14' : 'M3 5h12M3 9h12M3 13h12'} />
+              </svg>
+            </button>
+            {mobileMenuOpen && (
+              <div className="absolute left-0 top-full mt-3 z-50 w-64 animate-[menuSlide_0.2s_ease-out]">
+                <nav className="flex flex-col p-3 rounded-2xl bg-[var(--bg2)] border border-[var(--border)] shadow-[0_8px_32px_var(--shadow)] max-h-[70vh] overflow-y-auto overscroll-contain">
+                  {mobileGroups.map((group, gi) => (
+                    <div key={group.title}>
+                      {gi > 0 && <div className="mx-3 my-2 h-px bg-[var(--border)]" />}
+                      <div className="px-3 py-1.5 text-[12px] text-[var(--muted)] font-medium tracking-wider">{group.title}</div>
+                      {group.items.map(t => (
+                        <Link
+                          key={t.href}
+                          href={t.href}
+                          className={`block px-3 py-2 text-[14px] no-underline transition-colors rounded ${
+                            isActive(t)
+                              ? 'text-[var(--accent)] font-semibold bg-[var(--glow)]'
+                              : 'text-[var(--fg)] hover:text-[var(--accent)]'
+                          }`}
+                          data-mcp-action="navigate"
+                          data-mcp-description={navDescriptions[t.href] || `前往${t.label}页面`}
+                        >
+                          {t.label}
+                        </Link>
+                      ))}
+                    </div>
+                  ))}
+                </nav>
+              </div>
+            )}
+          </div>
+          <Link href="/" className="text-[22px] font-bold tracking-wider bg-gradient-to-r from-[var(--yang)] to-[var(--accent2)] bg-clip-text text-transparent no-underline shrink-0">
+            🌀 八卦入门
+          </Link>
+        </div>
 
-      {/* 桌面端按钮 + 导航 */}
-      <div className="ml-auto hidden md:flex items-center gap-2">
-        <button
-          onClick={() => setSearchOpen(true)}
-          className="w-9 h-9 rounded-full border border-[var(--border)] bg-[var(--bg2)] text-[var(--muted)] flex items-center justify-center cursor-pointer text-base hover:border-[var(--accent)] hover:text-[var(--fg)] transition-colors shrink-0"
-          aria-label="搜索"
-        >
-          🔍
-        </button>
-        <button
-          onClick={toggleTheme}
-          className="w-9 h-9 rounded-full border border-[var(--border)] bg-[var(--bg2)] text-[var(--muted)] flex items-center justify-center cursor-pointer text-base hover:border-[var(--accent)] hover:text-[var(--fg)] transition-colors shrink-0"
-          aria-label="切换主题"
-        >
-          {dark ? '🌙' : '☀️'}
-        </button>
-        <PinyinBtn />
-        <nav className="flex gap-1.5 items-center">
+        {/* ── CENTER: Desktop 导航 ── */}
+        <nav className="hidden lg:flex items-center gap-1">
           {visibleTabs.map(t => (
             <Link
               key={t.href}
@@ -198,102 +210,63 @@ export default function Header() {
             </Link>
           ))}
 
-          {/* 更多下拉 */}
-          <div className="relative">
-            <button
-              ref={moreBtnRef}
-              onClick={() => setMoreOpen(o => !o)}
-              className={`px-4 py-1.5 rounded-lg text-[13px] border no-underline transition-colors cursor-pointer ${
-                moreTabs.some(t => isActive(t))
-                  ? 'bg-[var(--accent)] text-[var(--bg)] border-[var(--accent)] font-semibold'
-                  : 'bg-[var(--bg2)] text-[var(--muted)] border-[var(--border)] hover:border-[var(--accent)] hover:text-[var(--fg)] hover:bg-[var(--glow)]'
-              }`}
-            >
-              更多 {moreOpen ? '▲' : '▼'}
-            </button>
-            {moreOpen && (
-              <div
-                ref={moreRef}
-                className="absolute right-0 top-full mt-2 z-50 p-2 rounded-xl bg-[var(--bg2)] border border-[var(--border)] shadow-[0_8px_32px_var(--shadow)] flex flex-col gap-1 min-w-[140px]"
-              >
-                {moreTabs.map(t => (
-                  <Link
-                    key={t.href}
-                    href={t.href}
-                    className={`px-4 py-2 rounded-lg text-[13px] border no-underline transition-colors whitespace-nowrap ${
-                      isActive(t)
-                        ? 'bg-[var(--accent)] text-[var(--bg)] border-[var(--accent)] font-semibold'
-                        : 'bg-[var(--card)] text-[var(--fg)] border-[var(--border)] hover:border-[var(--accent)] hover:bg-[var(--glow)]'
-                    }`}
-                    data-mcp-action="navigate"
-                    data-mcp-description={navDescriptions[t.href] || `前往${t.label}页面`}
-                  >
-                    {t.label}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
+          {/* 更多下拉 — DaisyUI <details> 模式 */}
+          <details ref={moreRef} className="relative">
+            <summary className={`px-3 py-0.5 text-[13px] no-underline transition-colors cursor-pointer list-none ${
+              moreTabs.some(t => isActive(t))
+                ? 'text-[var(--accent)] font-semibold'
+                : 'text-[var(--muted)] hover:text-[var(--fg)]'
+            }`}>
+              更多 ▼
+            </summary>
+            <div className="absolute right-0 top-full mt-2 z-50 p-3 rounded-xl bg-[var(--bg2)] border border-[var(--border)] shadow-[0_8px_32px_var(--shadow)] min-w-[160px]">
+              {moreGroups.map((group, gi) => (
+                <div key={group.title}>
+                  {gi > 0 && <div className="mx-1 my-1.5 h-px bg-[var(--border)]" />}
+                  <div className="px-1 pb-0.5 text-[11px] text-[var(--muted)] font-medium tracking-wider">{group.title}</div>
+                  {group.items.map(t => (
+                    <Link
+                      key={t.href}
+                      href={t.href}
+                      className={`block px-2 py-1 text-[13px] no-underline transition-colors whitespace-nowrap rounded ${
+                        isActive(t)
+                          ? 'text-[var(--accent)] font-semibold bg-[var(--glow)]'
+                          : 'text-[var(--fg)] hover:text-[var(--accent)]'
+                      }`}
+                      data-mcp-action="navigate"
+                      data-mcp-description={navDescriptions[t.href] || `前往${t.label}页面`}
+                    >
+                      {t.label}
+                    </Link>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </details>
         </nav>
-      </div>
 
-      {/* 移动端操作按钮组 */}
-      <div className="md:hidden ml-auto flex items-center gap-2">
-        <button
-          onClick={() => setSearchOpen(true)}
-          className="w-9 h-9 rounded-full border border-[var(--border)] bg-[var(--bg2)] text-[var(--muted)] flex items-center justify-center cursor-pointer text-base hover:border-[var(--accent)] hover:text-[var(--fg)] transition-colors shrink-0"
-          aria-label="搜索"
-        >
-          🔍
-        </button>
-        <button
-          onClick={toggleTheme}
-          className="w-9 h-9 rounded-full border border-[var(--border)] bg-[var(--bg2)] text-[var(--muted)] flex items-center justify-center cursor-pointer text-base hover:border-[var(--accent)] hover:text-[var(--fg)] transition-colors shrink-0"
-          aria-label="切换主题"
-        >
-          {dark ? '🌙' : '☀️'}
-        </button>
-        <PinyinBtn />
-        {/* 汉堡按钮 */}
-        <button
-          onClick={() => setMobileMenuOpen(o => !o)}
-          className="w-9 h-9 rounded-full border border-[var(--border)] bg-[var(--bg2)] text-[var(--muted)] flex flex-col items-center justify-center cursor-pointer hover:border-[var(--accent)] hover:text-[var(--fg)] transition-colors shrink-0 gap-[5px]"
-          aria-label="菜单"
-        >
-          <span className={`block w-[16px] h-[2px] bg-current rounded transition-all duration-200 ${mobileMenuOpen ? 'rotate-45 translate-y-[3.5px]' : ''}`} />
-          <span className={`block w-[16px] h-[2px] bg-current rounded transition-all duration-200 ${mobileMenuOpen ? 'opacity-0' : ''}`} />
-          <span className={`block w-[16px] h-[2px] bg-current rounded transition-all duration-200 ${mobileMenuOpen ? '-rotate-45 -translate-y-[3.5px]' : ''}`} />
-        </button>
-      </div>
-
-      {/* 移动端导航下拉 */}
-      {mobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 z-50 mt-0 px-5 pb-5 origin-top animate-[menuSlide_0.2s_ease-out]">
-          <nav className="flex flex-col p-3 rounded-2xl bg-[var(--bg2)] border border-[var(--border)] shadow-[0_8px_32px_var(--shadow)]">
-            {mobileGroups.map((group, gi) => (
-              <div key={group.title}>
-                {gi > 0 && <div className="mx-3 my-2 h-px bg-[var(--border)]" />}
-                <div className="px-3 py-1.5 text-[12px] text-[var(--muted)] font-medium tracking-wider">{group.title}</div>
-                {group.items.map(t => (
-                  <Link
-                    key={t.href}
-                    href={t.href}
-                    className={`px-4 py-2.5 rounded-lg text-[14px] border no-underline transition-colors ${
-                      isActive(t)
-                        ? 'bg-[var(--accent)] text-[var(--bg)] border-[var(--accent)] font-semibold'
-                        : 'bg-[var(--card)] text-[var(--fg)] border-[var(--border)] hover:border-[var(--accent)] hover:bg-[var(--glow)]'
-                    }`}
-                    data-mcp-action="navigate"
-                    data-mcp-description={navDescriptions[t.href] || `前往${t.label}页面`}
-                  >
-                    {t.label}
-                  </Link>
-                ))}
-              </div>
-            ))}
-          </nav>
+        {/* ── END: 操作按钮 ── */}
+        <div className="flex flex-1 justify-end items-center gap-2">
+          <button
+            onClick={() => setSearchOpen(true)}
+            className={btnBase}
+            aria-label="搜索"
+          >
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <circle cx="6.5" cy="6.5" r="5" />
+              <path d="M10.5 10.5L14 14" />
+            </svg>
+          </button>
+          <button
+            onClick={toggleTheme}
+            className={btnBase}
+            aria-label="切换主题"
+          >
+            {dark ? '🌙' : '☀️'}
+          </button>
+          <PinyinBtn />
         </div>
-      )}
+      </div>
     </header>
 
       <SearchOverlay
