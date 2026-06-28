@@ -12,6 +12,8 @@ const notoSerif = Noto_Serif_SC({
   variable: '--font-heading',
 })
 
+const basePath = process.env.BASE_PATH || ''
+
 export const metadata: Metadata = {
   title: '八卦 · 入门',
   description: '每天15分钟，搞懂八卦 — 交互式易经学习网站',
@@ -19,10 +21,10 @@ export const metadata: Metadata = {
     'mcp-actions': '/mcp-actions.json',
   },
   icons: {
-    icon: '/favicon.png',
-    apple: '/apple-touch-icon.png',
+    icon: `${basePath}/favicon.png`,
+    apple: `${basePath}/apple-touch-icon.png`,
   },
-  manifest: '/manifest.json',
+  manifest: `${basePath}/manifest.json`,
   appleWebApp: {
     capable: true,
     title: '八卦入门',
@@ -48,7 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           __html: `
             if ('serviceWorker' in navigator) {
               window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
+                navigator.serviceWorker.register('${basePath}/sw.js')
                   .then(() => console.log('[PWA] SW registered'))
                   .catch((e) => console.warn('[PWA] SW registration failed:', e));
               });
