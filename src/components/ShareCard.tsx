@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, useMemo } from 'react'
 import { baguaList, baguaMap, getHexagramName, getHexagramSymbol } from '@/data/bagua'
 import { getHexagramDetail } from '@/data/hexagrams'
 
