@@ -24,6 +24,7 @@ const tabs = [
   { href: '/yao-positions', label: '爻位体系', exact: false, group: '学习' },
   { href: '/ten-wings', label: '十翼', exact: false, group: '学习' },
   { href: '/hetu-luoshu', label: '河图洛书', exact: false, group: '学习' },
+  { href: '/gallery', label: '卦象画廊', exact: false, group: '探索' },
   { href: '/flying-stars', label: '九宫飞星', exact: false, group: '探索' },
   { href: '/evolution', label: '易学流变', exact: false, group: '学习' },
   { href: '/yijing-computer', label: '易与计算机', exact: false, group: '探索' },
@@ -32,7 +33,7 @@ const tabs = [
 ]
 
 const visibleTabs = tabs.filter(t => ['/', '/eight', '/relations', '/hexagrams', '/divine', '/flying-stars'].includes(t.href))
-const moreTabs = tabs.filter(t => !['/', '/eight', '/hexagrams', '/divine'].includes(t.href))
+const moreTabs = tabs.filter(t => !['/', '/eight', '/hexagrams', '/divine', '/flying-stars'].includes(t.href))
 
 const mobileGroups = [
   { title: '📖 学习', items: tabs.filter(t => t.group === '学习') },
@@ -150,6 +151,7 @@ export default function Header() {
   '/yao-positions': '爻位体系详解 · 六爻位置、当位中正、承乘比应互动学习',
   '/ten-wings': '十翼专题 · 易传/彖传/象传/系辞传/文言传/说卦传/序卦传/杂卦传',
   '/hetu-luoshu': '河图洛书专题 · 河图/洛书/九宫五行/八卦数理之源',
+  '/gallery': '卦象画廊 · 禅意模式，全屏沉浸浏览64卦',
   '/flying-stars': '九宫飞星沙盘 · 洛书九宫动态飞星推演交互工具',
   '/evolution': '易学流变年表 · 从太极八卦到各门术数的演化史',
   '/yijing-computer': '易与计算机 · 太极二进制/逻辑门/图灵完备',

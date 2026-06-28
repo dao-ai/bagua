@@ -14,9 +14,9 @@ const titles: Record<string, string> = {
   '/history/': '起卦历史 · 八卦入门',
 }
 
-export default function usePageTitle() {
+export default function usePageTitle(title?: string) {
   const pathname = usePathname()
   useEffect(() => {
-    document.title = titles[pathname] || '八卦 · 入门'
-  }, [pathname])
+    document.title = title || titles[pathname] || '八卦 · 入门'
+  }, [pathname, title])
 }

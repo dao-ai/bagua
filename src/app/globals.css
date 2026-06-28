@@ -189,3 +189,59 @@ body {
   from { opacity: 0; transform: translateY(16px) scale(0.97); }
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
+
+/* ===== 卦象画廊 / 禅意模式 ===== */
+
+/* 太极阴阳鱼旋转 */
+@keyframes taiChiSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes taiChiSpinReverse {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+.tai-chi-spin {
+  animation: taiChiSpin 20s linear infinite;
+}
+.tai-chi-spin-reverse {
+  animation: taiChiSpinReverse 25s linear infinite;
+}
+
+/* 卦名辉光 */
+@keyframes namaGlow {
+  0%, 100% { text-shadow: 0 0 10px rgba(245,158,11,0.1), 0 0 30px rgba(245,158,11,0.05); }
+  50% { text-shadow: 0 0 16px rgba(245,158,11,0.2), 0 0 50px rgba(245,158,11,0.08); }
+}
+.nama-glow {
+  animation: namaGlow 3s ease-in-out infinite;
+}
+
+/* 爻线微光呼吸 */
+@keyframes yaoGlow {
+  0%, 100% { opacity: 0.5; box-shadow: 0 0 2px var(--yang); }
+  33% { opacity: 0.7; box-shadow: 0 0 8px var(--yang), 0 0 20px var(--glow); }
+  66% { opacity: 0.6; box-shadow: 0 0 4px var(--yang); }
+}
+.yao-bar {
+  animation: yaoGlow 4s ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+/* 画廊信息区入场 */
+@keyframes infoEnter {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.gallery-info-enter {
+  animation: infoEnter 0.6s ease-out both;
+}
+
+/* 画廊根容器 - 防止body滚动 */
+.gallery-root {
+  overscroll-behavior: none;
+}
+
+.gallery-root ~ * {
+  display: none;
+}
