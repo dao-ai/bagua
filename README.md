@@ -39,6 +39,14 @@
 | **占卜记录** | 起卦历史查询，可回看过往占卜 |
 | **互卦·错卦·综卦** | 起卦结果&64 卦详情页联动展示互卦/错卦/综卦 |
 
+### 📱 PWA 离线应用
+
+| 功能 | 说明 |
+|------|------|
+| **安装到桌面** | 支持添加到手机/电脑桌面，像原生应用一样启动 |
+| **离线浏览** | Service Worker 预缓存全部页面和资源，断网也能翻卦 |
+| **快捷方式** | 长按图标快速进入：每日一卦 · 起卦 · 闪卡 |
+
 ---
 
 ## 🧭 导航结构
@@ -94,6 +102,7 @@
 - [Next.js 16](https://nextjs.org/) — React 框架
 - [Tailwind CSS v4](https://tailwindcss.com/) — 样式
 - TypeScript
+- PWA — Web App Manifest + Service Worker（离线可用）
 - 静态导出（`output: export`）托管于 GitHub Pages
 
 ---
