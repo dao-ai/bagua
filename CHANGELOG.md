@@ -8,6 +8,17 @@
   - `sw.js`：Service Worker（预缓存所有页面 + 静态资源缓存优先）
   - 太极图标包：192/512 PNG、SVG、apple-touch-icon、favicon
   - meta：theme-color、viewport、apple-mobile-web-app 等
+  - `InstallPrompt.tsx`：📲 安装到桌面按钮（监听 beforeinstallprompt + 4s fallback）
+- 🌸 **梅花易数入门** — `/meihua`，邵雍万物皆数体系交互学习页
+  - 5 种起卦法详解：年月日时/数字/声音/文字/方位
+  - 体用生克核心原理 + 五行生克速查表
+  - 🧮 互动数字起卦计算器
+  - 八卦先天数对应表（含拼音）
+  - 7 步解卦流程 + 10 句经典名句
+
+### 修复
+- PWA manifest/icons/SW 路径修复：部署于子路径时 `BASE_PATH` 手动拼接
+- SW 缓存版本升级 v2，新增 `/meihua` 预缓存
 
 ## [0.4.0] - 2026-06-27
 
