@@ -281,9 +281,9 @@ export default function GalleryPage() {
         <TaiChi className="w-[clamp(36px,6vw,80px)] h-[clamp(36px,6vw,80px)] tai-chi-spin-reverse" />
       </div>
 
-      {/* ─── 主内容 ─── */}
+      {/* ─── 主内容（可滚动 + 底部避开导航栏）─── */}
       <div
-        className={`relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-16 transition-opacity duration-600 ${
+        className={`relative z-10 flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 pt-16 pb-[200px] overflow-y-auto transition-opacity duration-600 ${
           entering ? 'opacity-0' : 'opacity-100'
         }`}
       >
