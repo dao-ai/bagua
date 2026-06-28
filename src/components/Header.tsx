@@ -15,6 +15,7 @@ const tabs = [
   { href: '/divine', label: '起卦', exact: false, group: '工具' },
   { href: '/simulator', label: '变爻模拟', exact: false, group: '工具' },
   { href: '/contrast', label: '先后天', exact: false, group: '探索' },
+  { href: '/gallery', label: '卦象画廊', exact: true, group: '探索' },
   { href: '/fuxi', label: '方圆图', exact: false, group: '探索' },
   { href: '/compare', label: '卦对比', exact: false, group: '工具' },
   { href: '/ai-reading', label: 'AI解卦', exact: false, group: '工具' },
@@ -142,7 +143,8 @@ export default function Header() {
     '/yijing-computer': '易与计算机 · 太极二进制/逻辑门/图灵完备',
     '/glossary': '术语解释 · 易经核心术语速查',
     '/history': '占卜记录 · 起卦历史查询',
-    '/fuxi': '伏羲六十四卦方圆图 · 邵雍皇极经世',
+    '/gallery': '卦象画廊 · 六十四卦全屏禅意浏览体验',
+  '/fuxi': '伏羲六十四卦方圆图 · 邵雍皇极经世',
   }
 
   const btnBase = 'w-9 h-9 rounded-full border border-[var(--border)] bg-[var(--bg2)] text-[var(--muted)] flex items-center justify-center cursor-pointer text-base hover:border-[var(--accent)] hover:text-[var(--fg)] transition-colors shrink-0'
