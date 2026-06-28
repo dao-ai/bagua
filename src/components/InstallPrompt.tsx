@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 
 export default function InstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null)
-  const [isInstalled, setIsInstalled] = useState(false)
+  const [showInstall, setShowInstall] = useState(false)
   const [standalone, setStandalone] = useState(false)
 
   useEffect(() => {
@@ -14,35 +14,51 @@ export default function InstallPrompt() {
       return
     }
 
-    // Already installed via appinstalled event
-    const handler = () => setIsInstalled(true)
-    window.addEventListener('appinstalled', handler)
+    // Listen for appinstalled (after successful install)
+    const onInstalled = () => setShowInstall(false)
+    window.addEventListener('appinstalled', onInstalled)
 
-    // Capture the install prompt
-    const promptHandler = (e: Event) => {
+    // Capture the install prompt event (fired by Chrome when PWA criteria are met)
+    const onPrompt = (e: Event) => {
       e.preventDefault()
       setDeferredPrompt(e)
+      setShowInstall(true)
     }
-    window.addEventListener('beforeinstallprompt', promptHandler)
+    window.addEventListener('beforeinstallprompt', onPrompt)
+
+    // Fallback: if SW is registered but beforeinstallprompt hasn't fired after 4s,
+    // still show the button (works on some browsers / modes)
+    const timer = setTimeout(async () => {
+      if (!showInstall && 'serviceWorker' in navigator) {
+        const reg = await navigator.serviceWorker.getRegistration()
+        if (reg?.active) {
+          setShowInstall(true)
+        }
+      }
+    }, 4000)
 
     return () => {
-      window.removeEventListener('appinstalled', handler)
-      window.removeEventListener('beforeinstallprompt', promptHandler)
+      window.removeEventListener('appinstalled', onInstalled)
+      window.removeEventListener('beforeinstallprompt', onPrompt)
+      clearTimeout(timer)
     }
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleInstall = async () => {
-    if (!deferredPrompt) return
-    deferredPrompt.prompt()
-    const result = await deferredPrompt.userChoice
-    if (result.outcome === 'accepted') {
-      setIsInstalled(true)
+    if (deferredPrompt) {
+      deferredPrompt.prompt()
+      const result = await deferredPrompt.userChoice
+      if (result.outcome === 'accepted') {
+        setShowInstall(false)
+      }
+      setDeferredPrompt(null)
+    } else {
+      // No beforeinstallprompt captured — guide the user
+      alert('请在浏览器菜单或地址栏中选择「添加至主屏幕」安装')
     }
-    setDeferredPrompt(null)
   }
 
-  // Already installed or running standalone → no button
-  if (isInstalled || standalone || !deferredPrompt) return null
+  if (standalone || !showInstall) return null
 
   return (
     <button
