@@ -1,5 +1,5 @@
-/* 八卦 · 入门 — PWA Service Worker v1.1 */
-const CACHE = "bagua-v1"
+/* 八卦 · 入门 — PWA Service Worker v1.2 */
+const CACHE = "bagua-v2"
 
 // Auto-detect base path (works on root and subdirectory deployments)
 const BASE = self.location.pathname.replace(/\/[^/]+$/, "/")
@@ -28,6 +28,7 @@ const PRECACHE_PATHS = [
   "gallery",
   "liuyao",
   "yao-positions",
+  "meihua",
   "manifest.json",
   "icon-192.png",
   "icon-512.png",
