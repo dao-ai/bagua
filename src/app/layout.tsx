@@ -3,6 +3,7 @@ import { Noto_Serif_SC } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/Header'
 import Providers from '@/components/Providers'
+import InstallPrompt from '@/components/InstallPrompt'
 
 const notoSerif = Noto_Serif_SC({
   weight: ['400', '600', '700'],
@@ -121,6 +122,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </footer>
           </div>
         </Providers>
+        <InstallPrompt />
       </body>
     </html>
   )
