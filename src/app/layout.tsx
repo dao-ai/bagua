@@ -47,7 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           __html: `
             if ('serviceWorker' in navigator) {
               window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
+                navigator.serviceWorker.register('sw.js')
                   .then(() => console.log('[PWA] SW registered'))
                   .catch((e) => console.warn('[PWA] SW registration failed:', e));
               });

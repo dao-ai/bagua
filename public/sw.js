@@ -1,52 +1,51 @@
-/* 八卦 · 入门 — PWA Service Worker v1.0 */
+/* 八卦 · 入门 — PWA Service Worker v1.1 */
 const CACHE = "bagua-v1"
 
-const PRECACHE_URLS = [
-  "/",
-  "/eight",
-  "/hexagrams",
-  "/divine",
-  "/flashcard",
-  "/glossary",
-  "/simulator",
-  "/ai-reading",
-  "/lifegua",
-  "/compare",
-  "/contrast",
-  "/history",
-  "/relations",
-  "/binary",
-  "/fuxi",
-  "/ten-wings",
-  "/hetu-luoshu",
-  "/flying-stars",
-  "/evolution",
-  "/yijing-computer",
-  "/gallery",
-  "/liuyao",
-  "/yao-positions",
-  "/manifest.json",
-  "/icon-192.png",
-  "/icon-512.png",
-  "/icon.svg",
-  "/favicon.png",
-  "/apple-touch-icon.png",
+// Auto-detect base path (works on root and subdirectory deployments)
+const BASE = self.location.pathname.replace(/\/[^/]+$/, "/")
+
+const PRECACHE_PATHS = [
+  ".",
+  "eight",
+  "hexagrams",
+  "divine",
+  "flashcard",
+  "glossary",
+  "simulator",
+  "ai-reading",
+  "lifegua",
+  "compare",
+  "contrast",
+  "history",
+  "relations",
+  "binary",
+  "fuxi",
+  "ten-wings",
+  "hetu-luoshu",
+  "flying-stars",
+  "evolution",
+  "yijing-computer",
+  "gallery",
+  "liuyao",
+  "yao-positions",
+  "manifest.json",
+  "icon-192.png",
+  "icon-512.png",
+  "icon.svg",
+  "favicon.png",
+  "apple-touch-icon.png",
 ]
+
+// Build full URLs relative to SW script location
+const PRECACHE_URLS = PRECACHE_PATHS.map((p) => new URL(p, self.location.href).href)
 
 /* On install: pre-cache all known pages & assets */
 self.addEventListener("install", (event) => {
   self.skipWaiting()
   event.waitUntil(
-    caches.open(CACHE).then((cache) => {
-      // Pre-cache known URLs in parallel (some may 404 for odd pages, ignore)
-      return Promise.allSettled(
-        PRECACHE_URLS.map((url) =>
-          cache.add(url).catch(() => {
-            // Silent fail for missing pages
-          })
-        )
-      )
-    })
+    caches.open(CACHE).then((cache) =>
+      Promise.allSettled(PRECACHE_URLS.map((url) => cache.add(url).catch(() => {})))
+    )
   )
 })
 
@@ -71,25 +70,27 @@ self.addEventListener("fetch", (event) => {
 
   // Only handle same-origin requests
   if (url.origin !== self.location.origin) return
+  // Only handle requests under this SW's scope
+  if (!url.pathname.startsWith(self.location.pathname.replace(/\/[^/]+$/, "/"))) return
 
   // For navigation (HTML pages): network-first, fallback to cache
   if (request.mode === "navigate") {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          // Cache the latest version
           const copy = response.clone()
           caches.open(CACHE).then((cache) => cache.put(request, copy))
           return response
         })
-        .catch(() => caches.match(request).then((cached) => cached || caches.match("/")))
+        .catch(() =>
+          caches.match(request).then((cached) => cached || caches.match(new URL(".", self.location.href).href))
+        )
     )
     return
   }
 
   // For static assets (JS, CSS, images, fonts): cache-first
-  const assetPatterns = /\.(js|css|png|svg|jpg|jpeg|gif|webp|woff2?|ttf|eot|ico)$/
-  if (assetPatterns.test(url.pathname)) {
+  if (/\.(js|css|png|svg|jpg|jpeg|gif|webp|woff2?|ttf|eot|ico)(\?|$)/.test(url.pathname)) {
     event.respondWith(
       caches.match(request).then((cached) => {
         if (cached) return cached
