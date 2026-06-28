@@ -1,5 +1,14 @@
 # 更新日志
 
+## [0.4.1] - 2026-06-28
+
+### 新增
+- 📱 **PWA 离线支持** — 安装到手机桌面，断网也能翻卦
+  - `manifest.json`：Web App Manifest（display: standalone + 快捷方式）
+  - `sw.js`：Service Worker（预缓存所有页面 + 静态资源缓存优先）
+  - 太极图标包：192/512 PNG、SVG、apple-touch-icon、favicon
+  - meta：theme-color、viewport、apple-mobile-web-app 等
+
 ## [0.4.0] - 2026-06-27
 
 ### 新增

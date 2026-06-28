@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Noto_Serif_SC } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/Header'
@@ -13,10 +13,26 @@ const notoSerif = Noto_Serif_SC({
 
 export const metadata: Metadata = {
   title: '八卦 · 入门',
-  description: '每天15分钟，搞懂八卦 — 交互式八卦学习网站',
+  description: '每天15分钟，搞懂八卦 — 交互式易经学习网站',
   other: {
     'mcp-actions': '/mcp-actions.json',
   },
+  icons: {
+    icon: '/favicon.png',
+    apple: '/apple-touch-icon.png',
+  },
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    title: '八卦入门',
+    statusBarStyle: 'black-translucent',
+  },
+}
+
+export const viewport: Viewport = {
+  themeColor: '#24282f',
+  width: 'device-width',
+  initialScale: 1,
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -25,6 +41,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`min-h-screen ${notoSerif.variable}`} style={{ background: 'var(--bg)', color: 'var(--fg)' }}>
         {/* WebMCP — AI agent 动作发现 */}
         <link rel="mcp-actions" href="/mcp-actions.json" />
+
+        {/* PWA Service Worker 注册 */}
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            if ('serviceWorker' in navigator) {
+              window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                  .then(() => console.log('[PWA] SW registered'))
+                  .catch((e) => console.warn('[PWA] SW registration failed:', e));
+              });
+            }
+          `,
+        }} />
         {/* GoatCounter 访问统计 — https://baguadao.goatcounter.com */}
         <script data-goatcounter={process.env.NEXT_PUBLIC_GOATCOUNTER_URL || 'https://baguadao.goatcounter.com/count'} async src={process.env.NEXT_PUBLIC_GOATCOUNTER_SCRIPT || '//gc.zgo.at/count.js'} />
         <Providers>

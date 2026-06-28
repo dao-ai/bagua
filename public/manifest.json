@@ -1,0 +1,55 @@
+{
+  "name": "八卦 · 入门",
+  "short_name": "八卦入门",
+  "description": "每天15分钟，搞懂八卦 — 交互式易经学习网站",
+  "start_url": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "orientation": "portrait-primary",
+  "background_color": "#24282f",
+  "theme_color": "#24282f",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "categories": ["education", "books", "reference"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "每日一卦",
+      "short_name": "日签",
+      "description": "查看今日卦象",
+      "url": "/"
+    },
+    {
+      "name": "起卦",
+      "short_name": "起卦",
+      "description": "金钱起卦",
+      "url": "/divine"
+    },
+    {
+      "name": "闪卡",
+      "short_name": "闪卡",
+      "description": "闪卡复习",
+      "url": "/flashcard"
+    }
+  ]
+}
