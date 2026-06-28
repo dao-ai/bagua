@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react'
 import { baguaMap, getHexagramName, getHexagramSymbol } from '@/data/bagua'
 import { getHexagramDetail, hexagramOrder } from '@/data/hexagrams'
 import { HexagramDisplay } from '@/components/Yao'
+import ShareCard from '@/components/ShareCard'
 import { RubyText } from '@/components/Ruby'
 
 const STORAGE_KEY = 'bagua-daily-seen'

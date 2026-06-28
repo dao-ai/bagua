@@ -11,6 +11,7 @@ import { baguaList, baguaMap, numToBagua, getHexagramName, getHexagramSymbol } f
 import { getHexagramDetail } from '@/data/hexagrams'
 import type { DivineResult } from '@/hooks/divineTypes'
 import HexagramRelations from '@/components/HexagramRelations'
+import ShareCard from '@/components/ShareCard'
 import { useDivineHistory, resultToRecord } from '@/hooks/useDivineHistory'
 import LiuyaoPan from '@/components/LiuyaoPan'
 import { computeLiuyao } from '@/data/liuyao'
@@ -460,6 +461,14 @@ function DivineResultComponent({ result }: { result: DivineResult }) {
         </div>
       )}
 
+      {/* 分享按钮 */}
+      <div className="mt-4 flex items-center justify-center gap-3">
+        <ShareCard
+          upperId={r.upperId}
+          lowerId={r.lowerId}
+          subtitle="起卦结果"
+        />
+      </div>
       <HexagramRelations upperId={r.upperId} lowerId={r.lowerId} />
     </div>
   )

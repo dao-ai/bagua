@@ -7,6 +7,7 @@ import Modal from '@/components/Modal'
 import { RubyText, Ruby } from '@/components/Ruby'
 import { baguaMap, getHexagramName, getHexagramSymbol, type HexagramDetail } from '@/data/bagua'
 import { getHexagramDetail, hexagramOrder } from '@/data/hexagrams'
+import ShareCard from '@/components/ShareCard'
 import HexagramRelations from '@/components/HexagramRelations'
 
 export default function HexagramsPage() {
@@ -59,6 +60,15 @@ export default function HexagramsPage() {
             ))}
           </div>
         )}
+        {/* 分享按钮 */}
+        <div className="mt-4 flex justify-center">
+          <ShareCard
+            upperId={u}
+            lowerId={l}
+            subtitle="卦象详情"
+          />
+        </div>
+
         <HexagramRelations upperId={u} lowerId={l} onNavigate={(nu, nl) => openDetail(nu, nl)} />
       </div>
     )

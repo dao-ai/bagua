@@ -6,6 +6,7 @@ import { RubyText, Ruby } from '@/components/Ruby'
 import { baguaMap, getHexagramName, getHexagramSymbol } from '@/data/bagua'
 import { getHexagramDetail } from '@/data/hexagrams'
 import HexagramRelations from '@/components/HexagramRelations'
+import ShareCard from '@/components/ShareCard'
 
 interface Props {
   hexagramKey: string | null   // "lowerId-upperId"
@@ -75,6 +76,15 @@ export default function HexagramDetailModal({ hexagramKey, onClose }: Props) {
           ))}
         </div>
       )}
+
+      {/* 分享按钮 */}
+      <div className="mt-4 flex justify-center">
+        <ShareCard
+          upperId={upperId}
+          lowerId={lowerId}
+          subtitle="卦象详情"
+        />
+      </div>
 
       <HexagramRelations
         upperId={upperId}
