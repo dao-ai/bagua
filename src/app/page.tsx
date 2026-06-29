@@ -30,10 +30,25 @@ const features = [
   {
     icon: '📊',
     title: '探索',
-    desc: '先后天对照 · 起卦历史',
+    desc: '方圆图 · 节气 · 易学流变',
     links: [
+      { href: '/fuxi', label: '伏羲方圆' },
+      { href: '/solar-terms', label: '卦象节气' },
       { href: '/contrast', label: '先后天' },
-      { href: '/history', label: '占卜记录' },
+      { href: '/evolution', label: '易学流变' },
+      { href: '/yijing-computer', label: '易与计算机' },
+    ],
+  },
+  {
+    icon: '🖼️',
+    title: '进阶',
+    desc: '河洛 · 飞星 · 六爻 · 关系',
+    links: [
+      { href: '/hetu-luoshu', label: '河图洛书' },
+      { href: '/flying-stars', label: '九宫飞星' },
+      { href: '/liuyao', label: '六爻纳甲' },
+      { href: '/relations', label: '卦象关系' },
+      { href: '/gallery', label: '卦象画廊' },
     ],
   },
 ]
@@ -57,7 +72,7 @@ export default function HomePage() {
       </div>
 
       {/* 功能入口 */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {features.map(cat => (
           <div
             key={cat.title}
