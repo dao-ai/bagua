@@ -195,7 +195,7 @@ export default function RelationsPage() {
 
           {/* 外圈方向标 */}
           {(Object.values(directionLabels) as { label: string; angle: number }[]).map(({ label, angle }) => {
-            const [x, y] = polar(cx, cy, 280, angle)
+            const [x, y] = polar(cx, cy, 252, angle)
             return (
               <text key={label} x={x} y={y + 4} textAnchor="middle" fontSize={12} fill="var(--muted)" fontFamily="ui-serif, serif" opacity={0.5}>
                 {label}
