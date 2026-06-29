@@ -191,6 +191,10 @@ export default function RelationsPage() {
               <feGaussianBlur stdDeviation="2" result="blur"/>
               <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
             </filter>
+            <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5"
+              markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 Z" fill="var(--accent)" opacity="0.5"/>
+            </marker>
           </defs>
 
           {/* 外圈方向标 */}
@@ -245,7 +249,8 @@ export default function RelationsPage() {
               return (
                 <g key={`elem-${i}`}>
                   <path d={`M${xf},${yf} Q${ctrlX},${ctrlY} ${xt},${yt}`}
-                    fill="none" stroke="var(--accent)" strokeWidth={1.5} strokeDasharray="5 3" opacity={0.45}/>
+                    fill="none" stroke="var(--accent)" strokeWidth={1.5} strokeDasharray="5 3" opacity={0.45}
+                    markerEnd="url(#arrow)"/>
                   {/* 五行标签 */}
                   <text x={(xf + xt) / 2 + 15} y={(yf + yt) / 2 - 10}
                     textAnchor="middle" fontSize={10} fill="var(--accent)" fontFamily="ui-serif, serif" opacity={0.7}>
