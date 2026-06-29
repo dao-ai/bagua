@@ -12,6 +12,7 @@ const titles: Record<string, string> = {
   '/lifegua/': '本命卦 · 八卦入门',
   '/glossary/': '术语解释 · 八卦入门',
   '/history/': '起卦历史 · 八卦入门',
+  '/solar-terms/': '卦象与节气 · 八卦入门',
 }
 
 export default function usePageTitle(title?: string) {

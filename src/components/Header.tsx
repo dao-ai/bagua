@@ -28,6 +28,7 @@ const tabs = [
   { href: '/hetu-luoshu', label: '河图洛书', exact: false, group: '学习' },
   { href: '/flying-stars', label: '九宫飞星', exact: false, group: '探索' },
   { href: '/evolution', label: '易学流变', exact: false, group: '学习' },
+  { href: '/solar-terms', label: '卦象节气', exact: false, group: '探索' },
   { href: '/yijing-computer', label: '易与计算机', exact: false, group: '探索' },
   { href: '/glossary', label: '术语', exact: false, group: '学习' },
   { href: '/history', label: '占卜记录', exact: false, group: '探索' },
@@ -147,6 +148,7 @@ export default function Header() {
     '/history': '占卜记录 · 起卦历史查询',
     '/gallery': '卦象画廊 · 六十四卦全屏禅意浏览体验',
   '/fuxi': '伏羲六十四卦方圆图 · 邵雍皇极经世',
+  '/solar-terms': '卦象与节气 · 二十四节气配八卦，阴阳消长天人合一',
   }
 
   const btnBase = 'w-9 h-9 rounded-full border border-[var(--border)] bg-[var(--bg2)] text-[var(--muted)] flex items-center justify-center cursor-pointer text-base hover:border-[var(--accent)] hover:text-[var(--fg)] transition-colors shrink-0'
