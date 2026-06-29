@@ -56,6 +56,57 @@ function polar(cx: number, cy: number, r: number, angleDeg: number): [number, nu
   return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)]
 }
 
+// 取两角度间最短弧的中点（处理 0°/360° 环绕）
+function shortestMidAngle(a: number, b: number): number {
+  const diff = ((b - a + 540) % 360) - 180  // 最短有符号距离 (-180 到 180)
+  return a + diff / 2
+}
+
+// 计算五行相生弧线的配对，确保8个卦都能分配到至少一条线
+// 优先选未被用过的卦，同优先级选夹角最小的
+function computeElementArcs(
+  elementOrder: { baguai: string[]; label: string }[],
+  angles: Record<string, number>
+): { fromId: string; toId: string }[] {
+  const used = new Set<string>()
+  const result: { fromId: string; toId: string }[] = []
+
+  for (let i = 0; i < elementOrder.length; i++) {
+    const elem = elementOrder[i]
+    const next = elementOrder[(i + 1) % elementOrder.length]
+
+    let bestScore = Infinity
+    let bestFrom = elem.baguai[0]
+    let bestTo = next.baguai[0]
+
+    for (const id1 of elem.baguai) {
+      for (const id2 of next.baguai) {
+        const a1 = angles[id1], a2 = angles[id2]
+        const diff = Math.min(
+          Math.abs(a1 - a2),
+          Math.abs(a1 - a2 + 360),
+          Math.abs(a1 - a2 - 360)
+        )
+        // 未用过的卦优先：+500 惩罚，同组两个都未用则最优
+        const used1 = used.has(id1) ? 500 : 0
+        const used2 = used.has(id2) ? 500 : 0
+        const score = diff + used1 + used2
+        if (score < bestScore) {
+          bestScore = score
+          bestFrom = id1
+          bestTo = id2
+        }
+      }
+    }
+
+    used.add(bestFrom)
+    used.add(bestTo)
+    result.push({ fromId: bestFrom, toId: bestTo })
+  }
+
+  return result
+}
+
 type LayerMode = 'all' | 'pairs' | 'element' | 'family'
 
 export default function RelationsPage() {
@@ -79,6 +130,9 @@ export default function RelationsPage() {
     { baguai: ['dui', 'qian'], label: '金' },
     { baguai: ['kan'], label: '水' },
   ]
+
+  // 五行相生弧线配对（提前算好，确保8个卦都有线）
+  const elementArcs = computeElementArcs(elementOrder, xiantianAngles)
 
   // 家庭关系标签（在节点附近显示）
   const familyLabels: Record<string, string> = {
@@ -178,17 +232,15 @@ export default function RelationsPage() {
           <g data-layer="element" className="connector connector-element">
             {/* 画一个正五边形路径连接五行代表卦 */}
             {/* 木→火→土→金→水→木 */}
-            {elementOrder.map((elem, i) => {
-              const next = elementOrder[(i + 1) % elementOrder.length]
-              // 取每组的第一个卦代表该元素位置
-              const fId = elem.baguai[0]
-              const toId = next.baguai[0]
+            {elementArcs.map(({ fromId: fId, toId: toId }, i) => {
+              const elem = elementOrder[i]
               const bf = baguaId[fId], bt = baguaId[toId]
               if (!bf || !bt) return null
               const [xf, yf] = polar(cx, cy, r, xiantianAngles[fId])
               const [xt, yt] = polar(cx, cy, r, xiantianAngles[toId])
               // 画弧线（用二次贝塞尔，向外弯曲一点）
-              const midAngle = (xiantianAngles[fId] + xiantianAngles[toId]) / 2
+              // 取短弧中点控制点，避免 0°/360° 环绕导致弧线绕大圈
+              const midAngle = shortestMidAngle(xiantianAngles[fId], xiantianAngles[toId])
               const [ctrlX, ctrlY] = polar(cx, cy, r + 30, midAngle)
               return (
                 <g key={`elem-${i}`}>
@@ -233,9 +285,9 @@ export default function RelationsPage() {
                   fill="var(--muted)" fontFamily="ui-sans, sans-serif">
                   {b.pinyin} · {b.nature} · {elemAttr}
                 </text>
-                {/* 家庭角色（默认隐藏） */}
+                {/* 家庭角色（默认隐藏，通过 className 控制显示/隐藏） */}
                 <text data-layer="family" x={nx} y={ny + 18} textAnchor="middle" fontSize={11}
-                  fill="var(--accent)" fontFamily="ui-serif, serif" opacity={0}>
+                  fill="var(--accent)" fontFamily="ui-serif, serif" className="opacity-0 pointer-events-none">
                   {familyLabels[b.id]}
                 </text>
                 {/* 下方爻线 */}
