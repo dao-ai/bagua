@@ -185,7 +185,7 @@ export default function RelationsPage() {
       </div>
 
       <div className="max-w-[860px] mx-auto rounded-2xl bg-[var(--card)] border border-[var(--border)] p-4 sm:p-6 overflow-hidden">
-        <svg viewBox="0 0 800 720" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto" style={{ background: 'transparent' }}>
+        <svg viewBox="-15 -15 830 750" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto" style={{ background: 'transparent' }}>
           <defs>
             <filter id="glow">
               <feGaussianBlur stdDeviation="2" result="blur"/>
@@ -195,7 +195,7 @@ export default function RelationsPage() {
 
           {/* 外圈方向标 */}
           {(Object.values(directionLabels) as { label: string; angle: number }[]).map(({ label, angle }) => {
-            const [x, y] = polar(cx, cy, 252, angle)
+            const [x, y] = polar(cx, cy, 280, angle)
             return (
               <text key={label} x={x} y={y + 4} textAnchor="middle" fontSize={12} fill="var(--muted)" fontFamily="ui-serif, serif" opacity={0.5}>
                 {label}
