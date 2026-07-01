@@ -274,7 +274,7 @@ export default function YaoPositionsPage() {
                     `}
                   >
                     {/* 爻线 */}
-                    <div className="flex-shrink-0 w-16 flex justify-center">
+                    <div className="flex-shrink-0 flex items-center justify-center" style={{ width: 80 }}>
                       <YaoLine yang={yang} />
                     </div>
                     {/* 位置名 */}
@@ -652,9 +652,7 @@ export default function YaoPositionsPage() {
                     <tr key={i} className="border-b border-[var(--border)]/50 hover:bg-[var(--glow)] transition-colors">
                       <td className="py-2 px-2 font-mono font-bold">{pos.name}</td>
                       <td className="py-2 px-2">
-                        <div className="w-8">
-                          <YaoLine yang={yang} />
-                        </div>
+                        <YaoLine yang={yang} size="sm" />
                       </td>
                       <td className={`py-2 px-2 font-mono ${yang ? 'text-[var(--yang)]' : 'text-[var(--yin)]'}`}>
                         {yang ? pos.yangName : pos.yinName}

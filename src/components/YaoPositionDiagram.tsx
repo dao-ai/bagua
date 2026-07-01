@@ -20,15 +20,20 @@ function YaoRow({ pos, yin, desc, detail, note, isFirst, isLast }: {
     <div className="flex items-center gap-3 group">
       {/* 爻线 */}
       <div className="flex-shrink-0 w-[52px] flex items-center justify-center">
-        <div
-          className={`h-[7px] rounded-sm transition-all duration-300 ${yin ? '' : 'bg-[var(--yang)] group-hover:shadow-[0_0_8px_var(--glow)]'}`}
-          style={{
-            width: 44,
-            backgroundImage: yin
-              ? `linear-gradient(to right, var(--yin) 0, var(--yin) 16px, transparent 16px, transparent 28px, var(--yin) 28px, var(--yin) 44px)`
-              : undefined,
-          }}
-        />
+        {yin ? (
+          <div className="rounded-sm overflow-hidden" style={{ width: 44, height: 7 }}>
+            <div className="flex items-center w-full h-full">
+              <div className="h-full bg-[var(--yin)]" style={{ width: 16 }} />
+              <div className="h-full" style={{ width: 12 }} />
+              <div className="h-full bg-[var(--yin)]" style={{ width: 16 }} />
+            </div>
+          </div>
+        ) : (
+          <div
+            className="h-[7px] rounded-sm bg-[var(--yang)] transition-all duration-300 group-hover:shadow-[0_0_8px_var(--glow)]"
+            style={{ width: 44 }}
+          />
+        )}
       </div>
 
       {/* 爻位名 */}
@@ -93,7 +98,13 @@ export default function YaoPositionDiagram() {
           <span>阳爻（九）</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <div className="w-4 h-[5px] rounded-sm" style={{ backgroundImage: 'linear-gradient(to right, var(--yin) 0, var(--yin) 6px, transparent 6px, transparent 10px, var(--yin) 10px, var(--yin) 16px)' }} />
+          <div className="rounded-sm overflow-hidden" style={{ width: 16, height: 5 }}>
+            <div className="flex items-center w-full h-full">
+              <div className="h-full bg-[var(--yin)]" style={{ width: '37.5%' }} />
+              <div className="h-full" style={{ width: '25%' }} />
+              <div className="h-full bg-[var(--yin)]" style={{ width: '37.5%' }} />
+            </div>
+          </div>
           <span>阴爻（六）</span>
         </div>
         <div className="flex items-center gap-1.5">

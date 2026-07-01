@@ -1,25 +1,39 @@
 'use client'
 
 // 爻线组件
-export default function YaoLine({ yang, big, className = '', animClass }: {
+export default function YaoLine({ yang, big, size, className = '', animClass }: {
   yang: boolean
   big?: boolean
+  size?: 'sm' | 'md' | 'lg'
   className?: string
   animClass?: string
 }) {
-  const w = big ? 100 : 80
-  const h = big ? 10 : 8
+  const dim = big ? { w: 100, h: 10 } : size === 'sm' ? { w: 40, h: 5 } : { w: 80, h: 8 }
+  const { w, h } = dim
+  const outerCls = `transition-all duration-300 ${className}${animClass ? ' ' + animClass : ''}`
+
+  if (yang) {
+    return (
+      <div
+        className={`rounded-sm bg-[var(--yang)] ${outerCls}`}
+        style={{ width: w, height: h }}
+      />
+    )
+  }
+
+  // 阴爻：外层 rounded-sm + overflow-hidden 裁剪四个角，内层 flex 三栏
+  // 圆角由外层容器统一裁剪，左右色块完全对称
   return (
     <div
-      className={`rounded-sm transition-all duration-300 ${yang ? 'bg-[var(--yang)]' : ''} ${className}${animClass ? ' ' + animClass : ''}`}
-      style={{
-        width: w,
-        height: h,
-        background: yang ? undefined : undefined,
-        backgroundImage: yang ? undefined :
-          `linear-gradient(to right, var(--yin) 0, var(--yin) ${w*0.375}px, transparent ${w*0.375}px, transparent ${w*0.625}px, var(--yin) ${w*0.625}px, var(--yin) ${w}px)`,
-      }}
-    />
+      className={`rounded-sm overflow-hidden ${outerCls}`}
+      style={{ width: w, height: h }}
+    >
+      <div className="flex items-center w-full h-full">
+        <div className="h-full bg-[var(--yin)]" style={{ width: '37.5%' }} />
+        <div className="h-full" style={{ width: '25%' }} />
+        <div className="h-full bg-[var(--yin)]" style={{ width: '37.5%' }} />
+      </div>
+    </div>
   )
 }
 
