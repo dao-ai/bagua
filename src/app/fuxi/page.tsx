@@ -4,9 +4,15 @@ import usePageTitle from '@/hooks/usePageTitle'
 
 import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
+import dynamic from 'next/dynamic'
 import PageHeader from '@/components/PageHeader'
-import FuxiCircle from '@/components/FuxiCircle'
-import FuxiSquare from '@/components/FuxiSquare'
+
+const FuxiCircle = dynamic(() => import('@/components/FuxiCircle'), {
+  loading: () => <div className="h-80 rounded-xl bg-[var(--card)] border border-[var(--border)] animate-pulse" />,
+})
+const FuxiSquare = dynamic(() => import('@/components/FuxiSquare'), {
+  loading: () => <div className="h-80 rounded-xl bg-[var(--card)] border border-[var(--border)] animate-pulse" />,
+})
 
 function FuxiContent() {
   usePageTitle()

@@ -2,8 +2,12 @@
 import usePageTitle from '@/hooks/usePageTitle'
 
 import { useState, useCallback, useEffect, useRef } from 'react'
-import YarrowDivination from '@/components/YarrowDivination'
+import dynamic from 'next/dynamic'
 import PageHeader from '@/components/PageHeader'
+
+const YarrowDivination = dynamic(() => import('@/components/YarrowDivination'), {
+  loading: () => <div className="h-40 rounded-xl bg-[var(--card)] border border-[var(--border)] animate-pulse" />,
+})
 import YaoLine, { HexagramDisplay } from '@/components/Yao'
 import { RubyText, Ruby } from '@/components/Ruby'
 import Coin from '@/components/Coin'
