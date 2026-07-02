@@ -33,20 +33,17 @@ function generateId(): string {
 }
 
 export function useDivineHistory() {
-  const [records, setRecords] = useState<DivineRecord[]>([])
-
-  // 初始化加载
-  useEffect(() => {
+  const [records, setRecords] = useState<DivineRecord[]>(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY)
       if (raw) {
         const parsed = JSON.parse(raw) as DivineRecord[]
-        // 按时间倒序
         parsed.sort((a, b) => b.timestamp - a.timestamp)
-        setRecords(parsed)
+        return parsed
       }
     } catch { /* ignore corrupt data */ }
-  }, [])
+    return []
+  })
 
   // 持久化
   const persist = useCallback((items: DivineRecord[]) => {

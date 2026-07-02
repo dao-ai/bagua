@@ -48,7 +48,7 @@ export default function LiuyaoPage() {
 
   const liuyaoResult = useMemo(() => {
     return computeLiuyao(upperId, lowerId, dayStem)
-  }, [selectedKey, dayStem, upperId, lowerId])
+  }, [dayStem, upperId, lowerId])
 
   const hexName = allHexagrams.find(x => x.key === selectedKey) || null
 
