@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
-import YaoLine, { HexagramDisplay } from '@/components/Yao'
+import YaoLine from '@/components/Yao'
 import { RubyText, Ruby } from '@/components/Ruby'
 import LiuyaoPan from '@/components/LiuyaoPan'
 import HexagramRelations from '@/components/HexagramRelations'
@@ -11,6 +11,7 @@ import type { LiuyaoResult } from '@/data/liuyao'
 import type { DivineResult } from '@/hooks/divineTypes'
 
 const ShareCard = dynamic(() => import('@/components/ShareCard'))
+const ThreeYaoHexagram = dynamic(() => import('@/components/ThreeYaoHexagram'), { ssr: false })
 
 export default function DivineResult({ result }: { result: DivineResult }) {
   const [showLiuyao, setShowLiuyao] = useState(false)
@@ -52,7 +53,12 @@ export default function DivineResult({ result }: { result: DivineResult }) {
         {/* 本卦 */}
         <div className="flex-1">
           <h4 className="text-[11px] uppercase tracking-widest text-[var(--muted)] mb-2.5">本卦</h4>
-          <div id="hex-now"><HexagramDisplay yao6={r.yao6} movingIndex={r.movingIndex} animClass={animClass} /></div>
+          <div id="hex-now"><ThreeYaoHexagram
+                lines={r.yao6 as [number, number, number, number, number, number]}
+                size={200}
+                autoRotate
+                interactive={false}
+              /></div>
           <div className="text-[22px] font-bold mt-1.5">{r.nowSymbol} <RubyText text={r.hexName} /><br /><span className="text-sm font-normal text-[var(--muted)]">上<Ruby char={r.upperName} /> 下<Ruby char={r.lowerName} /></span></div>
           {r.nowDetail && (
             <div className="mt-2.5 p-3 rounded-lg bg-[var(--bg3)] text-left">
@@ -98,7 +104,12 @@ export default function DivineResult({ result }: { result: DivineResult }) {
         {/* 变卦 */}
         <div className="flex-1" style={{ opacity: showChanged ? 1 : 0.5, transition: 'opacity 0.5s ease' }}>
           <h4 className="text-[11px] uppercase tracking-widest text-[var(--muted)] mb-2.5">变卦</h4>
-          <div id="hex-changed"><HexagramDisplay yao6={r.changedYao6} /></div>
+          <div id="hex-changed"><ThreeYaoHexagram
+                lines={r.changedYao6 as [number, number, number, number, number, number]}
+                size={200}
+                autoRotate
+                interactive={false}
+              /></div>
           <div className="text-[22px] font-bold mt-1.5">{r.changedSymbol} <RubyText text={r.changedHexName} /><br /><span className="text-sm font-normal text-[var(--muted)]">上<Ruby char={r.changedUpperName} /> 下<Ruby char={r.changedLowerName} /></span></div>
           {r.changedDetail && (
             <div className="mt-2.5 p-3 rounded-lg bg-[var(--bg3)] text-left">
