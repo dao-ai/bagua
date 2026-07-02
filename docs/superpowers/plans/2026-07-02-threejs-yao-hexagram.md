@@ -87,7 +87,7 @@ function readColors(): ThemeColors {
   }
   const s = getComputedStyle(document.documentElement)
   const g = (n: string) => s.getPropertyValue(n).trim()
-  return { yang: g('--yang'), yin: g('--yin'), accent: g('--accent'), accent2: '--accent2', bg: g('--bg') }
+  return { yang: g('--yang'), yin: g('--yin'), accent: g('--accent'), accent2: g('--accent2'), bg: g('--bg') }
 }
 
 export function useThemeColors(): ThemeColors {

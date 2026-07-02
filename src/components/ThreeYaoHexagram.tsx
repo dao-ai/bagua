@@ -1,10 +1,12 @@
 'use client'
 
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Float } from '@react-three/drei'
+import { OrbitControls } from '@react-three/drei'
 import { Suspense } from 'react'
 import ThreeYaoLine from './ThreeYaoLine'
 import YaoSkeleton from './YaoSkeleton'
+import { useWebGLSupport } from '@/hooks/useWebGLSupport'
+import { HexagramDisplay } from '@/components/Yao'
 
 interface ThreeYaoHexagramProps {
   lines: [number, number, number, number, number, number]
@@ -28,8 +30,17 @@ export default function ThreeYaoHexagram({
   // lines are [初,二,三,四,五,上] — render from bottom (y=0) up (y=5*1.2)
   // Three.js Y axis goes up, index 0=初 at bottom, index 5=上 at top
 
+  const webgl = useWebGLSupport()
   const handleClick = (index: number) => {
     if (interactive) onYaoClick?.(index)
+  }
+
+  if (!webgl) {
+    return (
+      <div style={{ width: size, height: Math.round(size * 0.85) }} className="flex items-center justify-center">
+        <HexagramDisplay yao6={lines} />
+      </div>
+    )
   }
 
   return (
@@ -54,12 +65,6 @@ export default function ThreeYaoHexagram({
               onClick={handleClick}
             />
           ))}
-
-          {autoRotate && (
-            <Float speed={0.5} rotationIntensity={0.3} floatIntensity={0.2}>
-              <group />
-            </Float>
-          )}
 
           {interactive && (
             <OrbitControls
