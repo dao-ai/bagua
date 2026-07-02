@@ -9,6 +9,7 @@ import { getHexagramDetail } from '@/data/hexagrams'
 import HexagramRelations from '@/components/HexagramRelations'
 
 const ShareCard = dynamic(() => import('@/components/ShareCard'))
+const ThreeYaoHexagram = dynamic(() => import('@/components/ThreeYaoHexagram'), { ssr: false })
 
 interface Props {
   hexagramKey: string | null   // "upperId-lowerId"
@@ -24,6 +25,7 @@ interface Props {
 export default function HexagramDetailModal({ hexagramKey, onClose }: Props) {
   // 支持在弹窗内部点击互/错/综卦时切换展示
   const [currentKey, setCurrentKey] = useState<string | null>(hexagramKey)
+  const [hoveredYao, setHoveredYao] = useState<number | null>(null)
   const key = currentKey ?? hexagramKey
 
   if (!key) return null
@@ -37,7 +39,28 @@ export default function HexagramDetailModal({ hexagramKey, onClose }: Props) {
 
   return (
     <Modal open={true} onClose={onClose} label={`${name}卦详情`}>
-      <div className="text-[60px] text-center block">{sym}</div>
+      <div className="flex flex-col items-center">
+        <ThreeYaoHexagram
+          lines={[
+            ld.yao[2], ld.yao[1], ld.yao[0],
+            ud.yao[2], ud.yao[1], ud.yao[0],
+          ]}
+          size={180}
+          interactive
+          autoRotate={false}
+          onYaoClick={(i) => setHoveredYao(i === hoveredYao ? null : i)}
+        />
+        {hoveredYao !== null && detail?.yaoLines?.[5 - hoveredYao] && (
+          <div className="mt-3 text-center text-sm">
+            <span className="text-[var(--accent2)] font-mono text-xs">
+              {detail.yaoLines[5 - hoveredYao].pos}
+            </span>
+            <span className="ml-2 text-[var(--muted)]">
+              {detail.yaoLines[5 - hoveredYao].text}
+            </span>
+          </div>
+        )}
+      </div>
       <h2 className="text-center text-2xl mt-1.5 mb-0.5"><RubyText text={name} /></h2>
       <p className="text-center text-sm text-[var(--muted)]">
         上<Ruby char={ud.name} />（{ud.symbol}）· 下<Ruby char={ld.name} />（{ld.symbol}）
