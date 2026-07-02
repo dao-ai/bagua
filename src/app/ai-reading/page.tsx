@@ -134,8 +134,8 @@ export default function AIReadingPage() {
           }
         }
       }
-    } catch (err: any) {
-      if (err.name !== 'AbortError') {
+    } catch (err: unknown) {
+      if (err instanceof Error && err.name !== 'AbortError') {
         setReading(`⚠️ 请求失败: ${err.message}`)
       }
     }

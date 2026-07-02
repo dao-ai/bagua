@@ -2,8 +2,13 @@
 
 import { useEffect, useState } from 'react'
 
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>
+}
+
 export default function InstallPrompt() {
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null)
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const [showInstall, setShowInstall] = useState(false)
   const [standalone, setStandalone] = useState(false)
 
@@ -21,7 +26,7 @@ export default function InstallPrompt() {
     // Capture the install prompt event (fired by Chrome when PWA criteria are met)
     const onPrompt = (e: Event) => {
       e.preventDefault()
-      setDeferredPrompt(e)
+      setDeferredPrompt(e as BeforeInstallPromptEvent)
       setShowInstall(true)
     }
     window.addEventListener('beforeinstallprompt', onPrompt)
