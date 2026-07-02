@@ -83,6 +83,7 @@
 | [OpenClaw](https://github.com/openclaw/openclaw) | AI agent 框架，驱动悟空的道场运行 |
 | [DeepSeek V4 Flash](https://deepseek.com/) | 主力模型，负责大部分推理与代码生成 |
 | [智谱 GLM 5.2](https://zhipu.ai/) | 辅助模型，蹭的免费额度 😄 |
+| [Claude Code](https://claude.ai/code) | 代码审查、重构、测试、工程化优化 |
 
 ### 构建流程
 
@@ -130,6 +131,15 @@ npm start
 ## 🌐 部署
 
 项目配置为静态导出（`next.config.mjs` 中 `output: 'export'`），构建产物在 `out/` 目录，通过 GitHub Actions 自动部署到 GitHub Pages。
+
+---
+
+## 🧪 质量保障
+
+- **TypeScript** 严格模式，零 `any` 类型
+- **ESLint** (`eslint-config-next`) + **Vitest** (179 单元测试)
+- **CI/CD** — push 自动 lint → test → build → deploy
+- 核心数据层（八卦、六爻、本命卦）全覆盖测试
 
 ---
 
