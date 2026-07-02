@@ -73,7 +73,7 @@ export default function Header() {
   useEffect(() => {
     localStorage.setItem('bg-theme', dark ? 'dark' : 'classic')
     document.documentElement.classList.toggle('classic', !dark)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   }, [dark])
 
   // Ctrl+K 快捷键打开搜索
