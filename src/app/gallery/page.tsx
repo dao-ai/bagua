@@ -11,7 +11,7 @@ import { OrbitControls, Text } from '@react-three/drei'
 const GRID_SPACING = 2.8
 const GRID_SIZE = 8
 
-function HexagramGroup({ lines, opacity = 1 }: { lines: number[]; opacity?: number }) {
+function HexagramGroup({ lines, opacity = 1 }: { lines: [number, number, number, number, number, number]; opacity?: number }) {
   const colors = useThemeColors()
   return (
     <group>
@@ -65,7 +65,7 @@ export default function GalleryPage() {
       const ub = baguaMap[u], lb = baguaMap[l]
       return {
         u, l,
-        lines: [lb.yao[2], lb.yao[1], lb.yao[0], ub.yao[2], ub.yao[1], ub.yao[0]] as number[],
+        lines: [lb.yao[2], lb.yao[1], lb.yao[0], ub.yao[2], ub.yao[1], ub.yao[0]] as [number, number, number, number, number, number],
         name: getHexagramName(u, l),
         symbol: getHexagramSymbol(u, l),
         position: [x, 0, z] as [number, number, number],
