@@ -1,6 +1,6 @@
 {
   "name": "bagua-next",
-  "version": "0.4.0",
+  "version": "0.6.0",
   "private": true,
   "scripts": {
     "dev": "fuser -k 3000/tcp 2>/dev/null; next dev",

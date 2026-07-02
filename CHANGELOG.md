@@ -1,5 +1,39 @@
 # 更新日志
 
+## [0.6.0] - 2026-07-02
+
+### 新增
+- 🧪 **测试体系** — Vitest + React Testing Library，179 单元测试，核心数据层全覆盖
+  - 八卦工具函数（`findBaguaByYao`、`buildYao6`、`computeHexagramChange` 等）27 测试
+  - 互卦/错卦/综卦关系 7 测试
+  - 六爻排盘（`computeLiuyao`）105 测试，含全部 64 卦完整性验证
+  - 本命卦推算（`calculateLifeGua`）30 测试，含寄宫/边界/已知值
+  - 组件 smoke test（Modal、PageHeader、Providers）7 测试
+- 🔊 **易经与现代语言** — `/yijing-language`，200+ 条易经衍生词汇/成语，分类浏览、搜索、出处追踪
+- 🚀 **CI/CD** — GitHub Actions：push/PR 自动 lint → test → build → deploy
+
+### 重构
+- 📦 **共享工具函数提取** — `findBaguaByYao`、`buildYao6`、`yao6ToTrigramIds`、`computeHexagramChange` 等集中到 `src/data/bagua.ts`
+- 🔑 **Key 格式统一** — 全部六十四卦 key 统一为 `"upperId-lowerId"` 格式
+- 🎨 **主题系统** — 颜色定义从 JS 迁移到 CSS `:root` / `:root.classic`，消除重复，增加 FOUC 防止脚本
+- 🎬 **动画合并** — `fadeSlideIn`/`fadeIn` 重复定义统一到 `globals.css`
+- 📄 **页面拆分** — 6 个超大页面缩减 29-52%
+  - `divine`: 440→271，提取 `DivineResult` 组件
+  - `lifegua`: 440→249，提取 `LifeGuaResult` 组件
+  - `meihua`: 679→477，提取数据到 `src/data/meihua.ts`
+  - `solar-terms`: 603→433，提取数据到 `src/data/solarTerms.ts`
+  - `hetu-luoshu`: 547→331，提取 SVG 到 `HetuLuoshuSVGs.tsx`
+  - `yijing-computer`: 534→254，提取 SVG 到 `YiComputerSVGs.tsx`
+  - `yao-positions`: 741→598，提取数据到 `src/data/yaoPositions.ts`
+- 🧹 **代码清理** — 零 `any` 类型、零未使用 import、`cardBase` 共享常量
+
+### 改进
+- ♿ **无障碍** — Modal 焦点锁定+Escape 关闭+`aria-modal`+`aria-label`，`<div onClick>`→`<button>`
+- ⚡ **性能** — YarrowDivination、FuxiCircle/Square、FlyingStars、ShareCard 懒加载+骨架屏
+- 🔧 **工程化** — ESLint 配置（`eslint-config-next`）、`npm run lint` / `npm test` 命令
+- 📄 **404 页面** + **Error Boundary** — 否卦主题 404，大过卦 fallback UI
+- 🐛 **数据修复** — PALACE_HEXAGRAMS 坤宫一世/二世/三世上下卦顺序错误修复
+
 ## [0.5.0] - 2026-06-28
 
 ### 新增
