@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import type { DivineResult } from './divineTypes'
 
 const STORAGE_KEY = 'bagua-divine-history'
 
@@ -92,20 +93,6 @@ export function useDivineHistory() {
 
   return { records, grouped, addRecord, deleteRecord, clearAll }
 }
-
-// 从 yao6（[上卦倒序..., 下卦倒序...]）反推上下卦 ID
-import { baguaList } from '@/data/bagua'
-
-export function yao6ToTrigramIds(yao6: number[]): { upperId: string; lowerId: string } {
-  const uy = yao6.slice(0, 3).reverse()
-  const ly = yao6.slice(3, 6).reverse()
-  const ui = baguaList.find(b => b.yao[0]===uy[0] && b.yao[1]===uy[1] && b.yao[2]===uy[2])?.id || ''
-  const li = baguaList.find(b => b.yao[0]===ly[0] && b.yao[1]===ly[1] && b.yao[2]===ly[2])?.id || ''
-  return { upperId: ui, lowerId: li }
-}
-
-// 从 DivineResult 转为可序列化记录
-import type { DivineResult } from './divineTypes'
 
 export function resultToRecord(
   result: DivineResult,

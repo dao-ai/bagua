@@ -1,6 +1,6 @@
 // 本命卦 — 三元命卦简化版 + 四柱补充卦推算
 
-import { baguaMap } from './bagua'
+import { baguaMap, BAGUA_WUXING } from './bagua'
 
 /** 单个卦结果 */
 export interface GuaResult {
@@ -29,11 +29,7 @@ const remainderToBagua: Record<number, string> = {
   6: 'qian', 7: 'dui', 8: 'gen', 9: 'li',
 }
 
-// 五行
-const elementMap: Record<string, string> = {
-  qian: '金', kun: '土', zhen: '木', xun: '木',
-  kan: '水', li: '火', gen: '土', dui: '金',
-}
+// 五行 — 使用统一的 BAGUA_WUXING
 
 // ═══════════════════════════════════════
 //  余数 → 卦（处理 5 的寄宫 + 0→9）
@@ -52,7 +48,7 @@ function remainderToGua(rem: number, gender: 'male' | 'female'): GuaResult {
     name: target.name,
     symbol: target.symbol,
     number: r,
-    element: elementMap[baguaId],
+    element: BAGUA_WUXING[baguaId],
   }
 }
 

@@ -4,7 +4,7 @@ import usePageTitle from '@/hooks/usePageTitle'
 import { useState, useMemo, useRef } from 'react'
 import PageHeader from '@/components/PageHeader'
 import { RubyText } from '@/components/Ruby'
-import { baguaList, baguaMap, getHexagramName, getHexagramSymbol } from '@/data/bagua'
+import { baguaList, baguaMap, getHexagramName, getHexagramSymbol, BAGUA_WUXING } from '@/data/bagua'
 import { hexagramOrder, getHexagramDetail } from '@/data/hexagrams'
 
 // DeepSeek API 配置
@@ -63,8 +63,8 @@ export default function AIReadingPage() {
     const prompt = `你是一位精通《周易》的易学专家。请为以下卦象做详细解读。
 
 卦名：${hex.name}（${hex.symbol}）
-上卦：${ub.name}（${ub.symbol}）— ${ub.nature}，五行属${WU_XING[hex.upperId]}
-下卦：${lb.name}（${lb.symbol}）— ${lb.nature}，五行属${WU_XING[hex.lowerId]}
+上卦：${ub.name}（${ub.symbol}）— ${ub.nature}，五行属${BAGUA_WUXING[hex.upperId]}
+下卦：${lb.name}（${lb.symbol}）— ${lb.nature}，五行属${BAGUA_WUXING[hex.lowerId]}
 卦辞：${hex.detail?.judgment || '无'}
 象辞：${hex.detail?.image || '无'}
 现代释义：${hex.detail?.meaning || '无'}
@@ -291,10 +291,3 @@ export default function AIReadingPage() {
   )
 }
 
-const WU_XING: Record<string, string> = {
-  qian: '金', dui: '金',
-  zhen: '木', xun: '木',
-  kan: '水',
-  li: '火',
-  gen: '土', kun: '土',
-}

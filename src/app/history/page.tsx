@@ -6,7 +6,8 @@ import PageHeader from '@/components/PageHeader'
 import { HexagramDisplay } from '@/components/Yao'
 import { RubyText, Ruby } from '@/components/Ruby'
 import { getHexagramDetail } from '@/data/hexagrams'
-import { useDivineHistory, formatDateLabel, formatTime, yao6ToTrigramIds, type DivineRecord } from '@/hooks/useDivineHistory'
+import { useDivineHistory, formatDateLabel, formatTime, type DivineRecord } from '@/hooks/useDivineHistory'
+import { yao6ToTrigramIds } from '@/data/bagua'
 
 export default function HistoryPage() {
   usePageTitle()
@@ -145,8 +146,8 @@ function HistoryCard({ record: r, onDelete }: { record: DivineRecord; onDelete: 
 
 function HistoryDetail({ record: r }: { record: DivineRecord }) {
   // 兼容旧记录：如果缺少 ID 字段，从 yao6 反推
-  const upperId = r.upperId || (() => { const t = yao6ToTrigramIds(r.yao6); return t.upperId })()
-  const lowerId = r.lowerId || (() => { const t = yao6ToTrigramIds(r.yao6); return t.lowerId })()
+  const upperId = r.upperId || yao6ToTrigramIds(r.yao6)?.upperId || ''
+  const lowerId = r.lowerId || yao6ToTrigramIds(r.yao6)?.lowerId || ''
   const changedUpperId = r.changedUpperId || upperId
   const changedLowerId = r.changedLowerId || lowerId
 

@@ -10,7 +10,7 @@
  *   6. 配六神 → 以日干定六神顺序，自初爻起排
  */
 
-import { baguaIndex, baguaMap } from './bagua'
+import { baguaIndex, baguaMap, BAGUA_WUXING } from './bagua'
 
 // ─── 基础常量 ───
 
@@ -32,11 +32,7 @@ export const LIU_SHEN = ['青龙','朱雀','勾陈','螣蛇','白虎','玄武'] 
 /** 六亲名称 */
 export const LIU_QIN = ['父母','兄弟','妻财','官鬼','子孙'] as const
 
-/** 八卦五行 */
-export const BAGUA_WUXING: Record<string, string> = {
-  qian:'金', dui:'金', li:'火', zhen:'木',
-  xun:'木', kan:'水', gen:'土', kun:'土',
-}
+export { BAGUA_WUXING }
 
 // ─── 八宫卦分类 ───
 

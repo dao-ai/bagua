@@ -124,3 +124,100 @@ export interface HexagramDetail {
   yaoLines?: YaoLine[]
 }
 
+// ─── 八卦五行 ───
+export const BAGUA_WUXING: Record<string, string> = {
+  qian:'金', dui:'金', li:'火', zhen:'木',
+  xun:'木', kan:'水', gen:'土', kun:'土',
+}
+
+// ─── 爻位名称常量 ───
+export const YAO_LABELS = ['初爻', '二爻', '三爻', '四爻', '五爻', '上爻'] as const
+
+// ─── 共享工具函数 ───
+
+/** 根据三爻数组 [下,中,上] 查找八卦 ID */
+export function findBaguaByYao(yao: number[]): string | undefined {
+  return baguaList.find(
+    b => b.yao[0] === yao[0] && b.yao[1] === yao[1] && b.yao[2] === yao[2]
+  )?.id
+}
+
+/**
+ * 从上下卦 ID 构建六爻数组
+ * yao6 = [line6, line5, line4, line3, line2, line1]
+ * 上卦三爻在上半段（倒序），下卦三爻在下半段（倒序）
+ */
+export function buildYao6(upperId: string, lowerId: string): number[] {
+  const upper = baguaMap[upperId]
+  const lower = baguaMap[lowerId]
+  return [...upper.yao.slice().reverse(), ...lower.yao.slice().reverse()]
+}
+
+/**
+ * 从六爻数组反向查找上下卦 ID
+ * yao6 = [line6, line5, line4, line3, line2, line1]
+ */
+export function yao6ToTrigramIds(yao6: number[]): { upperId: string; lowerId: string } | null {
+  const upperYao = yao6.slice(0, 3).reverse()
+  const lowerYao = yao6.slice(3, 6).reverse()
+  const upperId = findBaguaByYao(upperYao)
+  const lowerId = findBaguaByYao(lowerYao)
+  if (!upperId || !lowerId) return null
+  return { upperId, lowerId }
+}
+
+// ─── 变卦计算 ───
+
+/** 起卦结果类型 */
+export interface DivineResult {
+  hexName: string; changedHexName: string
+  upperName: string; lowerName: string
+  changedUpperName: string; changedLowerName: string
+  nowDetail?: HexagramDetail; changedDetail?: HexagramDetail
+  nowSymbol: string; changedSymbol: string
+  movingName: string; movingChange: string
+  yao6: number[]; changedYao6: number[]
+  movingIndex: number
+  upperId: string; lowerId: string
+  changedUpperId: string; changedLowerId: string
+}
+
+/** 根据六爻数组和动爻位置（1-based，从下到上）计算变卦结果 */
+export function computeHexagramChange(
+  yao6: number[],
+  movingKey: number,
+  getDetail: (upperId: string, lowerId: string) => HexagramDetail | undefined,
+): DivineResult {
+  const mi = 6 - movingKey
+  const ids = yao6ToTrigramIds(yao6)
+  if (!ids) throw new Error('invalid trigram')
+  const { upperId: ui, lowerId: li } = ids
+
+  const ub = baguaMap[ui], lb = baguaMap[li]
+  const hn = getHexagramName(ui, li)
+  const nd = getDetail(ui, li)
+  const cy6 = [...yao6]; cy6[mi] = cy6[mi] === 1 ? 0 : 1
+  const cids = yao6ToTrigramIds(cy6)
+  if (!cids) throw new Error('invalid changed trigram')
+  const { upperId: cui, lowerId: cli } = cids
+
+  const chn = getHexagramName(cui, cli)
+  const cd = getDetail(cui, cli)
+  const cub = baguaMap[cui], clb = baguaMap[cli]
+  const ns = getHexagramSymbol(ui, li), cs = getHexagramSymbol(cui, cli)
+  const mn = YAO_LABELS[movingKey - 1]
+  const mc = yao6[mi] === 1 ? '阳变阴' : '阴变阳'
+
+  return {
+    hexName: hn, changedHexName: chn,
+    upperName: ub.name, lowerName: lb.name,
+    changedUpperName: cub.name, changedLowerName: clb.name,
+    nowDetail: nd, changedDetail: cd,
+    nowSymbol: ns, changedSymbol: cs,
+    movingName: mn, movingChange: mc,
+    yao6, changedYao6: cy6, movingIndex: mi,
+    upperId: ui, lowerId: li,
+    changedUpperId: cui, changedLowerId: cli,
+  }
+}
+

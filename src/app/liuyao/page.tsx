@@ -14,7 +14,7 @@ import { steps, TIAN_GAN_LIST, BAGUA_IDS, type HexItem } from '@/data/liuyao-ste
 
 const allHexagrams: HexItem[] = BAGUA_IDS.flatMap(lowerId =>
   BAGUA_IDS.map(upperId => ({
-    key: `${lowerId}-${upperId}`,
+    key: `${upperId}-${lowerId}`,
     name: getHexagramName(upperId, lowerId),
     symbol: getHexagramSymbol(upperId, lowerId),
     upperId,
@@ -44,7 +44,7 @@ export default function LiuyaoPage() {
   const [expandedStep, setExpandedStep] = useState<number | null>(null)
   const [showDetail, setShowDetail] = useState(true)
 
-  const [lowerId, upperId] = selectedKey.split('-')
+  const [upperId, lowerId] = selectedKey.split('-')
 
   const liuyaoResult = useMemo(() => {
     return computeLiuyao(upperId, lowerId, dayStem)

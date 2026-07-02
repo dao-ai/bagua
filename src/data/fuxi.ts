@@ -28,7 +28,7 @@ export interface FuxiHexagram {
   lowerId: string         // 下卦id
   upperId: string         // 上卦id
   symbol: string          // unicode卦符
-  key: string             // "lower-upper" 用于查hexagramDetail
+  key: string             // "upperId-lowerId" 用于查hexagramDetail/yao_lines
   yaoLines: number[]      // 6条爻 [line1,...,line6], 1=阳 0=阴 (从下到上)
   yangCount: number       // 阳爻数 (0-6)
   yinCount: number        // 阴爻数 (0-6)
@@ -95,7 +95,7 @@ export const fuxiOrderedHexagrams: FuxiHexagram[] = (() => {
     const { lowerId, upperId } = getTrigramsFromFuxiIndex(i)
     const name = getHexagramName(upperId, lowerId)
     const symbol = hexagramSymbol[name] || ''
-    const key = `${lowerId}-${upperId}`
+    const key = `${upperId}-${lowerId}`
     const yaoLines = buildYaoLines(lowerId, upperId)
     const yangCount = yaoLines.filter(y => y === 1).length
     const yinCount = 6 - yangCount
@@ -189,7 +189,7 @@ export const fuxiSquareGrid: FuxiSquareCell[][] = (() => {
       const upperId = fuxiNumToId[colNum]
       const name = getHexagramName(upperId, lowerId)
       const symbol = hexagramSymbol[name] || ''
-      const key = `${lowerId}-${upperId}`
+      const key = `${upperId}-${lowerId}`
       const yaoLines = buildYaoLines(lowerId, upperId)
       const yangCount = yaoLines.filter(y => y === 1).length
       const yinCount = 6 - yangCount

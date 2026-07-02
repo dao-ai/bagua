@@ -9,7 +9,7 @@ import HexagramRelations from '@/components/HexagramRelations'
 import ShareCard from '@/components/ShareCard'
 
 interface Props {
-  hexagramKey: string | null   // "lowerId-upperId"
+  hexagramKey: string | null   // "upperId-lowerId"
   onClose: () => void
 }
 
@@ -26,9 +26,7 @@ export default function HexagramDetailModal({ hexagramKey, onClose }: Props) {
 
   if (!key) return null
 
-  const parts = key.split('-')
-  const lowerId = parts[0]
-  const upperId = parts[1]
+  const [upperId, lowerId] = key.split('-')
   const name = getHexagramName(upperId, lowerId)
   const detail = getHexagramDetail(upperId, lowerId)
   const ud = baguaMap[upperId]

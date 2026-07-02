@@ -1,43 +1,10 @@
-import { baguaList, baguaMap, getHexagramName, getHexagramSymbol } from './bagua'
+import { baguaMap, getHexagramName, getHexagramSymbol, buildYao6, yao6ToTrigramIds } from './bagua'
 
 export interface RelationResult {
   upperId: string
   lowerId: string
   name: string
   symbol: string
-}
-
-/**
- * 从上下卦id构建十二位爻数组
- * yao6: [line6, line5, line4, line3, line2, line1]
- * 上卦三爻在上半段，下卦三爻在下半段
- */
-function buildYao6(upperId: string, lowerId: string): number[] {
-  const upper = baguaMap[upperId]
-  const lower = baguaMap[lowerId]
-  // upper.yao = [下, 中, 上] → 展开时先入上卦的第三爻（line6）
-  return [...upper.yao.slice().reverse(), ...lower.yao.slice().reverse()]
-}
-
-/**
- * 从六爻数组（yao6格式）反向查找对应的八卦id
- * yao6 = [line6, line5, line4, line3, line2, line1]
- * 上卦三爻 = yao6[0..2] → reverse → trigram yao [下,中,上]
- * 下卦三爻 = yao6[3..5] → reverse → trigram yao [下,中,上]
- */
-function findTrigramIds(yao6: number[]): { upperId: string; lowerId: string } | null {
-  const upperYao = yao6.slice(0, 3).reverse()  // → [下,中,上]
-  const lowerYao = yao6.slice(3, 6).reverse()   // → [下,中,上]
-
-  const upperId = baguaList.find(
-    b => b.yao[0] === upperYao[0] && b.yao[1] === upperYao[1] && b.yao[2] === upperYao[2]
-  )?.id
-  const lowerId = baguaList.find(
-    b => b.yao[0] === lowerYao[0] && b.yao[1] === lowerYao[1] && b.yao[2] === lowerYao[2]
-  )?.id
-
-  if (!upperId || !lowerId) return null
-  return { upperId, lowerId }
 }
 
 /**
@@ -71,7 +38,7 @@ export function getInterlocking(upperId: string, lowerId: string): RelationResul
     ...lowerTrigramYao.slice().reverse(),   // 下卦三爻从y6格式
   ]
 
-  const ids = findTrigramIds(newYao6)
+  const ids = yao6ToTrigramIds(newYao6)
   if (!ids) return null
 
   return {
@@ -89,7 +56,7 @@ export function getOpposite(upperId: string, lowerId: string): RelationResult | 
   const yao6 = buildYao6(upperId, lowerId)
   const oppositeYao6 = yao6.map(y => (y === 1 ? 0 : 1))
 
-  const ids = findTrigramIds(oppositeYao6)
+  const ids = yao6ToTrigramIds(oppositeYao6)
   if (!ids) return null
 
   return {
@@ -113,7 +80,7 @@ export function getInverted(upperId: string, lowerId: string): RelationResult | 
   const yao6 = buildYao6(upperId, lowerId)
   const invertedYao6 = [...yao6].reverse()
 
-  const ids = findTrigramIds(invertedYao6)
+  const ids = yao6ToTrigramIds(invertedYao6)
   if (!ids) return null
 
   return {

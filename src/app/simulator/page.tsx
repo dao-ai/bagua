@@ -6,52 +6,10 @@ import usePageTitle from '@/hooks/usePageTitle'
 import PageHeader from '@/components/PageHeader'
 import YaoLine, { HexagramDisplay } from '@/components/Yao'
 import { RubyText, Ruby } from '@/components/Ruby'
-import { baguaList, baguaMap, getHexagramName, getHexagramSymbol } from '@/data/bagua'
+import { baguaList, baguaMap, getHexagramName, getHexagramSymbol, computeHexagramChange, YAO_LABELS } from '@/data/bagua'
 import { hexagramOrder, getHexagramDetail } from '@/data/hexagrams'
 import type { DivineResult } from '@/hooks/divineTypes'
 import HexagramRelations from '@/components/HexagramRelations'
-
-/**
- * 根据六爻数组和动爻位置计算变卦结果
- */
-function computeChange(y6: number[], mk: number): DivineResult {
-  const mi = 6 - mk
-  const uy = y6.slice(0, 3).reverse(), ly = y6.slice(3, 6).reverse()
-  const ui = baguaList.find(b => b.yao[0]===uy[0] && b.yao[1]===uy[1] && b.yao[2]===uy[2])?.id
-  const li = baguaList.find(b => b.yao[0]===ly[0] && b.yao[1]===ly[1] && b.yao[2]===ly[2])?.id
-  if (!ui || !li) throw new Error('invalid trigram')
-
-  const ub = baguaMap[ui], lb = baguaMap[li]
-  const hn = getHexagramName(ui, li)
-  const nd = getHexagramDetail(ui, li)
-  const cy6 = [...y6]; cy6[mi] = cy6[mi] === 1 ? 0 : 1
-  const cuy2 = cy6.slice(0, 3).reverse(), cly2 = cy6.slice(3, 6).reverse()
-  const cui = baguaList.find(b => b.yao[0]===cuy2[0] && b.yao[1]===cuy2[1] && b.yao[2]===cuy2[2])?.id
-  const cli = baguaList.find(b => b.yao[0]===cly2[0] && b.yao[1]===cly2[1] && b.yao[2]===cly2[2])?.id
-  if (!cui || !cli) throw new Error('invalid changed trigram')
-
-  const chn = getHexagramName(cui, cli)
-  const cd = getHexagramDetail(cui, cli)
-  const cub = baguaMap[cui], clb = baguaMap[cli]
-  const ns = getHexagramSymbol(ui, li), cs = getHexagramSymbol(cui, cli)
-  const mn = ['初爻','二爻','三爻','四爻','五爻','上爻'][mk-1]
-  const mc = y6[mi] === 1 ? '阳变阴' : '阴变阳'
-
-  return {
-    hexName: hn, changedHexName: chn,
-    upperName: ub.name, lowerName: lb.name,
-    changedUpperName: cub.name, changedLowerName: clb.name,
-    nowDetail: nd, changedDetail: cd,
-    nowSymbol: ns, changedSymbol: cs,
-    movingName: mn, movingChange: mc,
-    yao6: y6, changedYao6: cy6, movingIndex: mi,
-    upperId: ui, lowerId: li,
-    changedUpperId: cui, changedLowerId: cli,
-  }
-}
-
-/** 六爻的爻位名称（从下到上） */
-const YAO_LABELS = ['初爻', '二爻', '三爻', '四爻', '五爻', '上爻']
 
 export default function SimulatorPage() {
   usePageTitle()
@@ -96,7 +54,7 @@ export default function SimulatorPage() {
     setAnimPhase('flash')
 
     // 先计算变卦结果（但暂不显示）
-    const newResult = computeChange(currentYao6, mk)
+    const newResult = computeHexagramChange(currentYao6, mk, getHexagramDetail)
     setResult(newResult)
 
     // 动画序列

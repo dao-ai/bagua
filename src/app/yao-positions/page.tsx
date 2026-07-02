@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react'
 import PageHeader from '@/components/PageHeader'
 import { RubyText } from '@/components/Ruby'
 import YaoLine from '@/components/Yao'
-import { baguaList, hexagramNames, baguaIndex, getHexagramName } from '@/data/bagua'
+import { baguaList, hexagramNames, baguaIndex, getHexagramName, hexagramSymbol } from '@/data/bagua'
 import { getYaoLines } from '@/data/yao_lines'
 import type { YaoLine as YaoLineType } from '@/data/bagua'
 
@@ -145,55 +145,26 @@ const positionRules: PositionRule[] = [
 const baguaIds = baguaList.map(b => b.id)
 const allHexagrams = baguaIds.flatMap(lowerId =>
   baguaIds.map(upperId => ({
-    key: `${lowerId}-${upperId}`,
+    key: `${upperId}-${lowerId}`,
     name: getHexagramName(upperId, lowerId),
     upperId,
     lowerId,
-    symbol: '',
+    symbol: hexagramSymbol[getHexagramName(upperId, lowerId)] || '',
   }))
 ).filter(h => h.name)
 
-// 补齐 symbol
-allHexagrams.forEach(h => {
-  const sym: Record<string, string> = {
-    '乾':'䷀','坤':'䷁','屯':'䷂','蒙':'䷃','需':'䷄','讼':'䷅','师':'䷆','比':'䷇',
-    '小畜':'䷈','履':'䷉','泰':'䷊','否':'䷋','同人':'䷌','大有':'䷍','谦':'䷎','豫':'䷏',
-    '随':'䷐','蛊':'䷑','临':'䷒','观':'䷓','噬嗑':'䷔','贲':'䷕','剥':'䷖','复':'䷗',
-    '无妄':'䷘','大畜':'䷙','颐':'䷚','大过':'䷛','坎':'䷜','离':'䷝',
-    '咸':'䷞','恒':'䷟','遁':'䷠','大壮':'䷡','晋':'䷢','明夷':'䷣',
-    '家人':'䷤','睽':'䷥','蹇':'䷦','解':'䷧','损':'䷨','益':'䷩',
-    '夬':'䷪','姤':'䷫','萃':'䷬','升':'䷭','困':'䷮','井':'䷯',
-    '革':'䷰','鼎':'䷱','震':'䷲','艮':'䷳','渐':'䷴','归妹':'䷵',
-    '丰':'䷶','旅':'䷷','巽':'䷸','兑':'䷹','涣':'䷺','节':'䷻',
-    '中孚':'䷼','小过':'䷽','既济':'䷾','未济':'䷿',
-  }
-  h.symbol = sym[h.name] || ''
-})
-
 // ─── 六爻二进制表示辅助 ───
 
-function getYaoBinary(key: string): number[] | null {
-  const lowerIdx = baguaIds.indexOf(key.split('-')[0])
-  const upperIdx = baguaIds.indexOf(key.split('-')[1])
-  if (lowerIdx === -1 || upperIdx === -1) return null
-  const lowerYao = baguaList[lowerIdx].yao
-  const upperYao = baguaList[upperIdx].yao
-  return [...upperYao, ...lowerYao]  // [上卦三爻, 下卦三爻] = [五,四,三,二,初,上]... wait, yao arrays are [下,中,上]
-  // Actually bagua yao is [下, 中, 上]; so upperYao = [上卦下, 上卦中, 上卦上]
-  // Combined as 6-yao from bottom to top: lowerYao[下], lowerYao[中], lowerYao[上], upperYao[下], upperYao[中], upperYao[上]
-  // = [lowerYao[0], lowerYao[1], lowerYao[2], upperYao[0], upperYao[1], upperYao[2]]
-}
-
+// key 格式: "upperId-lowerId", 如 "kun-qian" = 地天泰
 function get6Yao(key: string): number[] | null {
-  const [lowerId, upperId] = key.split('-')
-  const lowerIdx = baguaIds.indexOf(lowerId)
+  const [upperId, lowerId] = key.split('-')
   const upperIdx = baguaIds.indexOf(upperId)
-  if (lowerIdx === -1 || upperIdx === -1) return null
-  const ly = baguaList[lowerIdx].yao   // [下,中,上]
+  const lowerIdx = baguaIds.indexOf(lowerId)
+  if (upperIdx === -1 || lowerIdx === -1) return null
   const uy = baguaList[upperIdx].yao   // [下,中,上]
+  const ly = baguaList[lowerIdx].yao   // [下,中,上]
   // 六爻从下到上: 初,二,三,四,五,上
   return [ly[0], ly[1], ly[2], uy[0], uy[1], uy[2]]
-  // Index mapping: 0=初, 1=二, 2=三, 3=四, 4=五, 5=上
 }
 
 // ─── 样式常量 ───
@@ -605,7 +576,7 @@ export default function YaoPositionsPage() {
                 <optgroup key={lowerId} label={`${baguaList.find(b=>b.id===lowerId)?.name}（${baguaList.find(b=>b.id===lowerId)?.symbol}）`}>
                   {baguaIds.map(upperId => {
                     const name = getHexagramName(upperId, lowerId)
-                    const key = `${lowerId}-${upperId}`
+                    const key = `${upperId}-${lowerId}`
                     const h = allHexagrams.find(x => x.key === key)
                     return (
                       <option key={key} value={key}>
