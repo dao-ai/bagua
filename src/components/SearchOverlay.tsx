@@ -128,6 +128,9 @@ export default function SearchOverlay({ open, onClose, onOpenDetail }: Props) {
 
       {/* 搜索弹窗 */}
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="搜索卦象"
         className="fixed inset-x-4 top-[15vh] z-[70] mx-auto max-w-[560px] animate-[slideUp_0.2s_ease]"
         onClick={e => e.stopPropagation()}
       >

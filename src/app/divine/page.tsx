@@ -325,9 +325,10 @@ function DivineResultComponent({ result }: { result: DivineResult }) {
         {/* 变爻 — 点击触发动画 */}
         <div className="flex flex-col items-center gap-2">
           <div className="text-[11px] text-[var(--accent2)] font-semibold tracking-wider">{r.movingName}</div>
-          <div onClick={() => { if (!isAnimating) setAnimPhase('flash') }}
-            className={`cursor-pointer transition-all duration-300 ${isAnimating ? '' : 'hover:scale-110'} ${animPhase === 'flash' || animPhase === 'flip' ? 'pointer-events-none' : ''}`}
+          <button onClick={() => { if (!isAnimating) setAnimPhase('flash') }}
+            className={`bg-transparent border-none p-0 cursor-pointer transition-all duration-300 ${isAnimating ? '' : 'hover:scale-110'} ${animPhase === 'flash' || animPhase === 'flip' ? 'pointer-events-none' : ''}`}
             title={isAnimating ? '' : (showChanged ? '再演示一次' : '点击演示变爻')}
+            aria-label={showChanged ? '再演示一次变爻' : '点击演示变爻'}
           >
             {animPhase === 'done' ? (
               <div className="flex flex-col items-center gap-1">
@@ -350,7 +351,7 @@ function DivineResultComponent({ result }: { result: DivineResult }) {
                 <div className="text-[10px] text-[var(--muted)] mt-0.5">演示变爻</div>
               </div>
             )}
-          </div>
+          </button>
         </div>
 
         <div className="flex-1" style={{ opacity: showChanged ? 1 : 0.5, transition: 'opacity 0.5s ease' }}>

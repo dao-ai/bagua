@@ -1,13 +1,20 @@
 'use client'
 import usePageTitle from '@/hooks/usePageTitle'
 import PageHeader from '@/components/PageHeader'
+import Modal from '@/components/Modal'
 
 import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import { RubyText } from '@/components/Ruby'
 import { YaoDisplay } from '@/components/Yao'
-import { baguaMap } from '@/data/bagua'
+import { baguaMap, type Bagua } from '@/data/bagua'
 import { calculateLifeGua, shichenList, pillarInterpretation, type LifeGuaResult } from '@/data/lifegua'
+
+const baguaCardInfo = (b: Bagua) => [
+  ['自然', b.nature], ['属性', b.attribute], ['家庭', b.family],
+  ['动物', b.animal], ['身体', b.body], ['方向', b.direction],
+  ['季节', b.season], ['关键词', b.keywords.join(' · ')],
+]
 
 const monthNames = [
   '', '一月', '二月', '三月', '四月', '五月', '六月',
@@ -41,6 +48,7 @@ export default function LifeGuaPage() {
   const [shichenIndex, setShichenIndex] = useState(9) // 默认酉时
   const [gender, setGender] = useState<'male' | 'female'>('male')
   const [result, setResult] = useState<LifeGuaResult | null>(null)
+  const [modalGua, setModalGua] = useState<Bagua | null>(null)
   const [error, setError] = useState('')
   const [recent, setRecent] = useState<RecentEntry[]>([])
 
@@ -244,25 +252,41 @@ export default function LifeGuaPage() {
           <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 sm:p-8 text-center">
             {/* 四柱命卦 */}
             <div className="grid grid-cols-4 gap-2 mb-5">
-              <div className="p-3 rounded-xl bg-[var(--bg3)] border border-[var(--accent)] border-2">
+              <div
+                onClick={() => setModalGua(baguaMap[result.year.baguaId])}
+                className="p-3 rounded-xl bg-[var(--bg3)] border-2 border-[var(--accent)] cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_4px_16px_var(--shadow)]"
+                title="点击查看年柱卦象详情"
+              >
                 <div className="text-[11px] text-[var(--muted)] mb-1">年柱</div>
                 <div className="text-[28px]">{result.year.symbol}</div>
                 <div className="text-sm font-semibold">{result.year.name}卦</div>
                 <div className="text-[10px] text-[var(--muted)] mt-0.5">{result.year.number}宫 · {result.year.element}</div>
               </div>
-              <div className="p-3 rounded-xl bg-[var(--bg3)] border border-[var(--border)]">
+              <div
+                onClick={() => setModalGua(baguaMap[result.month.baguaId])}
+                className="p-3 rounded-xl bg-[var(--bg3)] border border-[var(--border)] cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_var(--shadow)] hover:border-[var(--accent2)]"
+                title="点击查看月柱卦象详情"
+              >
                 <div className="text-[11px] text-[var(--muted)] mb-1">月柱</div>
                 <div className="text-[24px]">{result.month.symbol}</div>
                 <div className="text-sm font-semibold">{result.month.name}卦</div>
                 <div className="text-[10px] text-[var(--muted)] mt-0.5">{result.month.number}宫 · {result.month.element}</div>
               </div>
-              <div className="p-3 rounded-xl bg-[var(--bg3)] border border-[var(--border)]">
+              <div
+                onClick={() => setModalGua(baguaMap[result.day.baguaId])}
+                className="p-3 rounded-xl bg-[var(--bg3)] border border-[var(--border)] cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_var(--shadow)] hover:border-[var(--accent2)]"
+                title="点击查看日柱卦象详情"
+              >
                 <div className="text-[11px] text-[var(--muted)] mb-1">日柱</div>
                 <div className="text-[24px]">{result.day.symbol}</div>
                 <div className="text-sm font-semibold">{result.day.name}卦</div>
                 <div className="text-[10px] text-[var(--muted)] mt-0.5">{result.day.number}宫 · {result.day.element}</div>
               </div>
-              <div className="p-3 rounded-xl bg-[var(--bg3)] border border-[var(--border)]">
+              <div
+                onClick={() => setModalGua(baguaMap[result.hour.baguaId])}
+                className="p-3 rounded-xl bg-[var(--bg3)] border border-[var(--border)] cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_var(--shadow)] hover:border-[var(--accent2)]"
+                title="点击查看时柱卦象详情"
+              >
                 <div className="text-[11px] text-[var(--muted)] mb-1">时柱</div>
                 <div className="text-[24px]">{result.hour.symbol}</div>
                 <div className="text-sm font-semibold">{result.hour.name}卦</div>
@@ -352,6 +376,32 @@ export default function LifeGuaPage() {
             >
               ☰ 了解更多关于 {result.year.name}卦 →
             </Link>
+
+            {/* 卦象详情弹窗 — 点击月柱/日柱/时柱触发 */}
+            <Modal open={!!modalGua} onClose={() => setModalGua(null)} label={`${modalGua?.name}卦详情`}>
+              {modalGua && (
+                <div>
+                  <div className="text-[60px] text-center block">{modalGua.symbol}</div>
+                  <h2 className="text-center text-2xl mt-1.5 mb-0.5"><RubyText text={modalGua.name} /></h2>
+                  <p className="text-center text-sm text-[var(--accent2)] my-3 leading-relaxed">{modalGua.description}</p>
+                  <div className="flex justify-center mb-1">
+                    <YaoDisplay yao={modalGua.yao} big />
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    {baguaCardInfo(modalGua).map(([k, v]) => (
+                      <div key={k} className="p-2.5 rounded-xl bg-[var(--bg3)] text-sm flex flex-col gap-0.5">
+                        <span className="text-[11px] text-[var(--muted)]">{k}</span>
+                        <span className="font-semibold text-[var(--fg)]">{v}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="text-xs text-[var(--muted)] mt-4 pt-3 border-t border-[var(--border)] text-center font-mono">
+                    二进制：<span className="text-[var(--accent2)]">{modalGua.binary}</span>
+                    &nbsp;·&nbsp; 十进制：<span className="text-[var(--accent2)]">{modalGua.decimal}</span>
+                  </div>
+                </div>
+              )}
+            </Modal>
           </div>
 
           {/* 最近查询 */}

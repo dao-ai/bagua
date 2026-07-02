@@ -34,7 +34,7 @@ export default function HexagramDetailModal({ hexagramKey, onClose }: Props) {
   const sym = getHexagramSymbol(upperId, lowerId)
 
   return (
-    <Modal open={true} onClose={onClose}>
+    <Modal open={true} onClose={onClose} label={`${name}卦详情`}>
       <div className="text-[60px] text-center block">{sym}</div>
       <h2 className="text-center text-2xl mt-1.5 mb-0.5"><RubyText text={name} /></h2>
       <p className="text-center text-sm text-[var(--muted)]">

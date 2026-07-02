@@ -57,8 +57,8 @@ export default function EightPage() {
         <>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {baguaList.map(b => (
-              <div key={b.id} onClick={() => setModal(b)}
-                className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 pb-4 text-center cursor-pointer transition-all duration-300 relative overflow-hidden hover:border-[var(--accent)] hover:-translate-y-1 hover:shadow-[0_8px_30px_var(--shadow)] before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-[3px] before:bg-gradient-to-r before:from-transparent before:via-[var(--accent)] before:to-transparent before:opacity-0 before:transition-opacity before:duration-300 hover:before:opacity-100"
+              <button key={b.id} onClick={() => setModal(b)}
+                className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 pb-4 text-center cursor-pointer transition-all duration-300 relative overflow-hidden hover:border-[var(--accent)] hover:-translate-y-1 hover:shadow-[0_8px_30px_var(--shadow)] before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-[3px] before:bg-gradient-to-r before:from-transparent before:via-[var(--accent)] before:to-transparent before:opacity-0 before:transition-opacity before:duration-300 hover:before:opacity-100"
               >
                 <div className="text-[44px]">{b.symbol}</div>
                 <h3 className="text-xl mt-1 mb-0.5"><RubyText text={b.name} /></h3>
@@ -69,11 +69,11 @@ export default function EightPage() {
                 </div>
                 <p className="text-sm text-[var(--muted)] mt-2.5 pt-2.5 border-t border-[var(--border)]">{b.short}</p>
                 <div className="text-[10px] text-[var(--muted)] mt-2 font-mono">{b.binary} · {b.decimal}</div>
-              </div>
+              </button>
             ))}
           </div>
 
-          <Modal open={!!modal} onClose={() => setModal(null)}>
+          <Modal open={!!modal} onClose={() => setModal(null)} label={`${modal?.name}卦详情`}>
             {modal && (
               <div>
                 <div className="text-[60px] text-center block">{modal.symbol}</div>

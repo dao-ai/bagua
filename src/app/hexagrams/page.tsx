@@ -118,7 +118,7 @@ export default function HexagramsPage() {
         })}
       </div>
 
-      <Modal open={!!modal} onClose={() => setModal(null)}>{modal}</Modal>
+      <Modal open={!!modal} onClose={() => setModal(null)} label="卦象详情">{modal}</Modal>
     </>
   )
 }
