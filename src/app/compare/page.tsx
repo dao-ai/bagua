@@ -1,11 +1,14 @@
 'use client'
 
 import { useState, useMemo } from 'react'
+import dynamic from 'next/dynamic'
 import usePageTitle from '@/hooks/usePageTitle'
 import PageHeader from '@/components/PageHeader'
 import { RubyText } from '@/components/Ruby'
 import { baguaMap, getHexagramName, getHexagramSymbol } from '@/data/bagua'
 import { hexagramOrder, getHexagramDetail } from '@/data/hexagrams'
+
+const ThreeYaoHexagram = dynamic(() => import('@/components/ThreeYaoHexagram'), { ssr: false })
 
 /** 八经卦五行 */
 const WU_XING: Record<string, string> = {
@@ -163,7 +166,19 @@ function HexPanel({ data, side, onPick, onClear }: {
           <div className="flex justify-end mb-1">
             <button onClick={onClear} className="text-[10px] text-[var(--muted)] hover:text-[var(--risk)] cursor-pointer">✕ 清除</button>
           </div>
-          <div className="text-[52px] mb-1">{data.symbol}</div>
+          <ThreeYaoHexagram
+            lines={[
+              baguaMap[data.lowerId].yao[2],
+              baguaMap[data.lowerId].yao[1],
+              baguaMap[data.lowerId].yao[0],
+              baguaMap[data.upperId].yao[2],
+              baguaMap[data.upperId].yao[1],
+              baguaMap[data.upperId].yao[0],
+            ]}
+            size={220}
+            interactive
+            autoRotate={false}
+          />
           <div className="text-[20px] font-bold font-heading mb-0.5">
             <RubyText text={data.name} />
           </div>
