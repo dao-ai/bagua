@@ -9,6 +9,7 @@ import type { LiuyaoResult } from '@/data/liuyao'
 import { baguaList, getHexagramName, getHexagramSymbol, baguaMap } from '@/data/bagua'
 import { getYaoLines } from '@/data/yao_lines'
 import { steps, TIAN_GAN_LIST, BAGUA_IDS, type HexItem } from '@/data/liuyao-steps'
+import { cardBase } from '@/constants'
 
 // ─── 所有六十四卦 ───
 
@@ -61,7 +62,6 @@ export default function LiuyaoPage() {
   const cuoName = allHexagrams.find(x => x.key === cuoKey)
   const zongName = allHexagrams.find(x => x.key === zongKey)
 
-  const cardBase = 'bg-[var(--card)] border border-[var(--border)] rounded-xl'
 
   // 当位示例文本
   const [matchLabel, misLabel] = getDangweiSummary(upperId, lowerId)

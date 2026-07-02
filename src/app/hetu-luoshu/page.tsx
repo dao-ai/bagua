@@ -4,6 +4,7 @@ import { useState } from 'react'
 import PageHeader from '@/components/PageHeader'
 import { RubyText } from '@/components/Ruby'
 import { HetuSVG, LuoshuSVG, CompareSVG } from '@/components/HetuLuoshuSVGs'
+import { cardBase } from '@/constants'
 
 
 // ─── 数据 ───
@@ -77,7 +78,6 @@ const histories = [
   { era: '现代 · 科学视角', content: '现代学者从不同角度研究河图洛书：数学史家发现了洛书是世界上最早的幻方；天文史家认为河图与北斗七星的天文观测有关；考古学家推测河洛图式可能是新石器时代玉石器上的纹饰抽象化结果。无论哪种解释，河图洛书作为人类早期数学成就和哲学抽象的代表，其价值都是不可否定的。' },
 ]
 
-const cardBase = 'bg-[var(--card)] border border-[var(--border)] rounded-xl'
 
 // ─── 主组件 ───
 

@@ -3,6 +3,7 @@ import usePageTitle from '@/hooks/usePageTitle'
 import { useState } from 'react'
 import PageHeader from '@/components/PageHeader'
 import { RubyText } from '@/components/Ruby'
+import { cardBase } from '@/constants'
 
 // ─── 十翼数据 ───
 
@@ -202,7 +203,6 @@ const famousQuotes = [
   { text: '乾刚坤柔，比乐师忧。', source: '《杂卦传》', topic: '卦义对比' },
 ]
 
-const cardBase = 'bg-[var(--card)] border border-[var(--border)] rounded-xl'
 
 // ─── 主组件 ───
 

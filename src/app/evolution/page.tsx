@@ -2,6 +2,7 @@
 import usePageTitle from '@/hooks/usePageTitle'
 import { useState } from 'react'
 import PageHeader from '@/components/PageHeader'
+import { cardBase } from '@/constants'
 
 // ─── 时代数据 ───
 
@@ -241,7 +242,6 @@ function EvolutionTree() {
 
 // ─── 常量 ───
 
-const cardBase = 'bg-[var(--card)] border border-[var(--border)] rounded-xl'
 
 // ─── 组件 ───
 

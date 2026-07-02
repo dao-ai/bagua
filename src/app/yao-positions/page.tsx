@@ -9,6 +9,7 @@ import { getYaoLines } from '@/data/yao_lines'
 import type { YaoLine as YaoLineType } from '@/data/bagua'
 import { posInfo, relations, positionRules, allHexagrams } from '@/data/yaoPositions'
 import type { PosInfo, RelationInfo, PositionRule } from '@/data/yaoPositions'
+import { cardBase } from '@/constants'
 
 const baguaIds = baguaList.map(b => b.id)
 
@@ -26,7 +27,6 @@ function get6Yao(key: string): number[] | null {
 
 // ─── 样式常量 ───
 
-const cardBase = 'bg-[var(--card)] border border-[var(--border)] rounded-xl'
 
 // ─── 主组件 ───
 

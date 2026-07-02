@@ -4,6 +4,7 @@ import { useState } from 'react'
 import PageHeader from '@/components/PageHeader'
 import { RubyText } from '@/components/Ruby'
 import { TaijiToBitSVG, LeibnizBinarySVG, SixBitSVG, LogicGateSVG } from '@/components/YiComputerSVGs'
+import { cardBase } from '@/constants'
 
 const parallels = [
   {
@@ -65,7 +66,6 @@ const leibnizHistory = [
   { year: '1716', event: '莱布尼茨去世。他始终认为二进制是对宇宙真理的表达——"从无中生有"（Ex nihilo omnia fiunt）——跟"太极生两仪"异曲同工。' },
 ]
 
-const cardBase = 'bg-[var(--card)] border border-[var(--border)] rounded-xl'
 
 export default function YiComputerPage() {
   usePageTitle()

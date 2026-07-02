@@ -5,8 +5,8 @@ import PageHeader from '@/components/PageHeader'
 import { RubyText } from '@/components/Ruby'
 import { divinationMethods, baguaTable, shengKeRelations, wuxingCycle } from '@/data/meihua'
 import type { DivinationMethod, ShengKeRelation } from '@/data/meihua'
+import { cardBase } from '@/constants'
 
-const cardBase = 'bg-[var(--card)] border border-[var(--border)] rounded-xl'
 
 export default function MeihuaPage() {
   usePageTitle()
