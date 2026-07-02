@@ -1,27 +1,44 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:where(.dark, .dark *));
+/* ═══════════════════════════════════════
+   主题 — 所有颜色定义集中在此
+   JS 侧只需给 <html> 加 .classic 类即可切换
+   ═══════════════════════════════════════ */
 
-@theme {
-  --color-bg: #0b1120;
-  --color-bg2: #141d33;
-  --color-bg3: #1e2a45;
-  --color-fg: #e2e8f0;
-  --color-muted: #7e8ba3;
-  --color-accent: #d97706;
-  --color-accent2: #f59e0b;
-  --color-card: #141d33;
-  --color-border: #1e2a45;
-  --color-yang: #f59e0b;
-  --color-yin: #4a5a7a;
-  --color-risk: #f87171;
-  --color-classic-bg: #f5f0e8;
-  --color-classic-bg2: #efe8d8;
-  --color-classic-bg3: #e0d5c0;
-  --color-classic-fg: #3d2b1f;
-  --color-classic-muted: #8b7355;
-  --color-classic-accent: #c23b22;
-  --color-classic-accent2: #a52a2a;
+:root {
+  /* 暗色主题（默认） */
+  --bg: #0b1120;
+  --bg2: #141d33;
+  --bg3: #1e2a45;
+  --fg: #e2e8f0;
+  --muted: #7e8ba3;
+  --accent: #d97706;
+  --accent2: #f59e0b;
+  --card: #141d33;
+  --border: #1e2a45;
+  --yang: #f59e0b;
+  --yin: #4a5a7a;
+  --risk: #f87171;
+  --glow: rgba(245,158,11,.15);
+  --shadow: rgba(0,0,0,.4);
+}
+
+:root.classic {
+  /* 古典/宣纸主题 */
+  --bg: #f5f0e8;
+  --bg2: #efe8d8;
+  --bg3: #fcf9f2;
+  --fg: #3d2b1f;
+  --muted: #8b7355;
+  --accent: #c23b22;
+  --accent2: #a52a2a;
+  --card: #ffffff;
+  --border: #d4c5a9;
+  --yang: #3d2b1f;
+  --yin: #a09070;
+  --risk: #c23b22;
+  --glow: rgba(194,59,34,.1);
+  --shadow: rgba(60,40,20,.12);
 }
 
 /* ===== 字体 ===== */

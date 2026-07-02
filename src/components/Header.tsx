@@ -30,6 +30,7 @@ const tabs = [
   { href: '/evolution', label: '易学流变', exact: false, group: '学习' },
   { href: '/solar-terms', label: '卦象节气', exact: false, group: '探索' },
   { href: '/yijing-computer', label: '易与计算机', exact: false, group: '探索' },
+  { href: '/yijing-language', label: '易与语言', exact: false, group: '探索' },
   { href: '/glossary', label: '术语', exact: false, group: '学习' },
   { href: '/history', label: '占卜记录', exact: false, group: '探索' },
 ]
@@ -65,14 +66,13 @@ export default function Header() {
     const saved = localStorage.getItem('bg-theme')
     const isDark = saved !== 'classic'
     if (isDark !== dark) setDark(isDark)
-    applyTheme(isDark)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // 用户切换时：保存并应用
+  // 用户切换时：保存并切换 class
   useEffect(() => {
     localStorage.setItem('bg-theme', dark ? 'dark' : 'classic')
-    applyTheme(dark)
+    document.documentElement.classList.toggle('classic', !dark)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dark])
 
@@ -93,26 +93,6 @@ export default function Header() {
     setMobileMenuOpen(false)
     if (moreRef.current) moreRef.current.open = false
   }, [pathname])
-
-  function applyTheme(isDark: boolean) {
-    const vars: [string, string, string][] = [
-      ['--bg', '#0b1120', '#f5f0e8'],
-      ['--bg2', '#141d33', '#efe8d8'],
-      ['--bg3', '#1e2a45', '#fcf9f2'],
-      ['--fg', '#e2e8f0', '#3d2b1f'],
-      ['--muted', '#7e8ba3', '#8b7355'],
-      ['--accent', '#d97706', '#c23b22'],
-      ['--accent2', '#f59e0b', '#a52a2a'],
-      ['--card', '#141d33', '#ffffff'],
-      ['--border', '#1e2a45', '#d4c5a9'],
-      ['--yang', '#f59e0b', '#3d2b1f'],
-      ['--yin', '#4a5a7a', '#a09070'],
-      ['--risk', '#f87171', '#c23b22'],
-      ['--glow', 'rgba(245,158,11,.15)', 'rgba(194,59,34,.1)'],
-      ['--shadow', 'rgba(0,0,0,.4)', 'rgba(60,40,20,.12)'],
-    ]
-    vars.forEach(([k, d, c]) => document.documentElement.style.setProperty(k, isDark ? d : c))
-  }
 
   const toggleTheme = () => setDark(d => !d)
 
@@ -147,6 +127,7 @@ export default function Header() {
     '/glossary': '术语解释 · 易经核心术语速查',
     '/history': '占卜记录 · 起卦历史查询',
     '/gallery': '卦象画廊 · 六十四卦全屏禅意浏览体验',
+  '/yijing-language': '易经与现代语言 · 八卦衍生到现代汉语的200+条词汇和成语',
   '/fuxi': '伏羲六十四卦方圆图 · 邵雍皇极经世',
   '/solar-terms': '卦象与节气 · 二十四节气配八卦，阴阳消长天人合一',
   }

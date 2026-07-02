@@ -42,6 +42,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="zh-CN">
       <body className={`min-h-screen ${notoSerif.variable}`} style={{ background: 'var(--bg)', color: 'var(--fg)' }}>
+        {/* 防止主题闪烁：在 React 渲染前应用 localStorage 中的主题 */}
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            (function(){
+              try {
+                if (localStorage.getItem('bg-theme') === 'classic') {
+                  document.documentElement.classList.add('classic');
+                }
+              } catch(e){}
+            })();
+          `,
+        }} />
         {/* WebMCP — AI agent 动作发现 */}
         <link rel="mcp-actions" href="/mcp-actions.json" />
 
