@@ -3,7 +3,10 @@
 import { useState, useEffect, useMemo } from 'react'
 import usePageTitle from '@/hooks/usePageTitle'
 import PageHeader from '@/components/PageHeader'
+import dynamic from 'next/dynamic'
 import YaoLine from '@/components/Yao'
+
+const ThreeYaoHexagram = dynamic(() => import('@/components/ThreeYaoHexagram'), { ssr: false })
 import { RubyText, Ruby } from '@/components/Ruby'
 import { baguaMap, getHexagramName, getHexagramSymbol, computeHexagramChange, YAO_LABELS } from '@/data/bagua'
 import { hexagramOrder, getHexagramDetail } from '@/data/hexagrams'
@@ -166,55 +169,23 @@ export default function SimulatorPage() {
               {/* 卦符 */}
               <div className="text-[48px] mb-2">{currentSymbol}</div>
 
-              {/* 爻线 — 可点击 */}
-              <div className="flex flex-col items-center gap-[3px] my-3">
-                {[0,1,2,3,4,5].map(i => {
-                  const isActive = activeIndex === i
-                  let animClass = ''
-                  if (isActive && animPhase === 'flash') animClass = 'yl-flash'
-                  if (isActive && animPhase === 'flip') {
-                    // 结果变卦后该爻变化
-                    const r = result
-                    if (r) {
-                      animClass = r.movingChange === '阳变阴' ? 'yl-flip-yang' : 'yl-flip-yin'
-                    }
+              {/* 3D 卦象 */}
+              <ThreeYaoHexagram
+                lines={[
+                  currentYao6[5], currentYao6[4], currentYao6[3],
+                  currentYao6[2], currentYao6[1], currentYao6[0],
+                ]}
+                changingIndex={animPhase === 'done' ? activeIndex : (animPhase !== 'idle' ? activeIndex : undefined)}
+                interactive={animPhase === 'idle' || animPhase === 'done'}
+                size={260}
+                autoRotate={false}
+                showLabels
+                onYaoClick={(i) => {
+                  if (animPhase === 'idle' || animPhase === 'done') {
+                    handleYaoClick(5 - i)
                   }
-                  const isChanged = result && animPhase === 'done' && isActive
-                  const yangValue = isChanged ? result!.changedYao6[i] === 1 : currentYao6[i] === 1
-
-                  return (
-                    <div
-                      key={i}
-                      className={`flex items-center gap-3 cursor-pointer group ${
-                        isActive && animPhase !== 'idle' && animPhase !== 'done' ? 'pointer-events-none' : 'hover:opacity-80'
-                      }`}
-                      onClick={() => {
-                        if (animPhase === 'idle' || animPhase === 'done') {
-                          handleYaoClick(i)
-                        }
-                      }}
-                    >
-                      {/* 爻位标签 */}
-                      <div className="text-[10px] text-[var(--muted)] w-8 text-right shrink-0 group-hover:text-[var(--accent2)] transition-colors whitespace-nowrap">
-                        {YAO_LABELS[5 - i]}
-                      </div>
-
-                      {/* 爻线 */}
-                      {isChanged ? (
-                        <YaoLine yang={yangValue} className="shadow-[0_0_10px_var(--accent)] rounded-sm" />
-                      ) : (
-                        <YaoLine
-                          yang={yangValue}
-                          animClass={animClass}
-                          className={`${isActive ? 'shadow-[0_0_12px_var(--accent),0_0_28px_var(--glow)] yl-moving' : ''}
-                            ${!isActive && (animPhase === 'idle' || animPhase === 'done') ? 'group-hover:shadow-[0_0_8px_var(--glow)]' : ''}
-                            rounded-sm transition-shadow duration-200`}
-                        />
-                      )}
-                    </div>
-                  )
-                })}
-              </div>
+                }}
+              />
 
               {/* 卦名 — 使用与爻线相同的flex偏移，保证对齐 */}
               <div className="mt-2">
