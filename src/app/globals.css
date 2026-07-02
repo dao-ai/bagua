@@ -116,6 +116,12 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* 展开卡片滑入 */
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 @keyframes menuSlide {
   from { opacity: 0; transform: scaleY(0); }
   to { opacity: 1; transform: scaleY(1); }
