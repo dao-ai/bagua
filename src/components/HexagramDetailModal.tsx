@@ -50,13 +50,13 @@ export default function HexagramDetailModal({ hexagramKey, onClose }: Props) {
           autoRotate={false}
           onYaoClick={(i) => setHoveredYao(i === hoveredYao ? null : i)}
         />
-        {hoveredYao !== null && detail?.yaoLines?.[5 - hoveredYao] && (
+        {hoveredYao !== null && detail?.yaoLines?.[hoveredYao] && (
           <div className="mt-3 text-center text-sm">
             <span className="text-[var(--accent2)] font-mono text-xs">
-              {detail.yaoLines[5 - hoveredYao].pos}
+              {detail.yaoLines[hoveredYao].pos}
             </span>
             <span className="ml-2 text-[var(--muted)]">
-              {detail.yaoLines[5 - hoveredYao].text}
+              {detail.yaoLines[hoveredYao].text}
             </span>
           </div>
         )}
