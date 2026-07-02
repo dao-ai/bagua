@@ -47,7 +47,7 @@ export default function ThreeYaoHexagram({
     <div style={{ width: size, height: Math.round(size * 0.85) }}>
       <Suspense fallback={<YaoSkeleton size={size} />}>
         <Canvas
-          camera={{ position: [0, 3, 5], fov: 50 }}
+          camera={{ position: [0, 3, 7], fov: 50 }}
           dpr={[1, 1.5]}
           frameloop="demand"
           gl={{ antialias: true }}
