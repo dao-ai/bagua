@@ -68,6 +68,7 @@ export default function ThreeYaoHexagram({
 
           {interactive && (
             <OrbitControls
+              target={[0, 3, 0]}
               enablePan={false}
               minDistance={3}
               maxDistance={10}
@@ -78,6 +79,7 @@ export default function ThreeYaoHexagram({
 
           {!interactive && autoRotate && (
             <OrbitControls
+              target={[0, 3, 0]}
               enableZoom={false}
               enablePan={false}
               enableRotate={false}
