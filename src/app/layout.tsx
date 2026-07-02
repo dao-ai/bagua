@@ -4,6 +4,7 @@ import './globals.css'
 import Header from '@/components/Header'
 import Providers from '@/components/Providers'
 import InstallPrompt from '@/components/InstallPrompt'
+import ErrorBoundary from '@/components/ErrorBoundary'
 
 const notoSerif = Noto_Serif_SC({
   weight: ['400', '600', '700'],
@@ -74,7 +75,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>
           <div className="max-w-[960px] mx-auto px-5">
             <Header />
-            <main className="py-8 animate-[fadeIn_0.4s_ease]">{children}</main>
+            <ErrorBoundary>
+              <main className="py-8 animate-[fadeIn_0.4s_ease]">{children}</main>
+            </ErrorBoundary>
             {/* 底部反馈区 */}
             <footer className="pt-10 pb-8 border-t border-[var(--border)]">
               {/* 装饰线 — 阴阳爻 */}
