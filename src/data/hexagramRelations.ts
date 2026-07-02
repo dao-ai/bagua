@@ -1,4 +1,4 @@
-import { baguaMap, getHexagramName, getHexagramSymbol, buildYao6, yao6ToTrigramIds } from './bagua'
+import { getHexagramName, getHexagramSymbol, buildYao6, yao6ToTrigramIds } from './bagua'
 
 export interface RelationResult {
   upperId: string
