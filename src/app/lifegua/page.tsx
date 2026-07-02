@@ -30,16 +30,6 @@ interface RecentEntry {
   yearBaguaId: string
 }
 
-function GuaBadge({ symbol, name, number }: { symbol: string; name: string; number: number }) {
-  return (
-    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--bg3)] text-sm">
-      <span className="text-lg">{symbol}</span>
-      <span className="font-semibold">{name}</span>
-      <span className="text-[10px] text-[var(--muted)]">{number}宫</span>
-    </div>
-  )
-}
-
 export default function LifeGuaPage() {
   usePageTitle()
   const [year, setYear] = useState('1980')

@@ -1,10 +1,9 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import { useRouter } from 'next/navigation'
 import usePageTitle from '@/hooks/usePageTitle'
 import PageHeader from '@/components/PageHeader'
-import YaoLine, { HexagramDisplay } from '@/components/Yao'
+import YaoLine from '@/components/Yao'
 import { RubyText, Ruby } from '@/components/Ruby'
 import { baguaMap, getHexagramName, getHexagramSymbol, computeHexagramChange, YAO_LABELS } from '@/data/bagua'
 import { hexagramOrder, getHexagramDetail } from '@/data/hexagrams'
@@ -13,7 +12,6 @@ import HexagramRelations from '@/components/HexagramRelations'
 
 export default function SimulatorPage() {
   usePageTitle()
-  const router = useRouter()
 
   // 当前选中的卦 — 默认需卦（坎上乾下）
   const [selected, setSelected] = useState<{ upperId: string; lowerId: string }>({ upperId: 'kan', lowerId: 'qian' })

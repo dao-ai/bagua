@@ -24,13 +24,6 @@ const directionLabels: Record<string, { label: string; angle: number }> = {
 }
 
 // 五行颜色
-const elementColors: Record<string, string> = {
-  '木': '#4ade80',
-  '火': '#f87171',
-  '土': '#fbbf24',
-  '金': '#fbbf24',
-  '水': '#60a5fa',
-}
 
 // Draw trigram lines (3 yao: bottom→top order in yao array)
 function drawYao(yao: number[], x: number, y: number, color: string): string {

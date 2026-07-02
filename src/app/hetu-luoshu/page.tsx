@@ -2,7 +2,6 @@
 import usePageTitle from '@/hooks/usePageTitle'
 import { useState } from 'react'
 import PageHeader from '@/components/PageHeader'
-import { RubyText } from '@/components/Ruby'
 import { HetuSVG, LuoshuSVG, CompareSVG } from '@/components/HetuLuoshuSVGs'
 import { cardBase } from '@/constants'
 

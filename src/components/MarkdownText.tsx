@@ -109,7 +109,6 @@ function TextBlock({ text }: { text: string }) {
 
 function InlineText({ text }: { text: string }) {
   const parts: ReactNode[] = []
-  let lastIdx = 0
   let key = 0
 
   // 按 \n 分段

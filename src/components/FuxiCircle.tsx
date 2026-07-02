@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { fuxiOrderedHexagrams, type FuxiHexagram, getYangRatio } from '@/data/fuxi'
+import { fuxiOrderedHexagrams, getYangRatio } from '@/data/fuxi'
 import HexagramDetailModal from '@/components/HexagramDetailModal'
 
 interface FuxiCircleProps {

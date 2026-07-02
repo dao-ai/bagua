@@ -1,10 +1,10 @@
 'use client'
 import usePageTitle from '@/hooks/usePageTitle'
 
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import PageHeader from '@/components/PageHeader'
 import { RubyText } from '@/components/Ruby'
-import { baguaList, baguaMap, numToBagua } from '@/data/bagua'
+import { baguaMap } from '@/data/bagua'
 
 /** 先天八卦方位（邵雍伏羲八卦） */
 const XIAN_TIAN: { id: string; label: string; position: string }[] = [

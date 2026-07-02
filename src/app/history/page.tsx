@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import usePageTitle from '@/hooks/usePageTitle'
-import PageHeader from '@/components/PageHeader'
 import { HexagramDisplay } from '@/components/Yao'
 import { RubyText, Ruby } from '@/components/Ruby'
 import { getHexagramDetail } from '@/data/hexagrams'

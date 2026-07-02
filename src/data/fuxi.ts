@@ -8,7 +8,7 @@
 //   乾(7)×8+乾(7)=63  坤(0)×8+坤(0)=0
 //   复(0)×8+震(4)=32  姤(7)×8+巽(3)=59
 
-import { baguaList, baguaIndex, baguaMap, hexagramSymbol, hexagramNames, getHexagramName } from './bagua'
+import { baguaMap, hexagramSymbol, getHexagramName } from './bagua'
 
 /** 先天八卦伏羲数映射 */
 export const fuxiBaguaOrder: Record<string, number> = {
@@ -123,17 +123,8 @@ export const fuxiOrderedHexagrams: FuxiHexagram[] = (() => {
 // 所以需要一个映射：baguaIndex→fuxiBaguaOrder
 
 /** 八卦id → baguaIndex行号 */
-const baguaIndexRow = baguaIndex
 
 /** 从伏羲八卦数获取hexagramNames的行列号 */
-function getRowCol(fuxiLower: number, fuxiUpper: number): { row: number; col: number } {
-  const lowerId = fuxiNumToId[fuxiLower]
-  const upperId = fuxiNumToId[fuxiUpper]
-  return {
-    row: baguaIndexRow[lowerId],
-    col: baguaIndexRow[upperId],
-  }
-}
 
 /**
  * 伏羲方图数据 — 8×8

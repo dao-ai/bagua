@@ -6,7 +6,6 @@ import { RubyText } from '@/components/Ruby'
 import YaoLine from '@/components/Yao'
 import { baguaList, getHexagramName } from '@/data/bagua'
 import { getYaoLines } from '@/data/yao_lines'
-import type { YaoLine as YaoLineType } from '@/data/bagua'
 import { posInfo, relations, positionRules, allHexagrams } from '@/data/yaoPositions'
 import type { PosInfo, RelationInfo, PositionRule } from '@/data/yaoPositions'
 import { cardBase } from '@/constants'
@@ -37,12 +36,8 @@ export default function YaoPositionsPage() {
   const [selectedPos, setSelectedPos] = useState<number | null>(null)
   // 爻间关系：当前展开的关系
   const [expandedRelation, setExpandedRelation] = useState<string | null>(null)
-  // 当位/不当位 当前展开的概念
-  const [expandedConcept, setExpandedConcept] = useState<string | null>(null)
   // 选中用于分析的卦
   const [selectedHexagram, setSelectedHexagram] = useState('kun-qian') // 默认泰卦
-  // 移动端交互方向
-  const [mobileSlide, setMobileSlide] = useState(0)
 
   const hexYao = useMemo(() => get6Yao(selectedHexagram), [selectedHexagram])
   const hexYaoLines = useMemo(() => getYaoLines(selectedHexagram), [selectedHexagram])
@@ -535,7 +530,6 @@ export default function YaoPositionsPage() {
         {/* 分析总结 */}
         {hexYao && (() => {
           const dangweiCount = [0,1,2,3,4,5].filter(i => isDangwei(i, hexYao[i] === 1)).length
-          const zhongCount = [0,1,2,3,4,5].filter(i => (i === 1 || i === 4)).length
           const yingCount = [0,1,2].filter(i => {
             const yang = hexYao[i] === 1
             const yingYang = hexYao[i+3] === 1

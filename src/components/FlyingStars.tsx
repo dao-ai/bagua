@@ -53,17 +53,6 @@ const PALACES: Palace[] = [
 ]
 
 // 九宫网格位置（row,col）-> palace index
-const GRID_MAP: Record<string, number> = {
-  '0,0': 6,  // 西南
-  '0,1': 3,  // 南
-  '0,2': 0,  // 西北
-  '1,0': 7,  // 西
-  '1,1': 4,  // 中
-  '1,2': 1,  // 东（这是九宫在视觉上的布局——注意这里的 col 方向）
-  '2,0': 8,  // 东南
-  '2,1': 5,  // 北
-  '2,2': 2,  // 东北
-}
 
 // 洛书飞行路径（顺飞）：从 5 开始，5→6→7→8→9→1→2→3→4
 const FLIGHT_PATH = [5, 6, 7, 8, 9, 1, 2, 3, 4]
@@ -133,21 +122,14 @@ const MONTHS = [
 ]
 
 /** 月对应农历 */
-function toLunarMonth(year: number, calendarMonth: number): number {
-  // 公历月份粗略对应农历月份（年初月份）
-  // 简化处理：公历月份-1作为农历月份近似
-  // 实际上需要查农历，这里做简化
-  return ((calendarMonth + 9) % 12) + 1
-}
 
 // ─── 组件 ───
 
 export default function FlyingStars() {
   const today = new Date()
   const [year, setYear] = useState(today.getFullYear())
-  const [useMonth, setUseMonth] = useState(false)
   const [month, setMonth] = useState(today.getMonth() + 1)
-  const [showPath, setShowPath] = useState(true)
+  const [showPath] = useState(true)
   const [showLines, setShowLines] = useState(false)
   const [animating, setAnimating] = useState(false)
   const [animStep, setAnimStep] = useState(-1)

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, useMemo } from 'react'
-import { baguaMap, getHexagramName, getHexagramSymbol } from '@/data/bagua'
+import { baguaMap } from '@/data/bagua'
 import { hexagramDetail } from '@/data/hexagrams'
 import { fuxiOrderedHexagrams } from '@/data/fuxi'
 

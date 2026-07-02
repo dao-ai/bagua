@@ -4,7 +4,7 @@ import usePageTitle from '@/hooks/usePageTitle'
 import { useState, useEffect } from 'react'
 import Modal from '@/components/Modal'
 import PageHeader from '@/components/PageHeader'
-import { RubyText, Ruby } from '@/components/Ruby'
+import { RubyText } from '@/components/Ruby'
 import { YaoDisplay } from '@/components/Yao'
 import { baguaList, type Bagua } from '@/data/bagua'
 

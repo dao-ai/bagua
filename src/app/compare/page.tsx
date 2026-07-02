@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react'
 import usePageTitle from '@/hooks/usePageTitle'
 import PageHeader from '@/components/PageHeader'
 import { RubyText } from '@/components/Ruby'
-import { baguaList, baguaMap, getHexagramName, getHexagramSymbol } from '@/data/bagua'
+import { baguaMap, getHexagramName, getHexagramSymbol } from '@/data/bagua'
 import { hexagramOrder, getHexagramDetail } from '@/data/hexagrams'
 
 /** 八经卦五行 */

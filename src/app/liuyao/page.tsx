@@ -7,8 +7,7 @@ import LiuyaoPan from '@/components/LiuyaoPan'
 import { computeLiuyao, LIU_SHEN_ICON, LIU_QIN_COLOR, WUXING_COLOR, LIU_SHEN_COLOR, TIAN_GAN, LIU_QIN } from '@/data/liuyao'
 import type { LiuyaoResult } from '@/data/liuyao'
 import { baguaList, getHexagramName, getHexagramSymbol, baguaMap } from '@/data/bagua'
-import { getYaoLines } from '@/data/yao_lines'
-import { steps, TIAN_GAN_LIST, BAGUA_IDS, type HexItem } from '@/data/liuyao-steps'
+import { steps, BAGUA_IDS, type HexItem } from '@/data/liuyao-steps'
 import { cardBase } from '@/constants'
 
 // ─── 所有六十四卦 ───
@@ -300,9 +299,6 @@ function countEach(items: string[]): Record<string, number> {
 function getCuoKey(lowerId: string, upperId: string): string {
   const lb = baguaMap[lowerId]; const ub = baguaMap[upperId]
   if (!lb || !ub) return ''
-  const cuoLower = baguaList.find(b => b.yao[0] !== lb.yao[0] && b.yao[1] !== lb.yao[1] && b.yao[2] !== lb.yao[2])
-  const cuoUpper = baguaList.find(b => b.yao[0] !== ub.yao[0] && b.yao[1] !== ub.yao[1] && b.yao[2] !== ub.yao[2])
-  // simpler: find by inverse yao
   const cl = baguaList.find(b => b.yao[0] === (lb.yao[0] ? 0 : 1) && b.yao[1] === (lb.yao[1] ? 0 : 1) && b.yao[2] === (lb.yao[2] ? 0 : 1))
   const cu = baguaList.find(b => b.yao[0] === (ub.yao[0] ? 0 : 1) && b.yao[1] === (ub.yao[1] ? 0 : 1) && b.yao[2] === (ub.yao[2] ? 0 : 1))
   return cl && cu ? `${cl.id}-${cu.id}` : ''

@@ -4,7 +4,7 @@ import usePageTitle from '@/hooks/usePageTitle'
 import { useState, useMemo, useRef } from 'react'
 import PageHeader from '@/components/PageHeader'
 import { RubyText } from '@/components/Ruby'
-import { baguaList, baguaMap, getHexagramName, getHexagramSymbol, BAGUA_WUXING } from '@/data/bagua'
+import { baguaMap, getHexagramName, getHexagramSymbol, BAGUA_WUXING } from '@/data/bagua'
 import { hexagramOrder, getHexagramDetail } from '@/data/hexagrams'
 
 // DeepSeek API 配置

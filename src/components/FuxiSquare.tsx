@@ -80,7 +80,6 @@ export default function FuxiSquare({ highlightKey }: FuxiSquareProps) {
             // fuxiSquareGrid[0] = 坤(行), fuxiSquareGrid[7] = 乾(行)
             // 显示时行从上到下 = 乾→坤
             const displayRowIndex = 7 - ri
-            const actualRow = fuxiSquareGrid[displayRowIndex]
             const rowLabel = fuxiSquareRowLabels[displayRowIndex]
 
             return (

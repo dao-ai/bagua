@@ -11,7 +11,6 @@ import { cardBase } from '@/constants'
 export default function MeihuaPage() {
   usePageTitle()
 
-  const [expandedSection, setExpandedSection] = useState<string | null>(null)
   const [expandedRelation, setExpandedRelation] = useState<string | null>(null)
   const [expandedMethod, setExpandedMethod] = useState<string | null>(null)
 

@@ -9,7 +9,6 @@ import {
 } from '@/data/bagua'
 import { getHexagramDetail } from '@/data/hexagrams'
 import type { FuxiHexagram } from '@/data/fuxi'
-import type { YaoLine } from '@/data/bagua'
 import usePageTitle from '@/hooks/usePageTitle'
 
 // ─── 太极阴阳鱼 SVG ─────────────────────────────────────────────

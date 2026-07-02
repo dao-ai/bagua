@@ -37,18 +37,6 @@ function yarrowBian(stalks: number): {
 }
 
 /** 三变得一爻 */
-function yarrowYao(): { value: number; label: string; bianRecords: BianRecord[] } {
-  let remaining = 49
-  const bianRecords: BianRecord[] = []
-  for (let i = 0; i < 3; i++) {
-    const r = yarrowBian(remaining)
-    bianRecords.push(r)
-    remaining = r.remaining
-  }
-  const yao = remaining / 4 // 24/4=6, 28/4=7, 32/4=8, 36/4=9
-  const labels: Record<number, string> = { 6: '老阴⚋', 7: '少阳⚊', 8: '少阴⚋', 9: '老阳⚊' }
-  return { value: yao, label: labels[yao] || `${yao}?`, bianRecords }
-}
 
 interface BianRecord {
   taken: number
@@ -279,7 +267,6 @@ export default function YarrowDivination({ onComplete }: YarrowDivinationProps) 
         addLog('═══════════════════════════')
         addLog('🏆 六爻皆备！卦象已成！')
         addLog(`${newValues.map(v => {
-          const s = v === 6 || v === 8 ? '⚋' : '⚊'
           return v === 6 ? '⚋(老阴)' : v === 9 ? '⚊(老阳)' : v === 7 ? '⚊(少阳)' : '⚋(少阴)'
         }).join(' · ')}`)
         setTimeout(() => {
