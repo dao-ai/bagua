@@ -2,13 +2,15 @@
 import usePageTitle from '@/hooks/usePageTitle'
 
 import { useState, useEffect } from 'react'
+import dynamic from 'next/dynamic'
 import PageHeader from '@/components/PageHeader'
 import Modal from '@/components/Modal'
 import { RubyText, Ruby } from '@/components/Ruby'
 import { baguaMap, getHexagramName, getHexagramSymbol } from '@/data/bagua'
 import { getHexagramDetail, hexagramOrder } from '@/data/hexagrams'
-import ShareCard from '@/components/ShareCard'
 import HexagramRelations from '@/components/HexagramRelations'
+
+const ShareCard = dynamic(() => import('@/components/ShareCard'))
 
 export default function HexagramsPage() {
   usePageTitle()

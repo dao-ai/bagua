@@ -15,7 +15,8 @@ import { baguaMap, numToBagua, computeHexagramChange } from '@/data/bagua'
 import { getHexagramDetail } from '@/data/hexagrams'
 import type { DivineResult } from '@/hooks/divineTypes'
 import HexagramRelations from '@/components/HexagramRelations'
-import ShareCard from '@/components/ShareCard'
+
+const ShareCard = dynamic(() => import('@/components/ShareCard'))
 import { useDivineHistory, resultToRecord } from '@/hooks/useDivineHistory'
 import LiuyaoPan from '@/components/LiuyaoPan'
 import { computeLiuyao } from '@/data/liuyao'

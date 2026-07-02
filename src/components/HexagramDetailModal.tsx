@@ -1,12 +1,14 @@
 'use client'
 
 import { useState } from 'react'
+import dynamic from 'next/dynamic'
 import Modal from '@/components/Modal'
 import { RubyText, Ruby } from '@/components/Ruby'
 import { baguaMap, getHexagramName, getHexagramSymbol } from '@/data/bagua'
 import { getHexagramDetail } from '@/data/hexagrams'
 import HexagramRelations from '@/components/HexagramRelations'
-import ShareCard from '@/components/ShareCard'
+
+const ShareCard = dynamic(() => import('@/components/ShareCard'))
 
 interface Props {
   hexagramKey: string | null   // "upperId-lowerId"
