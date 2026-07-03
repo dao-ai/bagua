@@ -16,6 +16,7 @@ interface ThreeYaoHexagramProps {
   autoRotate?: boolean
   showLabels?: boolean
   onYaoClick?: (index: number) => void
+  use3D?: boolean
 }
 
 export default function ThreeYaoHexagram({
@@ -26,6 +27,7 @@ export default function ThreeYaoHexagram({
   autoRotate = false,
   showLabels = false,
   onYaoClick,
+  use3D = false,
 }: ThreeYaoHexagramProps) {
   // lines are [初,二,三,四,五,上] — render from bottom (y=0) up (y=5*1.2)
   // Three.js Y axis goes up, index 0=初 at bottom, index 5=上 at top
@@ -35,7 +37,8 @@ export default function ThreeYaoHexagram({
     if (interactive) onYaoClick?.(index)
   }
 
-  if (!webgl) {
+  // 默认 2D 渲染，use3D=true + WebGL 支持时才启用 3D
+  if (!webgl || !use3D) {
     return (
       <div style={{ width: size, height: Math.round(size * 0.85) }} className="flex items-center justify-center">
         <HexagramDisplay yao6={lines} />
