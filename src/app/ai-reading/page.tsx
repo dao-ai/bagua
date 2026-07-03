@@ -1,7 +1,7 @@
 'use client'
 import usePageTitle from '@/hooks/usePageTitle'
 
-import { useState, useMemo, useRef } from 'react'
+import { useState, useMemo, useRef, useEffect } from 'react'
 import PageHeader from '@/components/PageHeader'
 import { RubyText } from '@/components/Ruby'
 import { baguaMap, getHexagramName, getHexagramSymbol, BAGUA_WUXING } from '@/data/bagua'
@@ -16,17 +16,71 @@ interface HexData {
   detail: ReturnType<typeof getHexagramDetail>
 }
 
+interface ChatMessage {
+  role: 'user' | 'assistant'
+  content: string
+}
+
+const STORAGE_KEY = 'bagua-api-key'
+
+/** 根据所选卦象生成系统提示词 */
+function buildSystemPrompt(hex: HexData): string {
+  const ub = baguaMap[hex.upperId]
+  const lb = baguaMap[hex.lowerId]
+  const detail = hex.detail
+  const yaoTexts = detail?.yaoLines?.map(y => `${y.pos}：${y.text}（${y.meaning}）`).join('\n') ?? ''
+
+  return `你是一位精通《周易》的易学专家，擅长用现代语言解读卦象。
+
+当前正在讨论的卦象：
+卦名：${hex.name}（${hex.symbol}）
+上卦：${ub.name}（${ub.symbol}）— ${ub.nature}，五行属${BAGUA_WUXING[hex.upperId]}
+下卦：${lb.name}（${lb.symbol}）— ${lb.nature}，五行属${BAGUA_WUXING[hex.lowerId]}
+卦辞：${detail?.judgment ?? '无'}
+象辞：${detail?.image ?? '无'}
+现代释义：${detail?.meaning ?? '无'}
+爻辞：\n${yaoTexts || '无'}
+
+回答要求：
+1. 用现代人的语言，接地气，别太玄乎
+2. 每次回答简洁有力（100-200字），不说废话
+3. 如果用户追问具体领域（事业、感情、健康等），结合卦象给出针对性的建议
+4. 初次解读从"卦象解析、核心价值观、生活指引、一句话总结"四个角度展开
+5. 允许用户追问细节或切换话题，保持对话连贯`
+}
+
 export default function AIReadingPage() {
   usePageTitle()
 
   const [hex, setHex] = useState<HexData | null>(null)
-  const [reading, setReading] = useState('')
+  const [messages, setMessages] = useState<ChatMessage[]>([])
+  const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [apiKey, setApiKey] = useState("")
   const [showKeyInput, setShowKeyInput] = useState(true)
   const [picker, setPicker] = useState(false)
   const [search, setSearch] = useState('')
   const abortRef = useRef<AbortController | null>(null)
+  const listEndRef = useRef<HTMLDivElement>(null)
+
+  // 启动时从 localStorage 读取 API Key
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY)
+    if (saved) {
+      setApiKey(saved)
+      setShowKeyInput(false)
+    }
+  }, [])
+
+  // 组件卸载时取消进行中的请求
+  useEffect(() => {
+    return () => abortRef.current?.abort()
+  }, [])
+
+  // 新消息到达时自动滚动到底部
+  useEffect(() => {
+    listEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages, loading])
 
   const filtered = useMemo(() => {
     if (!search) return hexagramOrder
@@ -35,47 +89,38 @@ export default function AIReadingPage() {
   }, [search])
 
   const selectHex = (u: string, l: string) => {
-    setHex({
+    const newHex = {
       upperId: u, lowerId: l,
       name: getHexagramName(u, l),
       symbol: getHexagramSymbol(u, l),
       detail: getHexagramDetail(u, l),
-    })
-    setReading('')
+    }
+    setHex(newHex)
+    setMessages([])     // 清空对话
+    setInput('')
     setPicker(false)
     setSearch('')
   }
 
-  const doReading = async () => {
+  /** 统一发送消息：首次解读和追问都用这个 */
+  const sendMessage = async (userContent?: string) => {
     if (!hex || !apiKey) return
 
-    // 取消之前的请求
+    // 取消前一次请求
     if (abortRef.current) abortRef.current.abort()
     const controller = new AbortController()
     abortRef.current = controller
 
+    // 构建消息列表
+    const msgs = [...messages]
+    if (userContent) msgs.push({ role: 'user', content: userContent })
+    setMessages([...msgs, { role: 'assistant', content: '' }])
     setLoading(true)
-    setReading('')
 
-    const ub = baguaMap[hex.upperId]
-    const lb = baguaMap[hex.lowerId]
-
-    const prompt = `你是一位精通《周易》的易学专家。请为以下卦象做详细解读。
-
-卦名：${hex.name}（${hex.symbol}）
-上卦：${ub.name}（${ub.symbol}）— ${ub.nature}，五行属${BAGUA_WUXING[hex.upperId]}
-下卦：${lb.name}（${lb.symbol}）— ${lb.nature}，五行属${BAGUA_WUXING[hex.lowerId]}
-卦辞：${hex.detail?.judgment || '无'}
-象辞：${hex.detail?.image || '无'}
-现代释义：${hex.detail?.meaning || '无'}
-
-请从以下角度解读：
-1. **卦象解析** — 上下卦组合的意象，这个卦"长什么样"
-2. **核心价值观** — 这个卦给现代人什么启发
-3. **生活指引** — 工作、学习或人际关系中，这个卦的智慧如何运用
-4. **一句话总结** — 用最精辟的话记住这个卦
-
-注意：用现代人的语言，接地气，别太玄乎。字数控制在300-500字。`
+    const apiMsgs = [
+      { role: 'system', content: buildSystemPrompt(hex) },
+      ...msgs.map(m => ({ role: m.role, content: m.content })),
+    ]
 
     try {
       const res = await fetch(API_URL, {
@@ -86,10 +131,7 @@ export default function AIReadingPage() {
         },
         body: JSON.stringify({
           model: 'deepseek-chat',
-          messages: [
-            { role: 'system', content: '你是一位精通《周易》的易学专家，擅长用现代语言解读卦象。回答简洁有力，不说废话。' },
-            { role: 'user', content: prompt },
-          ],
+          messages: apiMsgs,
           stream: true,
           max_tokens: 2000,
           temperature: 0.7,
@@ -99,7 +141,11 @@ export default function AIReadingPage() {
 
       if (!res.ok) {
         const err = await res.text()
-        setReading(`⚠️ API 错误 (${res.status}): ${err}`)
+        setMessages(prev => {
+          const copy = [...prev]
+          if (copy.length > 0) copy[copy.length - 1].content = `⚠️ API 错误 (${res.status}): ${err}`
+          return copy
+        })
         setLoading(false)
         return
       }
@@ -127,31 +173,57 @@ export default function AIReadingPage() {
             const json = JSON.parse(trimmed.slice(6))
             const content = json.choices?.[0]?.delta?.content || ''
             if (content) {
-              setReading(prev => prev + content)
+              setMessages(prev => {
+                const copy = [...prev]
+                if (copy.length > 0) copy[copy.length - 1].content += content
+                return copy
+              })
             }
           } catch {
-            // skip parse errors for partial chunks
+            // skip partial lines
           }
         }
       }
     } catch (err: unknown) {
       if (err instanceof Error && err.name !== 'AbortError') {
-        setReading(`⚠️ 请求失败: ${err.message}`)
+        setMessages(prev => {
+          const copy = [...prev]
+          if (copy.length > 0) copy[copy.length - 1].content = `⚠️ 请求失败: ${err.message}`
+          return copy
+        })
       }
     }
 
     setLoading(false)
   }
 
+  const handleSubmit = () => {
+    const text = input.trim()
+    if (!text || loading) return
+    setInput('')
+    sendMessage(text)
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSubmit()
+    }
+  }
+
+  // 消息渲染
+  const hasMessages = messages.length > 0
+  const isFirstReading = messages.length === 1 && messages[0].role === 'assistant' && messages[0].content.length > 0 && !loading
+
   return (
     <>
-      <PageHeader title="AI 解卦" subtitle="选一个卦，让人工智能从现代视角解读古人的智慧。" />
+      <PageHeader title="AI 解卦" subtitle="选一个卦，与 AI 易学导师对话交流。" />
 
       {/* API Key 配置 */}
       {showKeyInput && (
         <div className="max-w-[500px] mx-auto mb-4 p-3 rounded-xl bg-[var(--bg3)] border border-[var(--border)]"
           data-mcp-action="configure-api-key"
-          data-mcp-description="配置 DeepSeek API Key。这是使用 AI 解卦功能的前提条件，需要用户提供自己的 DeepSeek API Key。"
+          data-mcp-description="配置 DeepSeek API Key。用户需要提供自己的 API Key 才能使用 AI 解卦功能。"
           data-mcp-params='{"required": ["apiKey"]}'
         >
           <div className="text-[11px] text-[var(--muted)] mb-1.5">
@@ -167,74 +239,126 @@ export default function AIReadingPage() {
               data-mcp-description="DeepSeek API Key，以 sk- 开头。在 platform.deepseek.com 获取。"
               className="flex-1 px-3 py-2 rounded-lg bg-[var(--bg2)] border border-[var(--border)] text-[var(--fg)] text-sm outline-none focus:border-[var(--accent)] caret-[var(--accent)]"
             />
-            <button onClick={() => setShowKeyInput(false)}
+            <button onClick={() => {
+              localStorage.setItem(STORAGE_KEY, apiKey)
+              setShowKeyInput(false)
+            }}
               data-mcp-action="confirm-api-key"
               data-mcp-description="确认并保存 DeepSeek API Key"
-              className="px-3 py-2 text-xs bg-[var(--accent)] text-[var(--bg)] rounded-lg cursor-pointer font-semibold">确认</button>
+              className="px-3 py-2 text-xs bg-[var(--accent)] text-[var(--bg)] rounded-lg cursor-pointer font-semibold whitespace-nowrap">确认并保存</button>
           </div>
         </div>
       )}
 
       {/* 选卦 */}
       <div className="max-w-[500px] mx-auto mb-4">
-        <button
-          onClick={() => setPicker(true)}
-          data-mcp-action="select-hexagram-for-reading"
-          data-mcp-description="从64卦中选择一个卦进行AI解读"
-          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-[var(--card)] border border-[var(--border)] cursor-pointer hover:border-[var(--accent)] transition-colors text-left"
-        >
-          {hex ? (
-            <>
-              <span className="text-[28px]">{hex.symbol}</span>
-              <div className="flex-1">
-                <div className="font-semibold"><RubyText text={hex.name} /></div>
-                <div className="text-[11px] text-[var(--muted)]">
-                  {baguaMap[hex.upperId].name} · {baguaMap[hex.lowerId].name}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setPicker(true)}
+            data-mcp-action="select-hexagram-for-reading"
+            data-mcp-description="从64卦中选择一个卦进行AI解读"
+            className="flex-1 flex items-center gap-3 px-4 py-3 rounded-xl bg-[var(--card)] border border-[var(--border)] cursor-pointer hover:border-[var(--accent)] transition-colors text-left"
+          >
+            {hex ? (
+              <>
+                <span className="text-[28px]">{hex.symbol}</span>
+                <div className="flex-1">
+                  <div className="font-semibold"><RubyText text={hex.name} /></div>
+                  <div className="text-[11px] text-[var(--muted)]">
+                    {baguaMap[hex.upperId].name} · {baguaMap[hex.lowerId].name}
+                  </div>
                 </div>
-              </div>
-              <span className="text-[var(--muted)]">▼</span>
-            </>
-          ) : (
-            <div className="flex-1 text-center py-2 text-[var(--muted)] text-sm">← 选择要解读的卦 →</div>
+                <span className="text-[var(--muted)] text-lg">▼</span>
+              </>
+            ) : (
+              <div className="flex-1 text-center py-2 text-[var(--muted)] text-sm">← 选择要解读的卦 →</div>
+            )}
+          </button>
+
+          {/* 首次解卦按钮 */}
+          {hex && !hasMessages && (
+            <button
+              onClick={() => sendMessage()}
+              disabled={loading || !apiKey}
+              className="px-5 py-3 text-sm font-semibold tracking-wider bg-gradient-to-r from-[var(--accent)] to-[var(--accent2)] text-[var(--bg)] border-none rounded-xl cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_16px_var(--glow)] disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0 shrink-0"
+            >
+              {loading ? '🤔 解卦中…' : '🔮 AI 解卦'}
+            </button>
           )}
-        </button>
+        </div>
+        {!apiKey && (
+          <div className="text-[10px] text-[var(--risk)] mt-1 text-center">请先配置 API Key</div>
+        )}
+        {/* 换卦提示 */}
+        {hex && hasMessages && (
+          <div className="text-[10px] text-[var(--muted)] text-center mt-1 opacity-60">
+            ↻ 选其他卦可开始新对话
+          </div>
+        )}
       </div>
 
-      {/* AI解卦按钮 */}
-      {hex && (
-        <div className="text-center mb-6">
-          <button
-            onClick={doReading}
-            disabled={loading || !apiKey}
-            data-mcp-action="ai-hexagram-reading"
-            data-mcp-description="使用 DeepSeek AI 解读选定的卦象。需要先配置 API Key。调用后会流式输出解读结果，包含卦象解析、核心价值观、生活指引和总结。"
-            className="px-8 py-3 text-sm font-semibold tracking-wider bg-gradient-to-r from-[var(--accent)] to-[var(--accent2)] text-[var(--bg)] border-none rounded-xl cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_16px_var(--glow)] active:translate-y-0 disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0"
-          >
-            {loading ? '🤔 解卦中…' : '🔮 AI 解卦'}
-          </button>
-          {!apiKey && (
-            <div className="text-[10px] text-[var(--risk)] mt-1">请先配置 API Key</div>
-          )}
+      {/* 消息列表 */}
+      {hasMessages && (
+        <div className="max-w-[600px] mx-auto mb-4 space-y-3">
+          {messages.map((msg, i) => (
+            <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+              <div
+                className={`max-w-[85%] rounded-2xl px-4 py-3 text-[13px] leading-relaxed ${
+                  msg.role === 'user'
+                    ? 'bg-[var(--accent)]/15 text-[var(--fg)] rounded-br-md'
+                    : 'bg-[var(--bg3)] text-[var(--fg)] rounded-bl-md'
+                }`}
+              >
+                {msg.role === 'assistant' && i === 0 && hex && (
+                  <div className="text-center mb-3 pb-3 border-b border-[var(--border)]">
+                    <div className="text-[36px] mb-1">{hex.symbol}</div>
+                    <div className="text-[16px] font-bold"><RubyText text={hex.name} /></div>
+                    <div className="text-[10px] text-[var(--muted)]">
+                      {baguaMap[hex.upperId].name} · {baguaMap[hex.lowerId].name}
+                    </div>
+                  </div>
+                )}
+                <div className="whitespace-pre-wrap break-words">{msg.content}</div>
+                {loading && i === messages.length - 1 && msg.role === 'assistant' && (
+                  <span className="inline-block w-[6px] h-[14px] bg-[var(--fg)] ml-0.5 animate-pulse align-text-bottom" />
+                )}
+              </div>
+            </div>
+          ))}
+          <div ref={listEndRef} />
         </div>
       )}
 
-      {/* 解读结果 */}
-      {reading && (
-        <div className="max-w-[600px] mx-auto animate-[fadeIn_0.3s_ease]">
-          <div className="bg-[var(--bg2)] border border-[var(--border)] rounded-2xl p-6">
-            {hex && (
-              <div className="text-center mb-4 pb-4 border-b border-[var(--border)]">
-                <div className="text-[40px] mb-1">{hex.symbol}</div>
-                <div className="text-[18px] font-bold"><RubyText text={hex.name} /></div>
-                <div className="text-[11px] text-[var(--muted)]">{baguaMap[hex.upperId].name} · {baguaMap[hex.lowerId].name}</div>
-              </div>
-            )}
-            <div className="text-[13px] leading-relaxed whitespace-pre-wrap">{reading}</div>
+      {/* 输入框 — 首次解读完成后出现 */}
+      {hasMessages && !loading && (
+        <div className="max-w-[600px] mx-auto sticky bottom-4">
+          <div className="flex gap-2 bg-[var(--card)] border border-[var(--border)] rounded-2xl p-2 shadow-[0_8px_32px_var(--shadow)]">
+            <input
+              type="text"
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="输入你的问题…"
+              disabled={!apiKey}
+              autoFocus
+              className="flex-1 px-4 py-2 bg-transparent text-[var(--fg)] text-sm outline-none placeholder:text-[var(--muted)] disabled:opacity-30"
+            />
+            <button
+              onClick={handleSubmit}
+              disabled={!input.trim() || !apiKey}
+              className="px-4 py-2 text-sm font-semibold bg-[var(--accent)] text-[var(--bg)] rounded-xl cursor-pointer transition-all hover:bg-[var(--accent2)] disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
+            >
+              发送
+            </button>
           </div>
-          <div className="text-center mt-2">
-            <button onClick={() => setReading('')}
-              className="text-[11px] text-[var(--muted)] underline cursor-pointer hover:text-[var(--fg)]">清除结果</button>
-          </div>
+        </div>
+      )}
+
+      {/* 空状态 */}
+      {!hasMessages && hex && (
+        <div className="max-w-[600px] mx-auto text-center py-16">
+          <div className="text-[48px] mb-4 opacity-30">{hex.symbol}</div>
+          <p className="text-sm text-[var(--muted)]">点击「AI 解卦」开始对话</p>
         </div>
       )}
 
@@ -285,9 +409,8 @@ export default function AIReadingPage() {
       )}
 
       <p className="text-xs text-center text-[var(--muted)] mt-4">
-        ⚡ 调用 DeepSeek API，需自行配置 API Key
+        ⚡ 调用 DeepSeek API，需自行配置 API Key。可多轮对话追问卦象细节。
       </p>
     </>
   )
 }
-
