@@ -137,7 +137,7 @@ export default function LifeGuaResult({ result, gender, month, day, shichenIndex
 
         {/* 卦象详情弹窗 */}
         <Dialog open={!!modalGua} onOpenChange={(open) => { if (!open) setModalGua(null) }}>
-          <DialogContent className="max-w-[520px] bg-[var(--bg2)] border-[var(--border)]">
+          <DialogContent className="max-w-[520px] bg-[var(--bg2)] border-[var(--border)] max-h-[90vh] overflow-y-auto thin-scroll">
             <DialogHeader>
               <DialogTitle>{modalGua?.name}卦详情</DialogTitle>
             </DialogHeader>

@@ -120,7 +120,7 @@ export default function HexagramsPage() {
       </div>
 
       <Dialog open={!!modal} onOpenChange={(open) => { if (!open) setModal(null) }}>
-        <DialogContent className="max-w-[520px] bg-[var(--bg2)] border-[var(--border)]">
+        <DialogContent className="max-w-[520px] bg-[var(--bg2)] border-[var(--border)] max-h-[90vh] overflow-y-auto thin-scroll">
           <DialogHeader>
             <DialogTitle className="sr-only">卦象详情</DialogTitle>
           </DialogHeader>

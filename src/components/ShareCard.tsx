@@ -239,7 +239,7 @@ export default function ShareCard({ upperId, lowerId, subtitle }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) setOpen(false) }}>
-      <DialogContent className="max-w-[420px] bg-[var(--bg2)] border-[var(--border)]">
+      <DialogContent className="max-w-[420px] bg-[var(--bg2)] border-[var(--border)] max-h-[90vh] overflow-y-auto thin-scroll">
         <DialogHeader>
           <DialogTitle>{subtitle ? `分享${subtitle}` : '分享卦象'}</DialogTitle>
         </DialogHeader>
