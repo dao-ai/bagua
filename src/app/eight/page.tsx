@@ -1,12 +1,17 @@
 'use client'
 import usePageTitle from '@/hooks/usePageTitle'
 
-import { useState, useEffect } from 'react'
-import Modal from '@/components/Modal'
+import { useState } from 'react'
 import PageHeader from '@/components/PageHeader'
 import { RubyText } from '@/components/Ruby'
 import { YaoDisplay } from '@/components/Yao'
 import { baguaList, type Bagua } from '@/data/bagua'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 
 function fmtInfo(b: Bagua) {
   return [
@@ -20,12 +25,6 @@ export default function EightPage() {
   usePageTitle()
   const [modal, setModal] = useState<Bagua | null>(null)
   const [view, setView] = useState<'cards' | 'table'>('cards')
-
-  useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => { if (e.key === 'Escape') setModal(null) }
-    window.addEventListener('keydown', handleEsc)
-    return () => window.removeEventListener('keydown', handleEsc)
-  }, [])
 
   const sorted = [...baguaList].sort((a, b) => b.decimal - a.decimal)
 
@@ -73,31 +72,35 @@ export default function EightPage() {
             ))}
           </div>
 
-          <Modal open={!!modal} onClose={() => setModal(null)} label={`${modal?.name}卦详情`}>
-            {modal && (
-              <div>
-                <div className="text-[60px] text-center block">{modal.symbol}</div>
-                <h2 className="text-center text-2xl mt-1.5 mb-0.5"><RubyText text={modal.name} /></h2>
-                <p className="text-center text-sm text-[var(--accent2)] my-3 leading-relaxed">{modal.description}</p>
-                <div className="grid grid-cols-2 gap-2">
-                  {fmtInfo(modal).map(([k, v]) => (
-                    <div key={k} className="p-2.5 rounded-xl bg-[var(--bg3)] text-sm flex flex-col gap-0.5">
-                      <span className="text-[11px] text-[var(--muted)]">{k}</span>
-                      <span className="font-semibold text-[var(--fg)]">{v}</span>
+          <Dialog open={!!modal} onOpenChange={(open) => { if (!open) setModal(null) }}>
+            <DialogContent className="max-w-[520px] bg-[var(--bg2)] border-[var(--border)]">
+              <DialogHeader>
+                <DialogTitle className="sr-only">{modal?.name}卦详情</DialogTitle>
+              </DialogHeader>
+              {modal && (
+                <div>
+                  <div className="text-[60px] text-center block">{modal.symbol}</div>
+                  <h2 className="text-center text-2xl mt-1.5 mb-0.5"><RubyText text={modal.name} /></h2>
+                  <p className="text-center text-sm text-[var(--accent2)] my-3 leading-relaxed">{modal.description}</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {fmtInfo(modal).map(([k, v]) => (
+                      <div key={k} className="p-2.5 rounded-xl bg-[var(--bg3)] text-sm flex flex-col gap-0.5">
+                        <span className="text-[11px] text-[var(--muted)]">{k}</span>
+                        <span className="font-semibold text-[var(--fg)]">{v}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-5 pt-4 border-t border-[var(--border)] text-center">
+                    <YaoDisplay yao={modal.yao} big />
+                    <div className="text-xs text-[var(--muted)] mt-2 font-mono">
+                      二进制：<span className="text-[var(--accent2)]">{modal.binary}</span>
+                      &nbsp;·&nbsp; 十进制：<span className="text-[var(--accent2)]">{modal.decimal}</span>
                     </div>
-                  ))}
-                </div>
-                {/* 底部：爻线图标 + 二进制 + 十进制 */}
-                <div className="mt-5 pt-4 border-t border-[var(--border)] text-center">
-                  <YaoDisplay yao={modal.yao} big />
-                  <div className="text-xs text-[var(--muted)] mt-2 font-mono">
-                    二进制：<span className="text-[var(--accent2)]">{modal.binary}</span>
-                    &nbsp;·&nbsp; 十进制：<span className="text-[var(--accent2)]">{modal.decimal}</span>
                   </div>
                 </div>
-              </div>
-            )}
-          </Modal>
+              )}
+            </DialogContent>
+          </Dialog>
         </>
       ) : (
         <div className="overflow-x-auto">
