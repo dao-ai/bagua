@@ -3,6 +3,8 @@
 
 import { useState } from 'react'
 import type { LearnStats } from '../types'
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 
 interface StatsDashboardProps {
   stats: LearnStats
@@ -84,18 +86,20 @@ export default function StatsDashboard({ stats, exportData, importData }: StatsD
 
           {/* Import / Export */}
           <div className="flex justify-center gap-3">
-            <button
+            <Button
+              variant="outline"
+              size="sm"
               onClick={handleExport}
-              className="px-4 py-2 text-[11px] rounded-xl bg-[var(--bg3)] border border-[var(--border)] text-[var(--fg)] cursor-pointer hover:bg-[var(--bg2)] transition-colors"
             >
               📤 导出进度
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
               onClick={handleImport}
-              className="px-4 py-2 text-[11px] rounded-xl bg-[var(--bg3)] border border-[var(--border)] text-[var(--fg)] cursor-pointer hover:bg-[var(--bg2)] transition-colors"
             >
               📥 导入进度
-            </button>
+            </Button>
           </div>
           {importMsg && (
             <p className="text-center mt-2 text-[11px] text-[var(--accent)] whitespace-pre-wrap">{importMsg}</p>
@@ -108,10 +112,12 @@ export default function StatsDashboard({ stats, exportData, importData }: StatsD
 
 function StatBox({ label, value, sub }: { label: string; value: string; sub: string }) {
   return (
-    <div className="p-3 rounded-xl bg-[var(--card)] border border-[var(--border)] text-center">
-      <div className="text-[18px] font-bold text-[var(--fg)]">{value}</div>
-      <div className="text-[11px] text-[var(--muted)]">{label}</div>
-      {sub && <div className="text-[10px] text-[var(--muted)] opacity-70">{sub}</div>}
-    </div>
+    <Card>
+      <CardContent className="p-3 text-center">
+        <div className="text-[18px] font-bold text-[var(--fg)]">{value}</div>
+        <div className="text-[11px] text-[var(--muted)]">{label}</div>
+        {sub && <div className="text-[10px] text-[var(--muted)] opacity-70">{sub}</div>}
+      </CardContent>
+    </Card>
   )
 }

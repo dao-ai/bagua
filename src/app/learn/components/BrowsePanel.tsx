@@ -5,6 +5,8 @@ import { useState, useMemo } from 'react'
 import type { Card, CardType } from '../types'
 import CardFace from '@/components/CardFace'
 import { RubyText } from '@/components/Ruby'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
 interface BrowsePanelProps {
   cards: Card[]
@@ -105,12 +107,12 @@ export default function BrowsePanel({ cards, markLearned, markForReview, todaySt
 
       {/* Search */}
       <div className="flex justify-center mb-4">
-        <input
+        <Input
           type="text"
           value={search}
           onChange={e => { setSearch(e.target.value); goTo(0) }}
           placeholder="搜索卦名..."
-          className="w-full max-w-xs px-3 py-1.5 text-[12px] rounded-lg bg-[var(--bg2)] border border-[var(--border)] text-[var(--fg)] placeholder-[var(--muted)] outline-none focus:border-[var(--accent)]"
+          className="w-full max-w-xs text-[12px]"
         />
       </div>
 
@@ -153,30 +155,37 @@ export default function BrowsePanel({ cards, markLearned, markForReview, todaySt
         />
         {/* Action buttons */}
         <div className="flex justify-center gap-2 mt-3">
-          <button
+          <Button
+            variant="outline"
+            size="xs"
             onClick={() => markForReview(current.id)}
-            className="px-3 py-1 text-[11px] rounded-lg bg-[var(--bg3)] border border-[var(--border)] text-[var(--muted)] hover:text-[var(--fg)] cursor-pointer transition-colors"
           >
             标记复习
-          </button>
+          </Button>
         </div>
       </div>
 
       {/* Navigation */}
       <div className="flex justify-center items-center gap-3">
-        <button
+        <Button
+          variant="outline"
+          size="sm"
           onClick={prev}
-          className="px-4 py-2 text-sm rounded-xl bg-[var(--bg3)] border border-[var(--border)] text-[var(--fg)] cursor-pointer hover:bg-[var(--bg2)] transition-colors disabled:opacity-30"
           disabled={filtered.length <= 1}
-        >← 上一张</button>
+        >
+          ← 上一张
+        </Button>
         <span className="text-[11px] text-[var(--muted)] min-w-[40px] text-center">
           {filtered.length > 0 ? `${((index % filtered.length) + 1)}/${filtered.length}` : '0'}
         </span>
-        <button
+        <Button
+          variant="outline"
+          size="sm"
           onClick={next}
-          className="px-4 py-2 text-sm rounded-xl bg-[var(--bg3)] border border-[var(--border)] text-[var(--fg)] cursor-pointer hover:bg-[var(--bg2)] transition-colors disabled:opacity-30"
           disabled={filtered.length <= 1}
-        >下一张 →</button>
+        >
+          下一张 →
+        </Button>
       </div>
     </div>
   )

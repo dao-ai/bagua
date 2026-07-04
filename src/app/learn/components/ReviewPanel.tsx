@@ -5,6 +5,7 @@ import { useState } from 'react'
 import type { Card } from '../types'
 import CardFace from '@/components/CardFace'
 import { RubyText } from '@/components/Ruby'
+import { Button } from '@/components/ui/button'
 
 interface ReviewPanelProps {
   dueCards: Card[]
@@ -60,12 +61,12 @@ export default function ReviewPanel({ dueCards, reviewCard }: ReviewPanelProps) 
         <p className="text-[var(--muted)] text-sm mb-4">
           已复习 {total} 张卡片，明天继续加油
         </p>
-        <button
+        <Button
           onClick={() => { setIndex(0); setDone(false); setFlipped(false) }}
-          className="px-6 py-2 text-xs font-semibold rounded-xl bg-gradient-to-r from-[var(--accent)] to-[var(--accent2)] text-[var(--bg)] cursor-pointer"
+          className="font-semibold bg-gradient-to-r from-[var(--accent)] to-[var(--accent2)] text-[var(--bg)] border-none hover:from-[var(--accent2)] hover:to-[var(--accent)]"
         >
           再来一轮
-        </button>
+        </Button>
       </div>
     )
   }

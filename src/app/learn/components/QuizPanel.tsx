@@ -4,6 +4,8 @@
 import { useState, useMemo, useCallback } from 'react'
 import type { Card, CardType } from '../types'
 import { RubyText } from '@/components/Ruby'
+import { Card as UICard, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 
 interface QuizPanelProps {
   getCardsByType: (type: CardType) => Card[]
@@ -43,6 +45,8 @@ function generateOptions(correct: Card, pool: Card[]): string[] {
   const options = shuffle([correct.back.split('\n')[0], ...wrongs])
   return options
 }
+
+const gradientBtn = 'font-semibold bg-gradient-to-r from-[var(--accent)] to-[var(--accent2)] text-[var(--bg)] border-none hover:from-[var(--accent2)] hover:to-[var(--accent)]'
 
 export default function QuizPanel({ getCardsByType, reviewCard }: QuizPanelProps) {
   const [currentLevelIdx, setCurrentLevelIdx] = useState(0)
@@ -123,7 +127,7 @@ export default function QuizPanel({ getCardsByType, reviewCard }: QuizPanelProps
         <p className="text-[var(--muted)] text-sm mb-4">
           完成全部 {levels.length} 关，总用时 {mins}分{secs}秒
         </p>
-        <button
+        <Button
           onClick={() => {
             setCurrentLevelIdx(0)
             setStreak(0)
@@ -133,10 +137,10 @@ export default function QuizPanel({ getCardsByType, reviewCard }: QuizPanelProps
             setShowResult(false)
             setLevelComplete(false)
           }}
-          className="mt-2 px-6 py-2 text-xs font-semibold rounded-xl bg-gradient-to-r from-[var(--accent)] to-[var(--accent2)] text-[var(--bg)] cursor-pointer"
+          className={gradientBtn}
         >
           重新挑战
-        </button>
+        </Button>
       </div>
     )
   }
@@ -154,12 +158,12 @@ export default function QuizPanel({ getCardsByType, reviewCard }: QuizPanelProps
         <p className="text-[var(--muted)] text-xs mb-4">
           总进度: {currentLevelIdx + 1} / {levels.length}
         </p>
-        <button
+        <Button
           onClick={nextLevel}
-          className="px-6 py-2 text-xs font-semibold rounded-xl bg-gradient-to-r from-[var(--accent)] to-[var(--accent2)] text-[var(--bg)] cursor-pointer"
+          className={gradientBtn}
         >
           {currentLevelIdx + 1 >= levels.length ? '查看总成绩' : `下一关: ${levels[currentLevelIdx + 1].label}`}
-        </button>
+        </Button>
       </div>
     )
   }
@@ -189,58 +193,61 @@ export default function QuizPanel({ getCardsByType, reviewCard }: QuizPanelProps
       </div>
 
       {/* Question */}
-      <div className="max-w-[360px] mx-auto mb-6 p-6 rounded-2xl bg-[var(--card)] border border-[var(--border)]">
-        <div className="text-[12px] text-[var(--muted)] mb-3 text-center">
-          以下哪个是？
-        </div>
-        <div className="text-center text-[48px] mb-4">
-          {question.correct.front}
-        </div>
-        <div className="flex flex-col gap-2">
-          {question.options.map((opt, i) => {
-            let btnClass = 'bg-[var(--bg3)] border-[var(--border)] text-[var(--fg)] hover:border-[var(--accent)]'
-            if (showResult) {
-              const correctAnswer = question.correct.back.split('\n')[0]
-              if (opt === correctAnswer) {
-                btnClass = 'bg-green-500/20 border-green-500 text-green-400'
-              } else if (opt === selected && opt !== correctAnswer) {
-                btnClass = 'bg-red-500/20 border-red-500 text-red-400'
-              } else {
-                btnClass = 'bg-[var(--bg3)] border-[var(--border)] text-[var(--muted)] opacity-50'
-              }
-            }
-            return (
-              <button
-                key={i}
-                onClick={() => handleSelect(opt)}
-                disabled={!!selected}
-                className={`px-4 py-3 text-sm rounded-xl border cursor-pointer transition-all text-left ${btnClass}`}
-              >
-                <RubyText text={opt} />
-              </button>
-            )
-          })}
-        </div>
-
-        {showResult && (
-          <div className="mt-4 text-center">
-            <p className={`text-sm font-semibold ${isCorrect ? 'text-green-400' : 'text-red-400'}`}>
-              {isCorrect ? '✅ 正确！' : '❌ 错误'}
-            </p>
-            {!isCorrect && (
-              <p className="text-[11px] text-[var(--muted)] mt-1">
-                正确答案: {question.correct.back.split('\n')[0]}
-              </p>
-            )}
-            <button
-              onClick={nextQuestion}
-              className="mt-3 px-5 py-2 text-xs font-semibold rounded-xl bg-gradient-to-r from-[var(--accent)] to-[var(--accent2)] text-[var(--bg)] cursor-pointer"
-            >
-              下一题
-            </button>
+      <UICard className="max-w-[360px] mx-auto mb-6">
+        <CardContent className="p-6">
+          <div className="text-[12px] text-[var(--muted)] mb-3 text-center">
+            以下哪个是？
           </div>
-        )}
-      </div>
+          <div className="text-center text-[48px] mb-4">
+            {question.correct.front}
+          </div>
+          <div className="flex flex-col gap-2">
+            {question.options.map((opt, i) => {
+              let btnClass = 'bg-[var(--bg3)] border-[var(--border)] text-[var(--fg)] hover:border-[var(--accent)]'
+              if (showResult) {
+                const correctAnswer = question.correct.back.split('\n')[0]
+                if (opt === correctAnswer) {
+                  btnClass = 'bg-green-500/20 border-green-500 text-green-400'
+                } else if (opt === selected && opt !== correctAnswer) {
+                  btnClass = 'bg-red-500/20 border-red-500 text-red-400'
+                } else {
+                  btnClass = 'bg-[var(--bg3)] border-[var(--border)] text-[var(--muted)] opacity-50'
+                }
+              }
+              return (
+                <button
+                  key={i}
+                  onClick={() => handleSelect(opt)}
+                  disabled={!!selected}
+                  className={`px-4 py-3 text-sm rounded-xl border cursor-pointer transition-all text-left ${btnClass}`}
+                >
+                  <RubyText text={opt} />
+                </button>
+              )
+            })}
+          </div>
+
+          {showResult && (
+            <div className="mt-4 text-center">
+              <p className={`text-sm font-semibold ${isCorrect ? 'text-green-400' : 'text-red-400'}`}>
+                {isCorrect ? '✅ 正确！' : '❌ 错误'}
+              </p>
+              {!isCorrect && (
+                <p className="text-[11px] text-[var(--muted)] mt-1">
+                  正确答案: {question.correct.back.split('\n')[0]}
+                </p>
+              )}
+              <Button
+                onClick={nextQuestion}
+                size="sm"
+                className={`mt-3 ${gradientBtn}`}
+              >
+                下一题
+              </Button>
+            </div>
+          )}
+        </CardContent>
+      </UICard>
     </div>
   )
 }

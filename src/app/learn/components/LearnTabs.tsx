@@ -1,6 +1,8 @@
 // src/app/learn/components/LearnTabs.tsx
 'use client'
 
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+
 export type LearnMode = 'browse' | 'review' | 'quiz'
 
 interface LearnTabsProps {
@@ -17,27 +19,21 @@ const tabs: { key: LearnMode; label: string; emoji: string }[] = [
 
 export default function LearnTabs({ mode, onChange, reviewCount }: LearnTabsProps) {
   return (
-    <div className="flex justify-center gap-2 mb-6">
-      <div className="flex gap-1.5 p-1 rounded-xl bg-[var(--bg2)] border border-[var(--border)]">
-        {tabs.map(t => (
-          <button
-            key={t.key}
-            onClick={() => onChange(t.key)}
-            className={`relative px-4 py-1.5 text-xs rounded-lg cursor-pointer transition-colors ${
-              mode === t.key
-                ? 'bg-[var(--accent)] text-[var(--bg)] font-semibold'
-                : 'text-[var(--muted)] hover:text-[var(--fg)]'
-            }`}
-          >
-            {t.emoji} {t.label}
-            {t.key === 'review' && reviewCount > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 w-4 h-4 text-[10px] bg-red-500 text-white rounded-full flex items-center justify-center">
-                {reviewCount > 99 ? '99+' : reviewCount}
-              </span>
-            )}
-          </button>
-        ))}
-      </div>
+    <div className="flex justify-center mb-6">
+      <Tabs value={mode} onValueChange={(v) => onChange(v as LearnMode)}>
+        <TabsList>
+          {tabs.map(t => (
+            <TabsTrigger key={t.key} value={t.key} className="relative">
+              {t.emoji} {t.label}
+              {t.key === 'review' && reviewCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 text-[10px] bg-red-500 text-white rounded-full flex items-center justify-center leading-none">
+                  {reviewCount > 99 ? '99+' : reviewCount}
+                </span>
+              )}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
     </div>
   )
 }
