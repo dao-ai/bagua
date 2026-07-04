@@ -2,7 +2,12 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { RubyText } from '@/components/Ruby'
 import { YaoDisplay } from '@/components/Yao'
-import Modal from '@/components/Modal'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { baguaMap, type Bagua } from '@/data/bagua'
 import { shichenList, pillarInterpretation, type LifeGuaResult } from '@/data/lifegua'
 
@@ -131,30 +136,35 @@ export default function LifeGuaResult({ result, gender, month, day, shichenIndex
         </Link>
 
         {/* 卦象详情弹窗 */}
-        <Modal open={!!modalGua} onClose={() => setModalGua(null)} label={`${modalGua?.name}卦详情`}>
-          {modalGua && (
-            <div>
-              <div className="text-[60px] text-center block">{modalGua.symbol}</div>
-              <h2 className="text-center text-2xl mt-1.5 mb-0.5"><RubyText text={modalGua.name} /></h2>
-              <p className="text-center text-sm text-[var(--accent2)] my-3 leading-relaxed">{modalGua.description}</p>
-              <div className="flex justify-center mb-1">
-                <YaoDisplay yao={modalGua.yao} big />
+        <Dialog open={!!modalGua} onOpenChange={(open) => { if (!open) setModalGua(null) }}>
+          <DialogContent className="max-w-[520px] bg-[var(--bg2)] border-[var(--border)]">
+            <DialogHeader>
+              <DialogTitle>{modalGua?.name}卦详情</DialogTitle>
+            </DialogHeader>
+            {modalGua && (
+              <div>
+                <div className="text-[60px] text-center block">{modalGua.symbol}</div>
+                <h2 className="text-center text-2xl mt-1.5 mb-0.5"><RubyText text={modalGua.name} /></h2>
+                <p className="text-center text-sm text-[var(--accent2)] my-3 leading-relaxed">{modalGua.description}</p>
+                <div className="flex justify-center mb-1">
+                  <YaoDisplay yao={modalGua.yao} big />
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  {baguaCardInfo(modalGua).map(([k, v]) => (
+                    <div key={k} className="p-2.5 rounded-xl bg-[var(--bg3)] text-sm flex flex-col gap-0.5">
+                      <span className="text-[11px] text-[var(--muted)]">{k}</span>
+                      <span className="font-semibold text-[var(--fg)]">{v}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="text-xs text-[var(--muted)] mt-4 pt-3 border-t border-[var(--border)] text-center font-mono">
+                  二进制：<span className="text-[var(--accent2)]">{modalGua.binary}</span>
+                  &nbsp;·&nbsp; 十进制：<span className="text-[var(--accent2)]">{modalGua.decimal}</span>
+                </div>
               </div>
-              <div className="grid grid-cols-2 gap-2">
-                {baguaCardInfo(modalGua).map(([k, v]) => (
-                  <div key={k} className="p-2.5 rounded-xl bg-[var(--bg3)] text-sm flex flex-col gap-0.5">
-                    <span className="text-[11px] text-[var(--muted)]">{k}</span>
-                    <span className="font-semibold text-[var(--fg)]">{v}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="text-xs text-[var(--muted)] mt-4 pt-3 border-t border-[var(--border)] text-center font-mono">
-                二进制：<span className="text-[var(--accent2)]">{modalGua.binary}</span>
-                &nbsp;·&nbsp; 十进制：<span className="text-[var(--accent2)]">{modalGua.decimal}</span>
-              </div>
-            </div>
-          )}
-        </Modal>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* 最近查询 */}

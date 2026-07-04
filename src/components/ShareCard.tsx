@@ -3,6 +3,14 @@
 import { useRef, useState, useEffect, useMemo } from 'react'
 import { baguaList, baguaMap, getHexagramName, getHexagramSymbol } from '@/data/bagua'
 import { getHexagramDetail } from '@/data/hexagrams'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { toast } from 'sonner'
 
 const SITE_TITLE = '八卦 · 入门'
 const SITE_URL = 'dao-ai.github.io/bagua'
@@ -167,7 +175,6 @@ interface Props {
 export default function ShareCard({ upperId, lowerId, subtitle }: Props) {
   const [open, setOpen] = useState(false)
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [copied, setCopied] = useState(false)
 
   // 构建 ShareData（稳定引用）
   const data = useMemo(() => {
@@ -212,9 +219,9 @@ export default function ShareCard({ upperId, lowerId, subtitle }: Props) {
       const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/png'))
       if (!blob) return
       await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      toast.success('图片已复制到剪贴板')
     } catch {
+      toast.error('复制失败，已改为下载')
       handleDownload()
     }
   }
@@ -231,51 +238,28 @@ export default function ShareCard({ upperId, lowerId, subtitle }: Props) {
   }
 
   return (
-    <>
-      {/* 遮罩 */}
-      <div
-        className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
-        onClick={() => setOpen(false)}
-      />
-      {/* 弹窗 */}
-      <div className="fixed inset-x-4 top-[10vh] z-[60] mx-auto max-w-[420px] animate-[slideUp_0.25s_ease]">
-        <div className="bg-[var(--bg2)] border border-[var(--border)] rounded-2xl p-6 relative">
-          <button
-            onClick={() => setOpen(false)}
-            className="absolute top-2.5 right-3 text-[var(--muted)] text-3xl leading-none hover:text-[var(--fg)] transition-colors bg-transparent border-none cursor-pointer z-10"
-          >
-            &times;
-          </button>
-
-          <h3 className="text-center text-base text-[var(--muted)] mb-4">
-            {subtitle ? `分享${subtitle}` : '分享卦象'}
-          </h3>
-
-          <div className="rounded-xl overflow-hidden border border-[var(--border)] mb-4">
-            <canvas
-              ref={canvasRef}
-              className="w-full h-auto block"
-              style={{ aspectRatio: '540/640' }}
-            />
-          </div>
-
-          <div className="flex gap-3">
-            <button
-              onClick={handleDownload}
-              className="flex-1 py-2.5 rounded-lg bg-[var(--accent)] text-white font-medium text-sm hover:opacity-90 transition-opacity border-none cursor-pointer"
-            >
-              ⬇️ 下载图片
-            </button>
-            <button
-              onClick={handleCopy}
-              className="flex-1 py-2.5 rounded-lg border border-[var(--border)] text-[var(--fg)] font-medium text-sm hover:bg-[var(--bg3)] transition-colors bg-transparent cursor-pointer"
-            >
-              {copied ? '✅ 已复制' : '📋 复制图片'}
-            </button>
-          </div>
+    <Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) setOpen(false) }}>
+      <DialogContent className="max-w-[420px] bg-[var(--bg2)] border-[var(--border)]">
+        <DialogHeader>
+          <DialogTitle>{subtitle ? `分享${subtitle}` : '分享卦象'}</DialogTitle>
+        </DialogHeader>
+        <div className="rounded-xl overflow-hidden border border-[var(--border)]">
+          <canvas
+            ref={canvasRef}
+            className="w-full h-auto block"
+            style={{ aspectRatio: '540/640' }}
+          />
         </div>
-      </div>
-    </>
+        <div className="flex gap-3 mt-4">
+          <Button onClick={handleDownload} className="flex-1">
+            ⬇️ 下载图片
+          </Button>
+          <Button onClick={handleCopy} variant="outline" className="flex-1">
+            📋 复制图片
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   )
 }
 

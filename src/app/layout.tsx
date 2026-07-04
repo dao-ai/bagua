@@ -6,6 +6,7 @@ import Providers from '@/components/Providers'
 import InstallPrompt from '@/components/InstallPrompt'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import { TooltipProvider } from '@/components/ui/tooltip'
+import { Toaster } from '@/components/ui/sonner'
 import { cn } from "@/lib/utils";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
@@ -146,6 +147,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </Providers>
         </TooltipProvider>
+        <Toaster />
         <InstallPrompt />
       </body>
     </html>

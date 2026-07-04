@@ -2,7 +2,12 @@
 
 import { useState } from 'react'
 import dynamic from 'next/dynamic'
-import Modal from '@/components/Modal'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { RubyText, Ruby } from '@/components/Ruby'
 import { baguaMap, getHexagramName, getHexagramSymbol } from '@/data/bagua'
 import { getHexagramDetail } from '@/data/hexagrams'
@@ -38,8 +43,12 @@ export default function HexagramDetailModal({ hexagramKey, onClose }: Props) {
   const sym = getHexagramSymbol(upperId, lowerId)
 
   return (
-    <Modal open={true} onClose={onClose} label={`${name}卦详情`}>
-      <div className="flex flex-col items-center">
+    <Dialog open={true} onOpenChange={(open) => { if (!open) onClose() }}>
+      <DialogContent className="max-w-[520px] bg-[var(--bg2)] border-[var(--border)] max-h-[90vh] overflow-y-auto thin-scroll">
+        <DialogHeader>
+          <DialogTitle className="sr-only">{name}卦详情</DialogTitle>
+        </DialogHeader>
+        <div className="flex flex-col items-center">
         <ThreeYaoHexagram
           lines={[
             ld.yao[2], ld.yao[1], ld.yao[0],
@@ -114,6 +123,7 @@ export default function HexagramDetailModal({ hexagramKey, onClose }: Props) {
         lowerId={lowerId}
         onNavigate={(nu, nl) => setCurrentKey(`${nl}-${nu}`)}
       />
-    </Modal>
+      </DialogContent>
+    </Dialog>
   )
 }

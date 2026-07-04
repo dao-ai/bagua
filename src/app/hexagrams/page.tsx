@@ -1,11 +1,16 @@
 'use client'
 import usePageTitle from '@/hooks/usePageTitle'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import dynamic from 'next/dynamic'
 import PageHeader from '@/components/PageHeader'
-import Modal from '@/components/Modal'
 import { RubyText, Ruby } from '@/components/Ruby'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { baguaMap, getHexagramName, getHexagramSymbol } from '@/data/bagua'
 import { getHexagramDetail, hexagramOrder } from '@/data/hexagrams'
 import HexagramRelations from '@/components/HexagramRelations'
@@ -15,12 +20,6 @@ const ShareCard = dynamic(() => import('@/components/ShareCard'))
 export default function HexagramsPage() {
   usePageTitle()
   const [modal, setModal] = useState<React.ReactNode | null>(null)
-
-  useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => { if (e.key === 'Escape') setModal(null) }
-    window.addEventListener('keydown', handleEsc)
-    return () => window.removeEventListener('keydown', handleEsc)
-  }, [])
 
   const openDetail = (u: string, l: string) => {
     const name = getHexagramName(u, l)
@@ -120,7 +119,14 @@ export default function HexagramsPage() {
         })}
       </div>
 
-      <Modal open={!!modal} onClose={() => setModal(null)} label="卦象详情">{modal}</Modal>
+      <Dialog open={!!modal} onOpenChange={(open) => { if (!open) setModal(null) }}>
+        <DialogContent className="max-w-[520px] bg-[var(--bg2)] border-[var(--border)]">
+          <DialogHeader>
+            <DialogTitle className="sr-only">卦象详情</DialogTitle>
+          </DialogHeader>
+          {modal}
+        </DialogContent>
+      </Dialog>
     </>
   )
 }
