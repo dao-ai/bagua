@@ -25,7 +25,11 @@ export function loadState(): LearnState | null {
 
 /** Save state to localStorage */
 export function saveState(state: LearnState): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+  } catch {
+    // quota exceeded or private browsing — silently ignore
+  }
 }
 
 /** Export state as JSON string for download */
