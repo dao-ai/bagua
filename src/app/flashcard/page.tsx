@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback } from 'react'
 import usePageTitle from '@/hooks/usePageTitle'
 import PageHeader from '@/components/PageHeader'
+import CardFace from '@/components/CardFace'
 import { RubyText } from '@/components/Ruby'
 import { baguaList, getHexagramName, getHexagramSymbol } from '@/data/bagua'
 import { hexagramOrder, getHexagramDetail } from '@/data/hexagrams'
@@ -175,87 +176,72 @@ export default function FlashcardPage() {
           {browseMode === 'sequential' ? `${currentIndex % total + 1} / ${total}` : '🎲 随机'}
         </div>
 
-        {/* 卡片容器 — 点击切换翻转 */}
-        <div
-          className="perspective-[1000px] cursor-pointer"
-          onClick={() => setFlipped(f => !f)}
-        >
-          <div
-            className={`relative w-full aspect-[3/4] transition-transform duration-500 preserve-3d ${
-              flipped ? 'rotate-y-180' : ''
-            }`}
-          >
-            {/* 正面 */}
-            <div className="absolute inset-0 backface-hidden bg-[var(--card)] border border-[var(--border)] rounded-2xl flex flex-col items-center justify-center p-8">
-              {currentCard.type === 'bagua' ? (
-                <>
-                  <div className="text-[80px] mb-3">{currentCard.symbol}</div>
-                  <div className="text-[13px] font-mono text-[var(--muted)] tracking-wider">
-                    {currentCard.binary}
-                  </div>
-                  <div className="mt-4 text-[11px] text-[var(--muted)]">点击翻转</div>
-                </>
-              ) : (
-                <>
-                  <div className="text-[80px] mb-4">{currentCard.symbol}</div>
-                  <div className="text-[11px] text-[var(--muted)]">点击翻转</div>
-                </>
-              )}
-            </div>
-
-            {/* 背面 */}
-            <div className="absolute inset-0 backface-hidden rotate-y-180 bg-[var(--card)] border border-[var(--border)] rounded-2xl flex flex-col items-center justify-center p-6 overflow-y-auto">
-              {currentCard.type === 'bagua' ? (
-                <div className="text-center w-full">
-                  <div className="text-[36px] mb-2">{currentCard.symbol}</div>
-                  <div className="text-[22px] font-bold mb-0.5">
-                    <RubyText text={currentCard.name} />
-                  </div>
-                  <div className="text-[12px] text-[var(--accent)] mb-1">{currentCard.pinyin}</div>
-                  <div className="text-[11px] text-[var(--muted)] mb-3">
-                    {currentCard.attribute} · {currentCard.nature}
-                  </div>
-                  <div className="flex justify-center gap-1.5 flex-wrap mb-3">
-                    {currentCard.keywords.map(k => (
-                      <span key={k} className="px-2 py-0.5 rounded-md bg-[var(--bg3)] text-[11px] text-[var(--accent2)]">
-                        {k}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="text-[12px] leading-relaxed text-[var(--fg)] px-2">
-                    {currentCard.short}
-                  </div>
-                  <div className="mt-4 text-[10px] text-[var(--muted)]">点击翻回</div>
+        <CardFace
+          flipped={flipped}
+          onFlip={() => setFlipped(f => !f)}
+          front={
+            currentCard.type === 'bagua' ? (
+              <>
+                <div className="text-[80px] mb-3">{currentCard.symbol}</div>
+                <div className="text-[13px] font-mono text-[var(--muted)] tracking-wider">
+                  {currentCard.binary}
                 </div>
-              ) : (
-                <div className="text-center w-full">
-                  <div className="text-[48px] mb-2">{currentCard.symbol}</div>
-                  <div className="text-[22px] font-bold mb-1">
-                    <RubyText text={currentCard.name} />
-                  </div>
-                  <div className="text-[11px] text-[var(--muted)] mb-3">
-                    {currentCard.upperName} · {currentCard.lowerName}
-                  </div>
-                  <div className="space-y-2 text-left px-2">
-                    <div>
-                      <div className="text-[10px] text-[var(--accent)] font-semibold tracking-wider mb-0.5">卦辞</div>
-                      <div className="text-[13px] font-semibold text-[var(--accent2)]">
-                        <RubyText text={currentCard.detail.judgment} />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="text-[10px] text-[var(--accent)] font-semibold tracking-wider mb-0.5">象曰</div>
-                      <div className="text-[11px] italic text-[var(--muted)]">
-                        <RubyText text={currentCard.detail.image} />
-                      </div>
+              </>
+            ) : (
+              <>
+                <div className="text-[80px] mb-4">{currentCard.symbol}</div>
+              </>
+            )
+          }
+          back={
+            currentCard.type === 'bagua' ? (
+              <div className="text-center w-full">
+                <div className="text-[36px] mb-2">{currentCard.symbol}</div>
+                <div className="text-[22px] font-bold mb-0.5">
+                  <RubyText text={currentCard.name} />
+                </div>
+                <div className="text-[12px] text-[var(--accent)] mb-1">{currentCard.pinyin}</div>
+                <div className="text-[11px] text-[var(--muted)] mb-3">
+                  {currentCard.attribute} · {currentCard.nature}
+                </div>
+                <div className="flex justify-center gap-1.5 flex-wrap mb-3">
+                  {currentCard.keywords.map(k => (
+                    <span key={k} className="px-2 py-0.5 rounded-md bg-[var(--bg3)] text-[11px] text-[var(--accent2)]">
+                      {k}
+                    </span>
+                  ))}
+                </div>
+                <div className="text-[12px] leading-relaxed text-[var(--fg)] px-2">
+                  {currentCard.short}
+                </div>
+              </div>
+            ) : (
+              <div className="text-center w-full">
+                <div className="text-[48px] mb-2">{currentCard.symbol}</div>
+                <div className="text-[22px] font-bold mb-1">
+                  <RubyText text={currentCard.name} />
+                </div>
+                <div className="text-[11px] text-[var(--muted)] mb-3">
+                  {currentCard.upperName} · {currentCard.lowerName}
+                </div>
+                <div className="space-y-2 text-left px-2">
+                  <div>
+                    <div className="text-[10px] text-[var(--accent)] font-semibold tracking-wider mb-0.5">卦辞</div>
+                    <div className="text-[13px] font-semibold text-[var(--accent2)]">
+                      <RubyText text={currentCard.detail.judgment} />
                     </div>
                   </div>
-                  <div className="mt-3 text-[10px] text-[var(--muted)]">点击翻回</div>
+                  <div>
+                    <div className="text-[10px] text-[var(--accent)] font-semibold tracking-wider mb-0.5">象曰</div>
+                    <div className="text-[11px] italic text-[var(--muted)]">
+                      <RubyText text={currentCard.detail.image} />
+                    </div>
+                  </div>
                 </div>
-              )}
-            </div>
-          </div>
-        </div>
+              </div>
+            )
+          }
+        />
       </div>
 
       {/* 下一张按钮 */}
