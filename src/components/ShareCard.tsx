@@ -239,10 +239,11 @@ export default function ShareCard({ upperId, lowerId, subtitle }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) setOpen(false) }}>
-      <DialogContent className="max-w-[420px] bg-[var(--bg2)] border-[var(--border)] max-h-[90vh] overflow-y-auto thin-scroll">
+      <DialogContent className="max-w-[420px] bg-[var(--bg2)] border-[var(--border)]">
         <DialogHeader>
           <DialogTitle>{subtitle ? `分享${subtitle}` : '分享卦象'}</DialogTitle>
         </DialogHeader>
+        <div className="max-h-[calc(90vh-8rem)] overflow-y-auto thin-scroll">
         <div className="rounded-xl overflow-hidden border border-[var(--border)]">
           <canvas
             ref={canvasRef}
@@ -257,6 +258,7 @@ export default function ShareCard({ upperId, lowerId, subtitle }: Props) {
           <Button onClick={handleCopy} variant="outline" className="flex-1">
             📋 复制图片
           </Button>
+        </div>
         </div>
       </DialogContent>
     </Dialog>

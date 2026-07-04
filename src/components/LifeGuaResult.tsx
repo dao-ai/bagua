@@ -137,10 +137,11 @@ export default function LifeGuaResult({ result, gender, month, day, shichenIndex
 
         {/* 卦象详情弹窗 */}
         <Dialog open={!!modalGua} onOpenChange={(open) => { if (!open) setModalGua(null) }}>
-          <DialogContent className="max-w-[520px] bg-[var(--bg2)] border-[var(--border)] max-h-[90vh] overflow-y-auto thin-scroll">
+          <DialogContent className="max-w-[520px] bg-[var(--bg2)] border-[var(--border)]">
             <DialogHeader>
               <DialogTitle>{modalGua?.name}卦详情</DialogTitle>
             </DialogHeader>
+            <div className="max-h-[calc(90vh-8rem)] overflow-y-auto thin-scroll">
             {modalGua && (
               <div>
                 <div className="text-[60px] text-center block">{modalGua.symbol}</div>
@@ -163,6 +164,7 @@ export default function LifeGuaResult({ result, gender, month, day, shichenIndex
                 </div>
               </div>
             )}
+            </div>
           </DialogContent>
         </Dialog>
       </div>

@@ -44,10 +44,11 @@ export default function HexagramDetailModal({ hexagramKey, onClose }: Props) {
 
   return (
     <Dialog open={true} onOpenChange={(open) => { if (!open) onClose() }}>
-      <DialogContent className="max-w-[520px] bg-[var(--bg2)] border-[var(--border)] max-h-[90vh] overflow-y-auto thin-scroll">
+      <DialogContent className="max-w-[520px] bg-[var(--bg2)] border-[var(--border)]">
         <DialogHeader>
           <DialogTitle className="sr-only">{name}卦详情</DialogTitle>
         </DialogHeader>
+        <div className="max-h-[calc(90vh-8rem)] overflow-y-auto thin-scroll">
         <div className="flex flex-col items-center">
         <ThreeYaoHexagram
           lines={[
@@ -123,6 +124,7 @@ export default function HexagramDetailModal({ hexagramKey, onClose }: Props) {
         lowerId={lowerId}
         onNavigate={(nu, nl) => setCurrentKey(`${nl}-${nu}`)}
       />
+      </div>
       </DialogContent>
     </Dialog>
   )

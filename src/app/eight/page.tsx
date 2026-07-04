@@ -73,10 +73,11 @@ export default function EightPage() {
           </div>
 
           <Dialog open={!!modal} onOpenChange={(open) => { if (!open) setModal(null) }}>
-            <DialogContent className="max-w-[520px] bg-[var(--bg2)] border-[var(--border)] max-h-[90vh] overflow-y-auto thin-scroll">
+            <DialogContent className="max-w-[520px] bg-[var(--bg2)] border-[var(--border)]">
               <DialogHeader>
                 <DialogTitle className="sr-only">{modal?.name}卦详情</DialogTitle>
               </DialogHeader>
+              <div className="max-h-[calc(90vh-8rem)] overflow-y-auto thin-scroll">
               {modal && (
                 <div>
                   <div className="text-[60px] text-center block">{modal.symbol}</div>
@@ -99,6 +100,7 @@ export default function EightPage() {
                   </div>
                 </div>
               )}
+              </div>
             </DialogContent>
           </Dialog>
         </>
