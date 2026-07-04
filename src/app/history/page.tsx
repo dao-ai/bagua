@@ -7,6 +7,7 @@ import { RubyText, Ruby } from '@/components/Ruby'
 import { getHexagramDetail } from '@/data/hexagrams'
 import { useDivineHistory, formatDateLabel, formatTime, type DivineRecord } from '@/hooks/useDivineHistory'
 import { yao6ToTrigramIds } from '@/data/bagua'
+import { Button } from '@/components/ui/button'
 
 export default function HistoryPage() {
   usePageTitle()
@@ -38,21 +39,18 @@ export default function HistoryPage() {
             {confirmClear ? (
               <div className="flex items-center gap-2">
                 <span className="text-xs text-[var(--risk)]">确定清空全部历史？</span>
-                <button onClick={() => { clearAll(); setConfirmClear(false) }}
-                  className="px-3 py-1 text-xs font-semibold bg-[var(--risk)] text-white rounded-lg cursor-pointer border-none hover:opacity-80 transition-opacity">
+                <Button variant="destructive" size="xs" onClick={() => { clearAll(); setConfirmClear(false) }}>
                   确认清空
-                </button>
-                <button onClick={() => setConfirmClear(false)}
-                  className="px-3 py-1 text-xs bg-[var(--bg3)] text-[var(--muted)] rounded-lg cursor-pointer border border-[var(--border)] hover:text-[var(--fg)] transition-colors">
+                </Button>
+                <Button variant="outline" size="xs" onClick={() => setConfirmClear(false)}>
                   取消
-                </button>
+                </Button>
               </div>
             ) : (
               total > 0 && (
-                <button onClick={() => setConfirmClear(true)}
-                  className="px-3 py-1 text-xs bg-[var(--bg3)] text-[var(--risk)] rounded-lg cursor-pointer border border-[var(--border)] hover:border-[var(--risk)] transition-colors">
+                <Button variant="outline" size="xs" onClick={() => setConfirmClear(true)} className="text-[var(--risk)] hover:text-[var(--risk)]">
                   🗑 清空全部
-                </button>
+                </Button>
               )
             )}
           </div>
@@ -123,17 +121,15 @@ function HistoryCard({ record: r, onDelete }: { record: DivineRecord; onDelete: 
         {/* 时间和删除 */}
         <div className="flex items-center gap-2 shrink-0">
           <span className="text-[11px] text-[var(--muted)]">{formatTime(r.timestamp)}</span>
-          <button
+          <Button
+            variant="ghost"
+            size="icon-xs"
             onClick={handleDelete}
-            className={`p-1 rounded-md text-xs cursor-pointer transition-all ${
-              deleting
-                ? 'bg-[var(--risk)] text-white scale-110'
-                : 'text-[var(--muted)] hover:text-[var(--risk)] hover:bg-[var(--bg3)]'
-            }`}
+            className={deleting ? 'bg-[var(--risk)] text-white scale-110' : 'text-[var(--muted)] hover:text-[var(--risk)]'}
             title={deleting ? '确认删除' : '删除'}
           >
-            {deleting ? '✕' : '✕'}
-          </button>
+            ✕
+          </Button>
         </div>
       </div>
 

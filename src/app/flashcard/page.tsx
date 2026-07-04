@@ -7,11 +7,12 @@ import CardFace from '@/components/CardFace'
 import { RubyText } from '@/components/Ruby'
 import { baguaList, getHexagramName, getHexagramSymbol } from '@/data/bagua'
 import { hexagramOrder, getHexagramDetail } from '@/data/hexagrams'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+import { Button } from '@/components/ui/button'
 
 type CardMode = 'bagua' | 'hexagram'
 type BrowseMode = 'sequential' | 'random'
 
-/** 生成八卦模式的闪卡 */
 interface BaguaCard {
   type: 'bagua'
   symbol: string
@@ -24,7 +25,6 @@ interface BaguaCard {
   short: string
 }
 
-/** 生成64卦模式的闪卡 */
 interface HexagramCard {
   type: 'hexagram'
   symbol: string
@@ -76,12 +76,10 @@ export default function FlashcardPage() {
   const [randomIndex, setRandomIndex] = useState(0)
   const [flipped, setFlipped] = useState(false)
 
-  // 卡片数据
   const cards = useMemo(() =>
     cardMode === 'bagua' ? buildBaguaCards() : buildHexagramCards(),
   [cardMode])
 
-  // 当前卡片 — 翻转不换卡
   const currentCard = useMemo(() => {
     if (cards.length === 0) return null
     if (browseMode === 'random') {
@@ -90,7 +88,6 @@ export default function FlashcardPage() {
     return cards[currentIndex % cards.length]
   }, [cards, currentIndex, browseMode, randomIndex])
 
-  // 下一张
   const next = useCallback(() => {
     setFlipped(false)
     if (browseMode === 'random') {
@@ -100,16 +97,15 @@ export default function FlashcardPage() {
     }
   }, [browseMode, cards.length])
 
-  // 切换卡组时重置
-  const switchMode = useCallback((m: CardMode) => {
-    setCardMode(m)
+  const switchMode = useCallback((m: string) => {
+    setCardMode(m as CardMode)
     setCurrentIndex(0)
     setRandomIndex(0)
     setFlipped(false)
   }, [])
 
-  const switchBrowse = useCallback((m: BrowseMode) => {
-    setBrowseMode(m)
+  const switchBrowse = useCallback((m: string) => {
+    setBrowseMode(m as BrowseMode)
     setCurrentIndex(0)
     setRandomIndex(0)
     setFlipped(false)
@@ -133,53 +129,28 @@ export default function FlashcardPage() {
       </div>
       <PageHeader title="闪卡复习" subtitle="点击卡片翻转 · 看卦符猜卦名" />
 
-      {/* 模式切换 */}
-      <div className="flex justify-center gap-2 mb-4">
-        <div className="flex gap-1.5 p-1 rounded-xl bg-[var(--bg2)] border border-[var(--border)]">
-          <button
-            onClick={() => switchMode('bagua')}
-            className={`px-4 py-1.5 text-xs rounded-lg cursor-pointer transition-colors ${
-              cardMode === 'bagua'
-                ? 'bg-[var(--accent)] text-[var(--bg)] font-semibold'
-                : 'text-[var(--muted)] hover:text-[var(--fg)]'
-            }`}
-          >八卦（8张）</button>
-          <button
-            onClick={() => switchMode('hexagram')}
-            className={`px-4 py-1.5 text-xs rounded-lg cursor-pointer transition-colors ${
-              cardMode === 'hexagram'
-                ? 'bg-[var(--accent)] text-[var(--bg)] font-semibold'
-                : 'text-[var(--muted)] hover:text-[var(--fg)]'
-            }`}
-          >六十四卦（64张）</button>
-        </div>
+      {/* 卡组切换 */}
+      <div className="flex justify-center mb-4">
+        <Tabs value={cardMode} onValueChange={switchMode}>
+          <TabsList>
+            <TabsTrigger value="bagua">八卦（8张）</TabsTrigger>
+            <TabsTrigger value="hexagram">六十四卦（64张）</TabsTrigger>
+          </TabsList>
+        </Tabs>
       </div>
 
       {/* 浏览方式 */}
-      <div className="flex justify-center gap-2 mb-6">
-        <div className="flex gap-1.5 p-1 rounded-xl bg-[var(--bg2)] border border-[var(--border)]">
-          <button
-            onClick={() => switchBrowse('sequential')}
-            className={`px-3 py-1 text-[11px] rounded-lg cursor-pointer transition-colors ${
-              browseMode === 'sequential'
-                ? 'bg-[var(--bg3)] text-[var(--fg)] font-semibold'
-                : 'text-[var(--muted)] hover:text-[var(--fg)]'
-            }`}
-          >📋 顺序</button>
-          <button
-            onClick={() => switchBrowse('random')}
-            className={`px-3 py-1 text-[11px] rounded-lg cursor-pointer transition-colors ${
-              browseMode === 'random'
-                ? 'bg-[var(--bg3)] text-[var(--fg)] font-semibold'
-                : 'text-[var(--muted)] hover:text-[var(--fg)]'
-            }`}
-          >🎲 随机</button>
-        </div>
+      <div className="flex justify-center mb-6">
+        <Tabs value={browseMode} onValueChange={switchBrowse}>
+          <TabsList variant="line">
+            <TabsTrigger value="sequential">顺序</TabsTrigger>
+            <TabsTrigger value="random">随机</TabsTrigger>
+          </TabsList>
+        </Tabs>
       </div>
 
       {/* 闪卡 */}
       <div className="max-w-[360px] mx-auto mb-6">
-        {/* 进度 */}
         <div className="text-center text-[11px] text-[var(--muted)] mb-3">
           {browseMode === 'sequential' ? `${currentIndex % total + 1} / ${total}` : '🎲 随机'}
         </div>
@@ -254,12 +225,13 @@ export default function FlashcardPage() {
 
       {/* 下一张按钮 */}
       <div className="text-center">
-        <button
+        <Button
           onClick={next}
-          className="px-8 py-3 text-sm font-semibold tracking-wider bg-gradient-to-r from-[var(--accent)] to-[var(--accent2)] text-[var(--bg)] border-none rounded-xl cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_16px_var(--glow)] active:translate-y-0"
+          size="lg"
+          className="font-semibold tracking-wider bg-gradient-to-r from-[var(--accent)] to-[var(--accent2)] text-[var(--bg)] border-none hover:from-[var(--accent2)] hover:to-[var(--accent)] hover:-translate-y-0.5 hover:shadow-[0_4px_16px_var(--glow)] transition-all"
         >
           {browseMode === 'random' ? '🎲 下一张随机' : '→ 下一张'}
-        </button>
+        </Button>
       </div>
     </>
   )

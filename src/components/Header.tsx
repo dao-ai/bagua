@@ -1,12 +1,21 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { usePinyin } from '@/contexts/PinyinContext'
 import SearchOverlay from '@/components/SearchOverlay'
 import HexagramDetailModal from '@/components/HexagramDetailModal'
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuLabel,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu'
 
 const tabs = [
   { href: '/', label: '首页', exact: true, group: '学习' },
@@ -58,7 +67,7 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchDetailKey, setSearchDetailKey] = useState<string | null>(null)
-  const moreRef = useRef<HTMLDetailsElement>(null)
+  const [moreOpen, setMoreOpen] = useState(false)
 
   const isActive = (t: typeof tabs[number]) =>
     t.exact ? pathname === t.href : pathname.startsWith(t.href)
@@ -93,7 +102,7 @@ export default function Header() {
   // 页面切换时关闭移动端菜单和更多下拉
   useEffect(() => {
     setMobileMenuOpen(false)
-    if (moreRef.current) moreRef.current.open = false
+    setMoreOpen(false)
   }, [pathname])
 
   const toggleTheme = () => setDark(d => !d)
@@ -203,39 +212,35 @@ export default function Header() {
             </Link>
           ))}
 
-          {/* 更多下拉 — DaisyUI <details> 模式 */}
-          <details ref={moreRef} className="relative">
-            <summary className={`px-3 py-0.5 text-[13px] no-underline transition-colors cursor-pointer list-none ${
+          {/* 更多下拉 */}
+          <DropdownMenu open={moreOpen} onOpenChange={setMoreOpen}>
+            <DropdownMenuTrigger className={`px-3 py-0.5 text-[13px] no-underline transition-colors cursor-pointer bg-transparent border-none ${
               moreTabs.some(t => isActive(t))
                 ? 'text-[var(--accent)] font-semibold'
                 : 'text-[var(--muted)] hover:text-[var(--fg)]'
             }`}>
               更多 ▼
-            </summary>
-            <div className="absolute right-0 top-full mt-2 z-50 p-3 rounded-xl bg-[var(--bg2)] border border-[var(--border)] shadow-[0_8px_32px_var(--shadow)] min-w-[160px]">
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="min-w-[160px]">
               {moreGroups.map((group, gi) => (
-                <div key={group.title}>
-                  {gi > 0 && <div className="mx-1 my-1.5 h-px bg-[var(--border)]" />}
-                  <div className="px-1 pb-0.5 text-[11px] text-[var(--muted)] font-medium tracking-wider">{group.title}</div>
+                <DropdownMenuGroup key={group.title}>
+                  {gi > 0 && <DropdownMenuSeparator />}
+                  <DropdownMenuLabel>{group.title}</DropdownMenuLabel>
                   {group.items.map(t => (
-                    <Link
+                    <DropdownMenuItem
                       key={t.href}
-                      href={t.href}
-                      className={`block px-2 py-1 text-[13px] no-underline transition-colors whitespace-nowrap rounded ${
-                        isActive(t)
-                          ? 'text-[var(--accent)] font-semibold bg-[var(--glow)]'
-                          : 'text-[var(--fg)] hover:text-[var(--accent)]'
-                      }`}
+                      render={<Link href={t.href} />}
+                      className={isActive(t) ? 'text-[var(--accent)] font-semibold' : ''}
                       data-mcp-action="navigate"
                       data-mcp-description={navDescriptions[t.href] || `前往${t.label}页面`}
                     >
                       {t.label}
-                    </Link>
+                    </DropdownMenuItem>
                   ))}
-                </div>
+                </DropdownMenuGroup>
               ))}
-            </div>
-          </details>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </nav>
 
         {/* ── END: 操作按钮 ── */}
