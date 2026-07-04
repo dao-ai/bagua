@@ -5,6 +5,7 @@ import Header from '@/components/Header'
 import Providers from '@/components/Providers'
 import InstallPrompt from '@/components/InstallPrompt'
 import ErrorBoundary from '@/components/ErrorBoundary'
+import { TooltipProvider } from '@/components/ui/tooltip'
 import { cn } from "@/lib/utils";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
@@ -75,6 +76,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         }} />
         {/* GoatCounter 访问统计 — https://baguadao.goatcounter.com */}
         <script data-goatcounter={process.env.NEXT_PUBLIC_GOATCOUNTER_URL || 'https://baguadao.goatcounter.com/count'} async src={process.env.NEXT_PUBLIC_GOATCOUNTER_SCRIPT || '//gc.zgo.at/count.js'} />
+        <TooltipProvider>
         <Providers>
           <div className="max-w-[960px] mx-auto px-5">
             <Header />
@@ -143,6 +145,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </footer>
           </div>
         </Providers>
+        </TooltipProvider>
         <InstallPrompt />
       </body>
     </html>

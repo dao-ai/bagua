@@ -6,12 +6,13 @@ import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 import dynamic from 'next/dynamic'
 import PageHeader from '@/components/PageHeader'
+import { Skeleton } from '@/components/ui/skeleton'
 
 const FuxiCircle = dynamic(() => import('@/components/FuxiCircle'), {
-  loading: () => <div className="h-80 rounded-xl bg-[var(--card)] border border-[var(--border)] animate-pulse" />,
+  loading: () => <Skeleton className="h-80 w-full rounded-xl" />,
 })
 const FuxiSquare = dynamic(() => import('@/components/FuxiSquare'), {
-  loading: () => <div className="h-80 rounded-xl bg-[var(--card)] border border-[var(--border)] animate-pulse" />,
+  loading: () => <Skeleton className="h-80 w-full rounded-xl" />,
 })
 
 function FuxiContent() {

@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import usePageTitle from '@/hooks/usePageTitle'
 import PageHeader from '@/components/PageHeader'
+import { Skeleton } from '@/components/ui/skeleton'
 import { sovereignHexagrams, preHeavenTerms, solarTerms24, postHeavenTerms, seasonColors, seasonLabels } from '@/data/solarTerms'
 import type { SolarTermItem, SovereignHexagram, PreHeavenTerm } from '@/data/solarTerms'
 
@@ -255,8 +256,8 @@ export default function SolarTermsPage() {
           title="卦象与节气历法"
           subtitle="八卦配二十四节气 · 阴阳消长 · 天人合一"
         />
-        <div className="animate-pulse space-y-6">
-          {[1,2,3].map(i => <div key={i} className="h-40 rounded-xl bg-[var(--bg2)] opacity-50" />)}
+        <div className="space-y-6">
+          {[1,2,3].map(i => <Skeleton key={i} className="h-40 w-full rounded-xl" />)}
         </div>
       </main>
     )

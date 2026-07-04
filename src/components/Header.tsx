@@ -16,6 +16,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 
 const tabs = [
   { href: '/', label: '首页', exact: true, group: '学习' },
@@ -245,23 +246,33 @@ export default function Header() {
 
         {/* ── END: 操作按钮 ── */}
         <div className="flex flex-1 justify-end items-center gap-2">
-          <button
-            onClick={() => setSearchOpen(true)}
-            className={btnBase}
-            aria-label="搜索"
-          >
-            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-              <circle cx="6.5" cy="6.5" r="5" />
-              <path d="M10.5 10.5L14 14" />
-            </svg>
-          </button>
-          <button
-            onClick={toggleTheme}
-            className={btnBase}
-            aria-label="切换主题"
-          >
-            {dark ? '🌙' : '☀️'}
-          </button>
+          <Tooltip>
+            <TooltipTrigger
+              onClick={() => setSearchOpen(true)}
+              className={btnBase}
+              aria-label="搜索"
+            >
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                <circle cx="6.5" cy="6.5" r="5" />
+                <path d="M10.5 10.5L14 14" />
+              </svg>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>搜索卦象 Ctrl+K</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger
+              onClick={toggleTheme}
+              className={btnBase}
+              aria-label="切换主题"
+            >
+              {dark ? '🌙' : '☀️'}
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>切换主题</p>
+            </TooltipContent>
+          </Tooltip>
           <PinyinBtn />
         </div>
       </div>
@@ -284,16 +295,21 @@ export default function Header() {
 function PinyinBtn() {
   const { showPinyin, toggle } = usePinyin()
   return (
-    <button
-      onClick={toggle}
-      className={`w-9 h-9 rounded-full border text-base flex items-center justify-center cursor-pointer transition-colors shrink-0 ${
-        showPinyin
-          ? 'bg-[var(--accent)] text-[var(--bg)] border-[var(--accent)]'
-          : 'bg-[var(--bg2)] text-[var(--muted)] border-[var(--border)] hover:border-[var(--accent)] hover:text-[var(--fg)]'
-      }`}
-      aria-label="切换注音"
-    >
-      🔤
-    </button>
+    <Tooltip>
+      <TooltipTrigger
+        onClick={toggle}
+        className={`w-9 h-9 rounded-full border text-base flex items-center justify-center cursor-pointer transition-colors shrink-0 ${
+          showPinyin
+            ? 'bg-[var(--accent)] text-[var(--bg)] border-[var(--accent)]'
+            : 'bg-[var(--bg2)] text-[var(--muted)] border-[var(--border)] hover:border-[var(--accent)] hover:text-[var(--fg)]'
+        }`}
+        aria-label="切换注音"
+      >
+        🔤
+      </TooltipTrigger>
+      <TooltipContent>
+        <p>切换拼音注音</p>
+      </TooltipContent>
+    </Tooltip>
   )
 }

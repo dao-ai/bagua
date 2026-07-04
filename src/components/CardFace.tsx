@@ -1,6 +1,7 @@
 'use client'
 
 import type { ReactNode } from 'react'
+import { Badge } from '@/components/ui/badge'
 
 export interface CardFaceProps {
   front: ReactNode
@@ -17,6 +18,13 @@ const statusLabels: Record<string, string> = {
   mastered: '已掌握',
 }
 
+const statusVariant: Record<string, 'secondary' | 'default' | 'outline'> = {
+  new: 'secondary',
+  due: 'default',
+  learned: 'secondary',
+  mastered: 'outline',
+}
+
 export default function CardFace({ front, back, flipped, onFlip, status }: CardFaceProps) {
   return (
     <div className="perspective-[1000px] cursor-pointer" onClick={onFlip}>
@@ -29,13 +37,9 @@ export default function CardFace({ front, back, flipped, onFlip, status }: CardF
         <div className="absolute inset-0 backface-hidden bg-[var(--card)] border border-[var(--border)] rounded-2xl flex flex-col items-center justify-center p-8">
           {front}
           {status && (
-            <div className={`mt-4 text-[11px] px-2 py-0.5 rounded-md ${
-              status === 'due' ? 'bg-[var(--accent)]/10 text-[var(--accent)]' :
-              status === 'mastered' ? 'bg-green-500/10 text-green-400' :
-              'text-[var(--muted)]'
-            }`}>
+            <Badge variant={statusVariant[status]} className="mt-4">
               {statusLabels[status]}
-            </div>
+            </Badge>
           )}
           <div className="mt-3 text-[11px] text-[var(--muted)]">点击翻转</div>
         </div>

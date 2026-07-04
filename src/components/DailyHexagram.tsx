@@ -5,6 +5,7 @@ import { baguaMap, getHexagramName, getHexagramSymbol } from '@/data/bagua'
 import { getHexagramDetail, hexagramOrder } from '@/data/hexagrams'
 import { HexagramDisplay } from '@/components/Yao'
 import { RubyText } from '@/components/Ruby'
+import { Skeleton } from '@/components/ui/skeleton'
 
 const STORAGE_KEY = 'bagua-daily-seen'
 
@@ -114,11 +115,11 @@ export default function DailyHexagram() {
 
   if (!mounted || !displayKey) {
     return (
-      <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-8 mb-10 animate-pulse">
-        <div className="h-4 w-24 bg-[var(--bg3)] rounded mx-auto mb-4" />
-        <div className="h-16 w-16 bg-[var(--bg3)] rounded mx-auto mb-4" />
-        <div className="h-6 w-32 bg-[var(--bg3)] rounded mx-auto mb-6" />
-        <div className="h-48 bg-[var(--bg3)] rounded" />
+      <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-8 mb-10">
+        <Skeleton className="h-4 w-24 mx-auto mb-4" />
+        <Skeleton className="h-16 w-16 mx-auto mb-4" />
+        <Skeleton className="h-6 w-32 mx-auto mb-6" />
+        <Skeleton className="h-48 w-full" />
       </div>
     )
   }
