@@ -9,6 +9,7 @@ import HexagramRelations from '@/components/HexagramRelations'
 import { computeLiuyao } from '@/data/liuyao'
 import type { LiuyaoResult } from '@/data/liuyao'
 import type { DivineResult } from '@/hooks/divineTypes'
+import { Card, CardContent } from '@/components/ui/card'
 
 const ShareCard = dynamic(() => import('@/components/ShareCard'))
 const ThreeYaoHexagram = dynamic(() => import('@/components/ThreeYaoHexagram'), { ssr: false })
@@ -48,7 +49,8 @@ export default function DivineResult({ result }: { result: DivineResult }) {
   if (animPhase === 'flip') animClass = r.movingChange === '阳变阴' ? 'yl-flip-yang' : 'yl-flip-yin'
 
   return (
-    <div className="mt-6 p-6 bg-[var(--bg2)] rounded-xl animate-[fadeIn_0.4s_ease]">
+    <Card className="mt-6 animate-[fadeIn_0.4s_ease]">
+      <CardContent className="p-6">
       <div className="flex justify-center gap-8 items-start text-center max-sm:flex-col max-sm:gap-4">
         {/* 本卦 */}
         <div className="flex-1">
@@ -176,6 +178,7 @@ export default function DivineResult({ result }: { result: DivineResult }) {
         <ShareCard upperId={r.upperId} lowerId={r.lowerId} subtitle="起卦结果" />
       </div>
       <HexagramRelations upperId={r.upperId} lowerId={r.lowerId} />
-    </div>
+    </CardContent>
+    </Card>
   )
 }

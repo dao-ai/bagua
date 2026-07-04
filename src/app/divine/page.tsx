@@ -4,9 +4,10 @@ import usePageTitle from '@/hooks/usePageTitle'
 import { useState, useCallback, useEffect, useRef } from 'react'
 import dynamic from 'next/dynamic'
 import PageHeader from '@/components/PageHeader'
+import { Card, CardContent } from '@/components/ui/card'
 
 const YarrowDivination = dynamic(() => import('@/components/YarrowDivination'), {
-  loading: () => <div className="h-40 rounded-xl bg-[var(--card)] border border-[var(--border)] animate-pulse" />,
+  loading: () => <Card className="h-40 animate-pulse" />,
 })
 import Coin from '@/components/Coin'
 import { baguaMap, numToBagua, computeHexagramChange } from '@/data/bagua'
@@ -140,11 +141,12 @@ export default function DivinePage() {
 
       {/* ===== 起卦区（数字/金钱） ===== */}
       {method !== 'yarrow' && (
-      <div className="max-w-[500px] mx-auto bg-[var(--card)] border border-[var(--border)] rounded-2xl p-8"
+      <Card className="max-w-[500px] mx-auto"
         data-mcp-action="divine"
         data-mcp-description="起卦占卜，支持数字起卦和金钱起卦两种方式。先选择起卦方式，然后输入数字或抛铜钱，自动生成卦象结果。"
         data-mcp-params='{"required": ["method"], "optional": ["num1", "num2", "num3"]}'
       >
+        <CardContent className="p-8">
         {method === 'number' ? (
           <>
             <h3 className="text-center text-lg mb-1" data-mcp-param="method" data-mcp-description="当前起卦方式">✍️ 输入三个数字</h3>
@@ -254,7 +256,8 @@ export default function DivinePage() {
             )}
           </>
         )}
-      </div>
+        </CardContent>
+      </Card>
       )}
 
       {/* ===== 卦象结果 — 独立更宽 ===== */}

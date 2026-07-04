@@ -1,30 +1,75 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
 
 /* ═══════════════════════════════════════
    主题 — 所有颜色定义集中在此
    JS 侧只需给 <html> 加 .classic 类即可切换
+
+   变量分层：
+   - --bg / --fg / --muted / --accent / --border … 保留给现有页面用
+   - shadcn 组件通过 @theme inline 映射使用 Tailwind utility class
+   - 唯一桥接：--muted 语义冲突（app=文字色, shadcn=背景色）
+     → @theme inline 中 --color-muted 指向 --sh-muted
    ═══════════════════════════════════════ */
 
 :root {
-  /* 暗色主题（默认） */
+  /* ═══ App 自定义变量（暗色主题默认） ═══ */
   --bg: #0b1120;
   --bg2: #141d33;
   --bg3: #1e2a45;
   --fg: #e2e8f0;
-  --muted: #7e8ba3;
-  --accent: #d97706;
+  --muted: #7e8ba3;          /* App: 弱化文字颜色 */
+  --accent: #d97706;         /* App: 品牌强调色（琥珀） */
   --accent2: #f59e0b;
-  --card: #141d33;
-  --border: #1e2a45;
+  --card: #141d33;           /* App: 卡片背景 */
+  --border: #1e2a45;         /* App: 边框颜色 */
   --yang: #f59e0b;
   --yin: #4a5a7a;
   --risk: #f87171;
   --glow: rgba(245,158,11,.15);
   --shadow: rgba(0,0,0,.4);
+
+  /* ═══ shadcn 设计令牌（暗色主题，与 App 调色板匹配） ═══ */
+  --background: #0b1120;           /* = --bg */
+  --foreground: #e2e8f0;           /* = --fg */
+  --card: #141d33;                 /* = --bg2 */
+  --card-foreground: #e2e8f0;
+  --popover: #141d33;              /* = --bg2 */
+  --popover-foreground: #e2e8f0;
+  --primary: #d97706;              /* = --accent（琥珀） */
+  --primary-foreground: #0b1120;   /* 深色文字在琥珀底上 */
+  --secondary: #1e2a45;            /* = --bg3 */
+  --secondary-foreground: #e2e8f0;
+  --sh-muted: #1e2a45;             /* ★桥接：shadcn muted 背景（= --bg3） */
+  --muted-foreground: #7e8ba3;     /* = App --muted */
+  --accent: #d97706;               /* shadcn accent 背景 = App 品牌色 */
+  --accent-foreground: #0b1120;
+  --destructive: #f87171;          /* = --risk */
+  --destructive-foreground: #fafafa;
+  --border: #1e2a45;               /* = --bg3 */
+  --input: #1e2a45;                /* = --bg3 */
+  --ring: #d97706;                 /* = --accent（琥珀对焦环） */
+  --chart-1: #f59e0b;              /* amber */
+  --chart-2: #4a5a7a;              /* yin */
+  --chart-3: #7e8ba3;              /* muted */
+  --chart-4: #d97706;
+  --chart-5: #e2e8f0;
+  --radius: 0.625rem;
+  --sidebar: #0b1120;
+  --sidebar-foreground: #e2e8f0;
+  --sidebar-primary: #d97706;
+  --sidebar-primary-foreground: #0b1120;
+  --sidebar-accent: #1e2a45;
+  --sidebar-accent-foreground: #e2e8f0;
+  --sidebar-border: #1e2a45;
+  --sidebar-ring: #d97706;
 }
 
 :root.classic {
-  /* 古典/宣纸主题 */
+  /* ═══ App 变量覆盖（古典/宣纸主题） ═══ */
   --bg: #f5f0e8;
   --bg2: #efe8d8;
   --bg3: #fcf9f2;
@@ -39,6 +84,70 @@
   --risk: #c23b22;
   --glow: rgba(194,59,34,.1);
   --shadow: rgba(60,40,20,.12);
+
+  /* ═══ shadcn 变量覆盖（古典/宣纸主题） ═══ */
+  --background: #f5f0e8;
+  --foreground: #3d2b1f;
+  --card: #ffffff;
+  --card-foreground: #3d2b1f;
+  --popover: #ffffff;
+  --popover-foreground: #3d2b1f;
+  --primary: #c23b22;
+  --primary-foreground: #fafafa;
+  --secondary: #efe8d8;
+  --secondary-foreground: #3d2b1f;
+  --sh-muted: #efe8d8;
+  --muted-foreground: #8b7355;
+  --accent: #efe8d8;
+  --accent-foreground: #3d2b1f;
+  --destructive: #c23b22;
+  --destructive-foreground: #fafafa;
+  --border: #d4c5a9;
+  --input: #d4c5a9;
+  --ring: #c23b22;
+  --sidebar: #f5f0e8;
+  --sidebar-foreground: #3d2b1f;
+  --sidebar-primary: #c23b22;
+  --sidebar-primary-foreground: #fafafa;
+  --sidebar-accent: #efe8d8;
+  --sidebar-accent-foreground: #3d2b1f;
+  --sidebar-border: #d4c5a9;
+  --sidebar-ring: #c23b22;
+}
+
+.dark {
+  --background: #0b1120;
+  --foreground: #e2e8f0;
+  --card: #141d33;
+  --card-foreground: #e2e8f0;
+  --popover: #141d33;
+  --popover-foreground: #e2e8f0;
+  --primary: #d97706;
+  --primary-foreground: #0b1120;
+  --secondary: #1e2a45;
+  --secondary-foreground: #e2e8f0;
+  --sh-muted: #1e2a45;
+  --muted-foreground: #7e8ba3;
+  --accent: #1e2a45;
+  --accent-foreground: #e2e8f0;
+  --destructive: #f87171;
+  --destructive-foreground: #fafafa;
+  --border: #1e2a45;
+  --input: #1e2a45;
+  --ring: #d97706;
+  --chart-1: #f59e0b;
+  --chart-2: #4a5a7a;
+  --chart-3: #7e8ba3;
+  --chart-4: #d97706;
+  --chart-5: #e2e8f0;
+  --sidebar: #0b1120;
+  --sidebar-foreground: #e2e8f0;
+  --sidebar-primary: #d97706;
+  --sidebar-primary-foreground: #0b1120;
+  --sidebar-accent: #1e2a45;
+  --sidebar-accent-foreground: #e2e8f0;
+  --sidebar-border: #1e2a45;
+  --sidebar-ring: #d97706;
 }
 
 /* ===== 字体 ===== */
@@ -187,11 +296,6 @@ rt {
   ruby-position: over;
 }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", system-ui, sans-serif;
-  transition: background-color 0.4s, color 0.4s;
-}
-
 /* ===== 自定义滚动条 ===== */
 .thin-scroll::-webkit-scrollbar {
   width: 5px;
@@ -267,4 +371,69 @@ body {
 
 .gallery-root ~ * {
   display: none;
+}
+
+/* ═══════════════════════════════════════
+   shadcn/ui @theme inline — Tailwind 设计令牌
+
+   注：--color-muted 使用 --sh-muted（桥接变量），
+   避免与 App 的 --muted 文字色冲突。
+   其他变量直接引用同名 CSS 变量。
+   ═══════════════════════════════════════ */
+@theme inline {
+  --font-sans: "Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, monospace;
+  --font-heading: "Noto Serif SC", "Songti SC", serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--sh-muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --radius-xs: calc(var(--radius) * 0.5);
+  --radius-sm: calc(var(--radius) * 0.75);
+  --radius-md: calc(var(--radius) * 0.875);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.5);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
 }

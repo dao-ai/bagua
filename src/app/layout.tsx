@@ -1,10 +1,13 @@
 import type { Metadata, Viewport } from 'next'
-import { Noto_Serif_SC } from 'next/font/google'
+import { Noto_Serif_SC, Geist } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/Header'
 import Providers from '@/components/Providers'
 import InstallPrompt from '@/components/InstallPrompt'
 import ErrorBoundary from '@/components/ErrorBoundary'
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const notoSerif = Noto_Serif_SC({
   weight: ['400', '600', '700'],
@@ -41,7 +44,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="zh-CN" suppressHydrationWarning>
+    <html lang="zh-CN" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
       <body className={`min-h-screen ${notoSerif.variable}`} style={{ background: 'var(--bg)', color: 'var(--fg)' }}>
         {/* 防止主题闪烁：在 React 渲染前应用 localStorage 中的主题 */}
         <script dangerouslySetInnerHTML={{
