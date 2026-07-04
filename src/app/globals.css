@@ -293,6 +293,24 @@ rt {
 }
 
 /* ===== 自定义滚动条 ===== */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+html::-webkit-scrollbar {
+  width: 4px;
+}
+html::-webkit-scrollbar-track {
+  background: transparent;
+}
+html::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 999px;
+}
+html::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
+
 .thin-scroll {
   scrollbar-width: thin;
   scrollbar-color: transparent transparent;
