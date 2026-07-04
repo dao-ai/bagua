@@ -6,4 +6,5 @@ out/
 .codegraph/
 .env.local
 .env.*.local
+docs/superpowers/
 
