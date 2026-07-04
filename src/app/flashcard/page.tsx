@@ -123,6 +123,14 @@ export default function FlashcardPage() {
 
   return (
     <>
+      <div className="text-center mb-4">
+        <a
+          href="/learn"
+          className="inline-flex items-center gap-1.5 text-[12px] text-[var(--accent)] hover:underline transition-all"
+        >
+          🆕 升级到综合学习系统 — 间隔复习 + 闯关测验
+        </a>
+      </div>
       <PageHeader title="闪卡复习" subtitle="点击卡片翻转 · 看卦符猜卦名" />
 
       {/* 模式切换 */}

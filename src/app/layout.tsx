@@ -97,6 +97,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <div className="flex flex-col gap-1.5">
                     <a href="/eight" className="text-[12px] text-[var(--muted)] hover:text-[var(--accent)] transition-colors no-underline">八卦</a>
                     <a href="/hexagrams" className="text-[12px] text-[var(--muted)] hover:text-[var(--accent)] transition-colors no-underline">64卦</a>
+                    <a href="/learn" className="text-[12px] text-[var(--muted)] hover:text-[var(--accent)] transition-colors no-underline">学习中心</a>
                     <a href="/flashcard" className="text-[12px] text-[var(--muted)] hover:text-[var(--accent)] transition-colors no-underline">闪卡</a>
                     <a href="/glossary" className="text-[12px] text-[var(--muted)] hover:text-[var(--accent)] transition-colors no-underline">术语</a>
                   </div>

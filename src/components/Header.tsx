@@ -20,6 +20,7 @@ const tabs = [
   { href: '/fuxi', label: '方圆图', exact: false, group: '探索' },
   { href: '/compare', label: '卦对比', exact: false, group: '工具' },
   { href: '/ai-reading', label: 'AI解卦', exact: false, group: '工具' },
+  { href: '/learn', label: '学习', exact: true, group: '学习' },
   { href: '/flashcard', label: '闪卡', exact: false, group: '学习' },
   { href: '/lifegua', label: '本命卦', exact: false, group: '工具' },
   { href: '/liuyao', label: '六爻排盘', exact: false, group: '工具' },
@@ -35,8 +36,8 @@ const tabs = [
   { href: '/history', label: '占卜记录', exact: false, group: '探索' },
 ]
 
-const visibleTabs = tabs.filter(t => ['/', '/eight', '/relations', '/hexagrams', '/divine'].includes(t.href))
-const moreTabs = tabs.filter(t => !['/', '/eight', '/relations', '/hexagrams', '/divine'].includes(t.href))
+const visibleTabs = tabs.filter(t => ['/', '/eight', '/relations', '/hexagrams', '/divine', '/learn'].includes(t.href))
+const moreTabs = tabs.filter(t => !['/', '/eight', '/relations', '/hexagrams', '/divine', '/learn'].includes(t.href))
 
 const mobileGroups = [
   { title: '📖 学习', items: tabs.filter(t => t.group === '学习') },
@@ -115,6 +116,7 @@ export default function Header() {
     '/contrast': '先天后天对照 · 伏羲八卦 vs 文王八卦',
     '/compare': '双卦对比工具 · 两卦并排对照',
     '/ai-reading': 'AI 解卦 · 用 AI 解读卦象',
+    '/learn': '综合学习系统 · 间隔复习 + 闯关测验',
     '/flashcard': '闪卡复习 · 八卦/64卦记忆卡片',
     '/lifegua': '本命卦生成 · 根据生辰推算命卦',
     '/liuyao': '六爻排盘工具 · 传统装卦六步：八宫/纳甲/纳支/世应/六亲/六神',
