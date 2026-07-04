@@ -1,5 +1,28 @@
 # 更新日志
 
+## [0.7.0] - 2026-07-04
+
+### 重构
+- 🎨 **shadcn/ui 组件迁移** — 全面替换自定义 UI 组件
+  - `Modal.tsx`（104 行）→ shadcn `Dialog`，所有消费者统一更新
+  - `ShareCard` 内联弹窗 → `Dialog`，`copied` 状态 → `Sonner` toast
+  - 7 个页面内联 `<select>` → shadcn `Select`
+  - liuyao 内联 `Badge` → shadcn `Badge`
+  - `SearchOverlay` 此前已迁移至 shadcn `Command`
+- 📦 **安装 shadcn 组件** — `Select`、`Sonner`（新增依赖）
+- 🧩 **提取 Footer 组件** — `layout.tsx` 从 155 行减至 95 行
+
+### 修复
+- 🐛 Dialog 内容溢出窗口 → `max-h-[calc(90vh-8rem)] overflow-y-auto`
+- 🐛 Dialog 打开时滚动到底部 → 滚动移到内层 div，避免关闭按钮聚焦导致
+- 🎨 全局滚动条美化 → 4px 宽度、悬停显示，与 Dialog 风格统一
+
+### 改进
+- ♿ Dialog 自带焦点管理 + Escape 关闭 + `aria-modal`（原 Modal 手动实现）
+- ⚡ `HexagramDetailModal`、`ShareCard` 使用 `next/dynamic` 懒加载
+- 🧹 删除 `Modal.tsx` 及对应测试（功能已由更健壮的 Dialog 替代）
+- ✅ 构建 + 181 测试全部通过
+
 ## [0.6.0] - 2026-07-02
 
 ### 新增

@@ -113,8 +113,9 @@
 
 - [Next.js 16](https://nextjs.org/) — React 框架
 - [Tailwind CSS v4](https://tailwindcss.com/) — 样式
+- [shadcn/ui](https://ui.shadcn.com/) — 组件库（Dialog、Select、Command、Badge、Sonner 等 15 组件）
 - TypeScript（严格模式，零 `any`）
-- [Vitest](https://vitest.dev/) — 单元测试（179 tests）
+- [Vitest](https://vitest.dev/) — 单元测试（181 tests）
 - ESLint（`eslint-config-next`）
 - GitHub Actions — CI/CD（lint → test → build → deploy）
 - PWA — Web App Manifest + Service Worker（离线可用）
@@ -164,7 +165,7 @@ npm run lint
 ## 🧪 质量保障
 
 - **TypeScript** 严格模式，零 `any` 类型
-- **ESLint** (`eslint-config-next`) + **Vitest** (179 单元测试)
+- **ESLint** (`eslint-config-next`) + **Vitest** (181 单元测试)
 - **CI/CD** — push 自动 lint → test → build → deploy
 - 核心数据层（八卦、六爻、本命卦）全覆盖测试
 
