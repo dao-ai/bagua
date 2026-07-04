@@ -10,6 +10,7 @@ import { computeLiuyao } from '@/data/liuyao'
 import type { LiuyaoResult } from '@/data/liuyao'
 import type { DivineResult } from '@/hooks/divineTypes'
 import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 
 const ShareCard = dynamic(() => import('@/components/ShareCard'))
 const ThreeYaoHexagram = dynamic(() => import('@/components/ThreeYaoHexagram'), { ssr: false })
@@ -142,16 +143,13 @@ export default function DivineResult({ result }: { result: DivineResult }) {
 
       {/* 六爻排盘切换按钮 */}
       <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-        <button
+        <Button
+          variant={showLiuyao ? 'default' : 'outline'}
+          size="sm"
           onClick={() => setShowLiuyao(v => !v)}
-          className={`px-4 py-1.5 text-xs rounded-lg border cursor-pointer transition-all
-            ${showLiuyao
-              ? 'bg-[var(--accent)] text-[var(--bg)] border-[var(--accent)] font-semibold'
-              : 'bg-[var(--bg2)] text-[var(--muted)] border-[var(--border)] hover:border-[var(--accent)] hover:text-[var(--fg)]'
-            }`}
         >
           {showLiuyao ? '▲ 收起排盘' : '📋 六爻排盘'}
-        </button>
+        </Button>
       </div>
 
       {/* 六爻排盘内容 */}
