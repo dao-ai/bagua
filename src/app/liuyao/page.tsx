@@ -9,6 +9,14 @@ import type { LiuyaoResult } from '@/data/liuyao'
 import { baguaList, getHexagramName, getHexagramSymbol, baguaMap } from '@/data/bagua'
 import { steps, BAGUA_IDS, type HexItem } from '@/data/liuyao-steps'
 import { cardBase } from '@/constants'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Badge } from '@/components/ui/badge'
 
 // ─── 所有六十四卦 ───
 
@@ -75,24 +83,31 @@ export default function LiuyaoPage() {
         <div className="flex flex-wrap items-end gap-4">
           <div className="flex-1 min-w-[200px]">
             <label className="block text-[11px] text-[var(--muted)] mb-1.5 font-medium">选择卦象</label>
-            <select value={selectedKey} onChange={e => setSelectedKey(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-lg bg-[var(--bg2)] border border-[var(--border)] text-sm text-[var(--fg)] outline-none cursor-pointer transition-colors focus:border-[var(--accent)]">
-              {BAGUA_IDS.map(lid => (
-                <optgroup key={lid} label={baguaLabels[lid] || ''}>
-                  {BAGUA_IDS.map(uid => {
-                    const h = allHexagrams.find(x => x.key === `${lid}-${uid}`)
-                    return h ? <option key={h.key} value={h.key}>{h.symbol} {h.name} · {baguaNames[lid]}为下 {baguaNames[uid]}为上</option> : null
-                  })}
-                </optgroup>
-              ))}
-            </select>
+            <Select value={selectedKey} onValueChange={(v) => { if (v) setSelectedKey(v) }}>
+              <SelectTrigger className="w-full bg-[var(--bg2)] border-[var(--border)] text-sm">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-[var(--bg2)] border-[var(--border)] max-h-[300px]">
+                {allHexagrams.map(h => (
+                  <SelectItem key={h.key} value={h.key}>
+                    {h.symbol} {h.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div className="w-36">
             <label className="block text-[11px] text-[var(--muted)] mb-1.5 font-medium">日干（定六神）</label>
-            <select value={dayStem} onChange={e => setDayStem(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-lg bg-[var(--bg2)] border border-[var(--border)] text-sm text-[var(--fg)] outline-none cursor-pointer transition-colors focus:border-[var(--accent)]">
-              {TIAN_GAN.map(s => <option key={s} value={s}>{s}日</option>)}
-            </select>
+            <Select value={dayStem} onValueChange={(v) => { if (v) setDayStem(v) }}>
+              <SelectTrigger className="w-full bg-[var(--bg2)] border-[var(--border)] text-sm">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-[var(--bg2)] border-[var(--border)]">
+                {TIAN_GAN.map(s => (
+                  <SelectItem key={s} value={s}>{s}日</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           {cuoKey ? (
             <button onClick={() => setSelectedKey(cuoKey)}
@@ -117,8 +132,8 @@ export default function LiuyaoPage() {
             <div className="flex flex-wrap items-center gap-3 mb-3">
               <span className="text-2xl">{hexName?.symbol || ''}</span>
               <span className="text-lg font-bold text-[var(--fg)]"><RubyText text={hexName?.name || ''} /></span>
-              <Badge accent>{liuyaoResult.palaceName}</Badge>
-              <Badge>{liuyaoResult.generation}</Badge>
+              <Badge variant="default" className="bg-[var(--accent)]/10 text-[var(--accent)] border-[var(--accent)]/20">{liuyaoResult.palaceName}</Badge>
+              <Badge variant="secondary">{liuyaoResult.generation}</Badge>
               <span className="text-xs text-[var(--muted)]">宫五行：<span style={{color:WUXING_COLOR[liuyaoResult.palaceWuxing]}} className="font-semibold">{liuyaoResult.palaceWuxing}</span></span>
               <span className="text-xs text-[var(--muted)]">纳甲：内{liuyaoResult.innerStem} 外{liuyaoResult.outerStem}</span>
             </div>
@@ -247,13 +262,6 @@ export default function LiuyaoPage() {
 }
 
 // ─── 辅助组件 ───
-
-function Badge({ accent, children }: { accent?: boolean; children: React.ReactNode }) {
-  if (accent) {
-    return <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-[var(--accent)]/10 text-[var(--accent)] border border-[var(--accent)]/20">{children}</span>
-  }
-  return <span className="px-2 py-1 rounded-md text-xs bg-[var(--bg3)] text-[var(--muted)]">{children}</span>
-}
 
 function Summary({ label, color, children }: { label: string; color: string; children: React.ReactNode }) {
   return (

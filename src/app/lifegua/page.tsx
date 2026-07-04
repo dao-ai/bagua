@@ -5,6 +5,13 @@ import LifeGuaResultView from '@/components/LifeGuaResult'
 
 import { useState, useEffect, useMemo } from 'react'
 import { calculateLifeGua, shichenList, type LifeGuaResult } from '@/data/lifegua'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 interface RecentEntry {
   year: number
@@ -126,81 +133,61 @@ export default function LifeGuaPage() {
           {/* 年 */}
           <div>
             <div className="text-[11px] text-[var(--muted)] mb-1.5 text-center">年</div>
-            <div className="relative">
-              <select
-                value={year}
-                onChange={e => setYear(e.target.value)}
-                data-mcp-param="year"
-                data-mcp-description="出生年份，范围1900-2099"
-                className="w-full p-2.5 pr-7 bg-[var(--bg3)] border border-[var(--border)] rounded-xl text-[var(--fg)] text-sm text-center outline-none transition-all duration-300 focus:border-[var(--accent)] focus:shadow-[0_0_0_3px_var(--glow)] cursor-pointer appearance-none"
-              >
-
-                {Array.from({ length: 100 }, (_, i) => 2000 - i).map(y => (
-                  <option key={y} value={y}>{y}年</option>
+            <Select value={year} onValueChange={(v) => { if (v) setYear(v) }}>
+              <SelectTrigger className="w-full bg-[var(--bg3)] border-[var(--border)] text-sm text-center justify-center">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-[var(--bg2)] border-[var(--border)] max-h-[240px]">
+                {Array.from({ length: 200 }, (_, i) => 2099 - i).map(y => (
+                  <SelectItem key={y} value={String(y)}>{y}年</SelectItem>
                 ))}
-                {Array.from({ length: 100 }, (_, i) => 1999 - i).map(y => (
-                  <option key={y} value={y}>{y}年</option>
-                ))}
-              </select>
-              <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-[var(--muted)] pointer-events-none">▼</span>
-            </div>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* 月 */}
           <div>
             <div className="text-[11px] text-[var(--muted)] mb-1.5 text-center">月</div>
-            <div className="relative">
-              <select
-                value={month}
-                onChange={e => setMonth(Number(e.target.value))}
-                data-mcp-param="month"
-                data-mcp-description="出生月份，1-12月"
-                className="w-full p-2.5 pr-7 bg-[var(--bg3)] border border-[var(--border)] rounded-xl text-[var(--fg)] text-sm text-center outline-none transition-all duration-300 focus:border-[var(--accent)] focus:shadow-[0_0_0_3px_var(--glow)] cursor-pointer appearance-none"
-              >
+            <Select value={String(month)} onValueChange={(v) => { if (v) setMonth(Number(v)) }}>
+              <SelectTrigger className="w-full bg-[var(--bg3)] border-[var(--border)] text-sm text-center justify-center">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-[var(--bg2)] border-[var(--border)]">
                 {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
-                  <option key={m} value={m}>{m}月</option>
+                  <SelectItem key={m} value={String(m)}>{m}月</SelectItem>
                 ))}
-              </select>
-              <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-[var(--muted)] pointer-events-none">▼</span>
-            </div>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* 日 */}
           <div>
             <div className="text-[11px] text-[var(--muted)] mb-1.5 text-center">日</div>
-            <div className="relative">
-              <select
-                value={day}
-                onChange={e => setDay(Number(e.target.value))}
-                data-mcp-param="day"
-                data-mcp-description="出生日期，根据月份自动调整天数范围"
-                className="w-full p-2.5 pr-7 bg-[var(--bg3)] border border-[var(--border)] rounded-xl text-[var(--fg)] text-sm text-center outline-none transition-all duration-300 focus:border-[var(--accent)] focus:shadow-[0_0_0_3px_var(--glow)] cursor-pointer appearance-none"
-              >
+            <Select value={String(day)} onValueChange={(v) => { if (v) setDay(Number(v)) }}>
+              <SelectTrigger className="w-full bg-[var(--bg3)] border-[var(--border)] text-sm text-center justify-center">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-[var(--bg2)] border-[var(--border)] max-h-[240px]">
                 {Array.from({ length: maxDay }, (_, i) => (
-                  <option key={i + 1} value={i + 1}>{i + 1}日</option>
+                  <SelectItem key={i + 1} value={String(i + 1)}>{i + 1}日</SelectItem>
                 ))}
-              </select>
-              <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-[var(--muted)] pointer-events-none">▼</span>
-            </div>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* 时辰 */}
           <div>
             <div className="text-[11px] text-[var(--muted)] mb-1.5 text-center">时</div>
-            <div className="relative">
-              <select
-                value={shichenIndex}
-                onChange={e => setShichenIndex(Number(e.target.value))}
-                data-mcp-param="shichen"
-                data-mcp-description="出生时辰（12地支时辰），子时23:00-00:59，以此类推"
-                className="w-full p-2.5 pr-7 bg-[var(--bg3)] border border-[var(--border)] rounded-xl text-[var(--fg)] text-sm text-center outline-none transition-all duration-300 focus:border-[var(--accent)] focus:shadow-[0_0_0_3px_var(--glow)] cursor-pointer appearance-none"
-              >
+            <Select value={String(shichenIndex)} onValueChange={(v) => { if (v) setShichenIndex(Number(v)) }}>
+              <SelectTrigger className="w-full bg-[var(--bg3)] border-[var(--border)] text-sm text-center justify-center">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-[var(--bg2)] border-[var(--border)]">
                 {shichenList.map(s => (
-                  <option key={s.index} value={s.index}>{s.name} {s.range}</option>
+                  <SelectItem key={s.index} value={String(s.index)}>{s.name} {s.range}</SelectItem>
                 ))}
-              </select>
-              <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-[var(--muted)] pointer-events-none">▼</span>
-            </div>
+              </SelectContent>
+            </Select>
           </div>
         </div>
 

@@ -9,6 +9,15 @@ import { getYaoLines } from '@/data/yao_lines'
 import { posInfo, relations, positionRules, allHexagrams } from '@/data/yaoPositions'
 import type { PosInfo, RelationInfo, PositionRule } from '@/data/yaoPositions'
 import { cardBase } from '@/constants'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 const baguaIds = baguaList.map(b => b.id)
 
@@ -418,29 +427,33 @@ export default function YaoPositionsPage() {
         {/* 卦选择器 */}
         <div className="flex flex-wrap items-center gap-2 mb-5">
           <span className="text-xs text-[var(--muted)]">选择卦：</span>
-          <div className="relative flex-1 max-w-xs">
-            <select
-              value={selectedHexagram}
-              onChange={e => setSelectedHexagram(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg bg-[var(--bg2)] border border-[var(--border)] text-xs text-[var(--fg)] outline-none cursor-pointer appearance-none transition-colors focus:border-[var(--accent)]"
-            >
-              {baguaIds.map(lowerId => (
-                <optgroup key={lowerId} label={`${baguaList.find(b=>b.id===lowerId)?.name}（${baguaList.find(b=>b.id===lowerId)?.symbol}）`}>
-                  {baguaIds.map(upperId => {
-                    const name = getHexagramName(upperId, lowerId)
-                    const key = `${upperId}-${lowerId}`
-                    const h = allHexagrams.find(x => x.key === key)
-                    return (
-                      <option key={key} value={key}>
-                        {h?.symbol || ''} {name}（{baguaList.find(b=>b.id===lowerId)?.name}+{baguaList.find(b=>b.id===upperId)?.name}）
-                      </option>
-                    )
-                  })}
-                </optgroup>
-              ))}
-            </select>
-            <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-[var(--muted)] pointer-events-none">▼</span>
-          </div>
+          <Select value={selectedHexagram} onValueChange={(v) => { if (v) setSelectedHexagram(v) }}>
+            <SelectTrigger className="flex-1 max-w-xs bg-[var(--bg2)] border-[var(--border)] text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="bg-[var(--bg2)] border-[var(--border)] max-h-[300px]">
+              {baguaIds.map(lowerId => {
+                const lowerBagua = baguaList.find(b => b.id === lowerId)
+                return (
+                  <div key={lowerId}>
+                    <div className="px-2 py-1 text-[10px] text-[var(--muted)] font-semibold">
+                      {lowerBagua?.name}（{lowerBagua?.symbol}）
+                    </div>
+                    {baguaIds.map(upperId => {
+                      const name = getHexagramName(upperId, lowerId)
+                      const key = `${upperId}-${lowerId}`
+                      const h = allHexagrams.find(x => x.key === key)
+                      return (
+                        <SelectItem key={key} value={key}>
+                          {h?.symbol || ''} {name}
+                        </SelectItem>
+                      )
+                    })}
+                  </div>
+                )
+              })}
+            </SelectContent>
+          </Select>
         </div>
 
         {/* 分析结果 */}
