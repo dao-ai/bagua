@@ -43,11 +43,12 @@ export default function BrowsePanel({ cards, markLearned, markForReview, todaySt
     return list
   }, [cards, filter, search])
 
-  const current = filtered[index % filtered.length] ?? null
+  const current = filtered[index] ?? null
 
   const goTo = (i: number) => {
     setFlipped(false)
-    setIndex(i)
+    if (filtered.length === 0) return
+    setIndex(((i % filtered.length) + filtered.length) % filtered.length)
   }
 
   const next = () => goTo(index + 1)
