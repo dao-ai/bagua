@@ -31,9 +31,10 @@ export function useLearning() {
         return updated
       })
       const today = getTodayStr()
+      const isNewDay = prev.stats.lastStudyDate !== today
       const stats = {
         ...computeStats(cards, prev.stats),
-        todayReviewed: prev.stats.todayReviewed + 1,
+        todayReviewed: isNewDay ? 1 : prev.stats.todayReviewed + 1,
         lastStudyDate: today,
         totalReviews: prev.stats.totalReviews + 1,
       }
