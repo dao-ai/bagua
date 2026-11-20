@@ -37,6 +37,7 @@
 | **数字起卦** | 输入三个数字快速起卦 |
 | **本命卦生成** | 根据出生年月日时推算本命卦 |
 | **变爻模拟器** | 选卦 → 点爻 → 变卦动画，直观体验爻变过程 |
+| **占断依据** | 按朱熹《易学启蒙·考变占》七条给出本次卦象的主断依据（0~6 爻变，含用九用六），多爻动时同步翻转 |
 | **双卦对比** | 任意两卦并排对比，卦象、卦辞、爻辞逐项对照 |
 | **AI 解卦** | 选卦 + 输入问题，调 DeepSeek AI 解读卦象 |
 | **梅花易数** | 邵雍万物皆数体系，5 种起卦法 + 体用生克 |
@@ -115,7 +116,7 @@
 - [Tailwind CSS v4](https://tailwindcss.com/) — 样式
 - [shadcn/ui](https://ui.shadcn.com/) — 组件库（Dialog、Select、Command、Badge、Sonner 等 15 组件）
 - TypeScript（严格模式，零 `any`）
-- [Vitest](https://vitest.dev/) — 单元测试（181 tests）
+- [Vitest](https://vitest.dev/) — 单元测试（201 tests）
 - ESLint（`eslint-config-next`）
 - GitHub Actions — CI/CD（lint → test → build → deploy）
 - PWA — Web App Manifest + Service Worker（离线可用）
@@ -134,17 +135,31 @@ npm run dev
 
 打开 http://localhost:3000
 
+三个平台（Windows / macOS / Linux）都不需要额外处理：
+
+- **依赖安装** — `lightningcss-linux-x64-gnu` 已放进 `optionalDependencies`，npm 会按当前平台自动取舍；Windows 上 `npm install` 不再报 `EBADPLATFORM`，也不需要 `--force`
+- **端口占用** — `npm run dev` 会先执行 `scripts/free-port.mjs` 释放 3000 端口（Windows 走 `netstat` + `taskkill`，Linux/macOS 走 `lsof`/`fuser`），替代了原来只能在 Linux 上用 `fuser` 的方案
+- **`.next` 缓存** — 如果之前跑过 `npm run build`（静态导出），残留的 `.next` 可能让 `next dev` 全站 404；删掉 `.next` 再 `npm run dev` 即可
+
 ## 🔨 构建
 
 ```bash
-npm run build
-npm start
+npm run build                    # 静态导出，产物在 out/
+BASE_PATH=/bagua npm run build   # 模拟 GitHub Pages 的子路径构建
+```
+
+Windows PowerShell 用 `$env:BASE_PATH="bagua"; npm run build`。
+
+由于是 `output: 'export'`，构建后没有 Node 服务器可跑（`npm start` 不适用），直接用任意静态服务器预览 `out/` 即可：
+
+```bash
+npx serve out
 ```
 
 ## 🧪 测试
 
 ```bash
-npm test           # 一次性运行
+npm test           # 一次性运行（201 条用例）
 npm run test:watch # 监听模式
 ```
 
@@ -165,7 +180,7 @@ npm run lint
 ## 🧪 质量保障
 
 - **TypeScript** 严格模式，零 `any` 类型
-- **ESLint** (`eslint-config-next`) + **Vitest** (181 单元测试)
+- **ESLint** (`eslint-config-next`) + **Vitest** (201 单元测试)
 - **CI/CD** — push 自动 lint → test → build → deploy
 - 核心数据层（八卦、六爻、本命卦）全覆盖测试
 

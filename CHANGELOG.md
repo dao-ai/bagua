@@ -1,5 +1,23 @@
 # 更新日志
 
+## [0.7.1] - 2026-11-20
+
+### 新增
+- 🀄 **占断依据（朱熹七条）** — 新增 `src/data/divination.ts`，实现《易学启蒙·考变占》0~6 爻变的断卦规则（含用九、用六）
+  - 静卦不再伪造「初爻变」；多爻变时 `computeHexagramChangeMulti()` 一次翻转全部变爻
+  - 金钱起卦与揲蓍改为收集全部变爻，不再只取第一个
+  - 结果页新增「占断依据」卡片：规则名、主断依据、各爻爻辞、主/辅标记
+  - 多爻变同时演示动画，并在卦体中高亮全部变爻
+- 🧪 新增 16 条规则用例 + 4 条组件用例，全量 201 条
+
+### 修复
+- 🐛 `QuizPanel` 在渲染期调用 `Date.now()` 触发 `react-hooks/purity`，导致 main 连续 4 次 CI 失败；改为在「关卡通过 / 全部通关」回调里算好用时存入 state
+
+### 构建 / 跨平台
+- 📦 `lightningcss-linux-x64-gnu` 从 `dependencies` 移到 `optionalDependencies`：Windows/macOS 上 `npm install` 不再报 `EBADPLATFORM`，Linux CI 仍能拿到原生二进制
+- 🖥️ `dev` 脚本的 Linux 专用 `fuser -k 3000/tcp` 换成 `scripts/free-port.mjs`（Windows `netstat` + `taskkill`，POSIX `lsof`/`fuser`），非 Linux 平台也能自动释放端口
+- ✅ `npm ci --dry-run`、`npm run dev`、`lint`、`201` 测试、`next build` 在 Windows / Node 22 上全部验证通过
+
 ## [0.7.0] - 2026-07-04
 
 ### 重构
