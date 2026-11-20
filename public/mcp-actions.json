@@ -33,13 +33,13 @@
     {
       "id": "configure-api-key",
       "name": "配置 DeepSeek API Key",
-      "description": "配置 DeepSeek API Key 以使用 AI 解卦功能",
+      "description": "配置 DeepSeek API Key 以使用 AI 解卦功能。Key 只保存在当前浏览器会话，关闭页面即清除",
       "method": "declarative",
       "endpoint": "/ai-reading",
       "parameters": {
         "required": ["apiKey"],
         "properties": {
-          "apiKey": { "type": "string", "description": "DeepSeek API Key，以 sk- 开头" }
+          "apiKey": { "type": "string", "description": "DeepSeek API Key，以 sk- 开头。仅存当前会话，不写入磁盘" }
         }
       }
     },
