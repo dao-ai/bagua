@@ -13,7 +13,8 @@ const YarrowDivination = dynamic(() => import('@/components/YarrowDivination'), 
   loading: () => <Card className="h-40 animate-pulse" />,
 })
 import Coin from '@/components/Coin'
-import { baguaMap, numToBagua, computeHexagramChange } from '@/data/bagua'
+import { baguaMap, numToBagua, computeHexagramChange, computeHexagramChangeMulti } from '@/data/bagua'
+import { movingKeysFromSums } from '@/data/divination'
 import { getHexagramDetail } from '@/data/hexagrams'
 import type { DivineResult } from '@/hooks/divineTypes'
 import { useDivineHistory, resultToRecord } from '@/hooks/useDivineHistory'
@@ -69,9 +70,9 @@ export default function DivinePage() {
   useEffect(() => {
     if (tosses.length === 6) {
       const y6 = tosses.map(t => t.yao).reverse()
-      const mk = tosses.findIndex(t => t.changing)
-      const movingLine = mk === -1 ? 1 : mk + 1
-      try { setResult(computeHexagramChange(y6, movingLine, getHexagramDetail)) } catch {}
+      // 收集全部变爻：六爻皆静时不强行造变卦
+      const keys = movingKeysFromSums(tosses.map(t => t.sum))
+      try { setResult(computeHexagramChangeMulti(y6, keys, getHexagramDetail)) } catch {}
     }
   }, [tosses])
 
@@ -255,9 +256,8 @@ export default function DivinePage() {
               yaoValues.forEach(v => {
                 y6.unshift(v === 6 || v === 8 ? 0 : 1)
               })
-              const changingIndex = yaoValues.findIndex(v => v === 6 || v === 9)
-              const mk = changingIndex === -1 ? 1 : changingIndex + 1
-              try { setResult(computeHexagramChange(y6, mk, getHexagramDetail)) } catch { setResult(null) }
+              const keys = movingKeysFromSums(yaoValues)
+              try { setResult(computeHexagramChangeMulti(y6, keys, getHexagramDetail)) } catch { setResult(null) }
             }}
           />
         </TabsContent>
