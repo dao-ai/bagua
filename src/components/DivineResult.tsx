@@ -1,12 +1,14 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import dynamic from 'next/dynamic'
 import YaoLine from '@/components/Yao'
 import { RubyText, Ruby } from '@/components/Ruby'
 import LiuyaoPan from '@/components/LiuyaoPan'
 import HexagramRelations from '@/components/HexagramRelations'
 import { computeLiuyao } from '@/data/liuyao'
+import { getHexagramDetail } from '@/data/hexagrams'
+import { analyzeDivination } from '@/data/divination'
 import type { LiuyaoResult } from '@/data/liuyao'
 import type { DivineResult } from '@/hooks/divineTypes'
 import { Card, CardContent } from '@/components/ui/card'
@@ -14,6 +16,8 @@ import { Button } from '@/components/ui/button'
 
 const ShareCard = dynamic(() => import('@/components/ShareCard'))
 const ThreeYaoHexagram = dynamic(() => import('@/components/ThreeYaoHexagram'), { ssr: false })
+
+const YAO_POS_LABELS = ['初爻', '二爻', '三爻', '四爻', '五爻', '上爻'] as const
 
 export default function DivineResult({ result }: { result: DivineResult }) {
   const [showLiuyao, setShowLiuyao] = useState(false)
@@ -23,6 +27,16 @@ export default function DivineResult({ result }: { result: DivineResult }) {
     : null
   const [animPhase, setAnimPhase] = useState<'idle' | 'flash' | 'flip' | 'revert' | 'done'>('idle')
   const r = result
+
+  // 按传统变占规则给出断卦依据（静卦不造变爻）
+  const analysis = useMemo(
+    () => analyzeDivination(
+      r.yao6,
+      r.movingKeys ?? (r.movingIndex >= 0 ? [6 - r.movingIndex] : []),
+      getHexagramDetail,
+    ),
+    [r.yao6, r.movingKeys, r.movingIndex],
+  )
 
   const resultKey = `${r.hexName}-${r.changedHexName}-${r.movingIndex}`
   useEffect(() => { setAnimPhase('idle') }, [resultKey])
@@ -45,9 +59,20 @@ export default function DivineResult({ result }: { result: DivineResult }) {
   const isAnimating = animPhase !== 'idle' && animPhase !== 'done' && animPhase !== 'revert'
   const showChanged = animPhase === 'revert' || animPhase === 'done'
 
-  let animClass = ''
-  if (animPhase === 'flash') animClass = 'yl-flash'
-  if (animPhase === 'flip') animClass = r.movingChange === '阳变阴' ? 'yl-flip-yang' : 'yl-flip-yin'
+  // 全部变爻：自上而下排列，逐爻同步演示
+  const movingKeys = r.movingKeys ?? (r.movingIndex >= 0 ? [6 - r.movingIndex] : [])
+  const movingIndexes = movingKeys.map(k => 6 - k)
+  const movingRows = [...movingKeys].sort((a, b) => b - a).map(k => {
+    const idx = 6 - k
+    const wasYang = r.yao6[idx] === 1
+    const willBeYang = r.changedYao6[idx] === 1
+    const anim = animPhase === 'flash'
+      ? 'yl-flash'
+      : animPhase === 'flip'
+        ? (wasYang ? 'yl-flip-yang' : 'yl-flip-yin')
+        : ''
+    return { key: k, idx, wasYang, willBeYang, anim, pos: YAO_POS_LABELS[k - 1] }
+  })
 
   return (
     <Card className="mt-6 animate-[fadeIn_0.4s_ease]">
@@ -61,6 +86,7 @@ export default function DivineResult({ result }: { result: DivineResult }) {
                 size={200}
                 autoRotate
                 interactive={false}
+                changingIndexes={movingIndexes}
               /></div>
           <div className="text-[22px] font-bold mt-1.5">{r.nowSymbol} <RubyText text={r.hexName} /><br /><span className="text-sm font-normal text-[var(--muted)]">上<Ruby char={r.upperName} /> 下<Ruby char={r.lowerName} /></span></div>
           {r.nowDetail && (
@@ -75,33 +101,53 @@ export default function DivineResult({ result }: { result: DivineResult }) {
         {/* 变爻 — 点击触发动画 */}
         <div className="flex flex-col items-center gap-2">
           <div className="text-[11px] text-[var(--accent2)] font-semibold tracking-wider">{r.movingName}</div>
+          {r.movingIndex < 0 && (
+            <div className="flex flex-col items-center gap-1 py-4 text-center">
+              <div className="text-[26px] text-[var(--muted)] opacity-50">☯</div>
+              <div className="text-[10px] text-[var(--muted)]">无变爻<br />以本卦卦辞为断</div>
+            </div>
+          )}
+          {r.movingIndex >= 0 && (
           <button onClick={() => { if (!isAnimating) setAnimPhase('flash') }}
-            className={`bg-transparent border-none p-0 cursor-pointer transition-all duration-300 ${isAnimating ? '' : 'hover:scale-110'} ${animPhase === 'flash' || animPhase === 'flip' ? 'pointer-events-none' : ''}`}
+            className={`bg-transparent border-none p-0 cursor-pointer transition-all duration-300 ${isAnimating ? '' : 'hover:scale-105'} ${animPhase === 'flash' || animPhase === 'flip' ? 'pointer-events-none' : ''}`}
             title={isAnimating ? '' : (showChanged ? '再演示一次' : '点击演示变爻')}
             aria-label={showChanged ? '再演示一次变爻' : '点击演示变爻'}
           >
-            {animPhase === 'done' ? (
-              <div className="flex flex-col items-center gap-1">
-                <div className="text-xs text-[var(--muted)] mb-0.5">{r.movingChange}</div>
-                <YaoLine yang={r.changedYao6[r.movingIndex] === 1}
-                  className="shadow-[0_0_10px_var(--accent)] rounded-sm" />
-                <div className="text-[10px] text-[var(--accent2)] mt-1">✓ 点击再演</div>
-              </div>
-            ) : animPhase !== 'idle' ? (
-              <div className="flex flex-col items-center gap-1">
-                <div className="text-xs text-[var(--muted)] mb-0.5">{animPhase === 'flash' ? '⋯ 闪烁' : '⋯ 翻转'}</div>
-                <YaoLine yang={r.yao6[r.movingIndex] === 1}
-                  className="shadow-[0_0_10px_var(--accent)] rounded-sm" />
-              </div>
-            ) : (
-              <div className="flex flex-col items-center gap-1">
-                <div className="text-[10px] text-[var(--accent2)] font-semibold mb-0.5">◈ 点我</div>
-                <YaoLine yang={r.yao6[r.movingIndex] === 1}
-                  className="shadow-[0_0_12px_var(--accent),0_0_28px_var(--glow)] yl-moving rounded-sm" />
-                <div className="text-[10px] text-[var(--muted)] mt-0.5">演示变爻</div>
+            <div className="flex flex-col items-center gap-[6px]">
+              {movingRows.map(row => (
+                <div key={row.key} className="flex items-center gap-1.5">
+                  <span className="w-[26px] text-right text-[10px] text-[var(--muted)]">{row.pos}</span>
+                  <YaoLine
+                    yang={animPhase === 'done' ? row.willBeYang : row.wasYang}
+                    animClass={row.anim}
+                    className={`rounded-sm ${animPhase === 'done'
+                      ? 'shadow-[0_0_10px_var(--accent)]'
+                      : 'shadow-[0_0_12px_var(--accent),0_0_28px_var(--glow)] yl-moving'}`}
+                  />
+                  <span className="w-[30px] text-[10px] text-[var(--muted)]">
+                    {animPhase === 'done'
+                      ? (row.willBeYang ? '阳' : '阴')
+                      : (row.wasYang ? '阳' : '阴')}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <div className="text-[10px] text-[var(--accent2)] mt-2">
+              {animPhase === 'done'
+                ? '✓ 点击再演'
+                : animPhase === 'flash'
+                  ? '⋯ 闪烁'
+                  : animPhase === 'flip'
+                    ? '⋯ 翻转'
+                    : '◈ 点我演示'}
+            </div>
+            {movingRows.length > 1 && (
+              <div className="mt-1 text-[10px] leading-tight text-[var(--muted)]">
+                {movingRows.length} 爻同步
               </div>
             )}
           </button>
+          )}
         </div>
 
         {/* 变卦 */}
@@ -124,8 +170,8 @@ export default function DivineResult({ result }: { result: DivineResult }) {
         </div>
       </div>
 
-      {/* 变爻爻辞 */}
-      {showChanged && r.nowDetail?.yaoLines && r.nowDetail.yaoLines[5 - r.movingIndex] && (() => {
+      {/* 变爻爻辞（单爻变时高亮该爻） */}
+      {showChanged && r.movingIndex >= 0 && r.nowDetail?.yaoLines && r.nowDetail.yaoLines[5 - r.movingIndex] && (() => {
         const yl = r.nowDetail!.yaoLines![5 - r.movingIndex]
         return (
           <div className="mt-3 p-4 rounded-xl bg-[var(--bg3)] border-l-[3px] border-[var(--accent2)] text-left">
@@ -135,6 +181,43 @@ export default function DivineResult({ result }: { result: DivineResult }) {
           </div>
         )
       })()}
+
+      {/* 占断依据 — 依朱熹《易学启蒙·考变占》 */}
+      <div className="mt-3 p-4 rounded-xl bg-[var(--bg3)] border-l-[3px] border-[var(--accent)] text-left">
+        <div className="flex flex-wrap items-baseline gap-2 mb-2">
+          <span className="px-2 py-0.5 rounded-md bg-[var(--accent)]/15 text-[11px] font-semibold text-[var(--accent2)] tracking-wide">{analysis.rule}</span>
+          <span className="text-[11px] text-[var(--muted)]">{analysis.primaryLabel}</span>
+        </div>
+        <div className="text-xs leading-relaxed text-[var(--muted)]">{analysis.ruleText}</div>
+
+        {analysis.special && (
+          <div className="mt-2 pt-2 border-t border-[var(--border)]">
+            <div className="text-[11px] text-[var(--muted)] mb-0.5">{analysis.special.name}</div>
+            <div className="text-sm font-semibold text-[var(--accent2)]"><RubyText text={analysis.special.text} /></div>
+            <div className="text-xs leading-relaxed mt-1"><RubyText text={analysis.special.meaning} /></div>
+          </div>
+        )}
+
+        {analysis.refs.map(ref => (
+          <div key={`${ref.source}-${ref.index}`} className="mt-2 pt-2 border-t border-[var(--border)]">
+            <div className="flex items-center gap-2 mb-0.5">
+              <span className="text-[11px] text-[var(--muted)]">{ref.label}</span>
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--bg2)] text-[var(--muted)]">{ref.source === 'now' ? '本卦' : '变卦'}</span>
+              {ref.primary && <span className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--accent)]/15 text-[var(--accent2)] font-semibold">主</span>}
+            </div>
+            <div className="text-sm font-semibold text-[var(--accent2)]"><RubyText text={ref.text} /></div>
+            <div className="text-xs leading-relaxed mt-1"><RubyText text={ref.meaning} /></div>
+          </div>
+        ))}
+
+        {(analysis.useNowJudgment || analysis.useChangedJudgment) && analysis.refs.length === 0 && !analysis.special && (
+          <div className="mt-2 pt-2 border-t border-[var(--border)] text-[11px] leading-relaxed text-[var(--muted)]">
+            {analysis.useNowJudgment && `以本卦「${analysis.nowName}」卦辞为主断`}
+            {analysis.useChangedJudgment && `${analysis.useNowJudgment ? '，' : ''}参看变卦「${analysis.changedName}」卦辞`}
+            （卦辞见上方本卦 / 变卦卡片）
+          </div>
+        )}
+      </div>
 
       {/* 已保存标记 */}
       <div className="mt-4 flex items-center justify-center gap-1.5 text-[11px] text-[var(--muted)]">

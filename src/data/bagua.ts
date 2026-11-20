@@ -177,18 +177,21 @@ export interface DivineResult {
   nowSymbol: string; changedSymbol: string
   movingName: string; movingChange: string
   yao6: number[]; changedYao6: number[]
+  /** 用于动画主演示的那一爻在数组中的下标；静卦为 -1 */
   movingIndex: number
+  /** 全部变爻位置（1-based 从下往上，升序）；静卦为空数组 */
+  movingKeys?: number[]
   upperId: string; lowerId: string
   changedUpperId: string; changedLowerId: string
 }
 
-/** 根据六爻数组和动爻位置（1-based，从下到上）计算变卦结果 */
-export function computeHexagramChange(
+/** 按全部变爻位置计算本卦与变卦；静卦时变卦即本卦 */
+export function computeHexagramChangeMulti(
   yao6: number[],
-  movingKey: number,
+  movingKeysIn: number[],
   getDetail: (upperId: string, lowerId: string) => HexagramDetail | undefined,
 ): DivineResult {
-  const mi = 6 - movingKey
+  const keys = [...new Set(movingKeysIn.filter(k => k >= 1 && k <= 6))].sort((a, b) => a - b)
   const ids = yao6ToTrigramIds(yao6)
   if (!ids) throw new Error('invalid trigram')
   const { upperId: ui, lowerId: li } = ids
@@ -196,7 +199,8 @@ export function computeHexagramChange(
   const ub = baguaMap[ui], lb = baguaMap[li]
   const hn = getHexagramName(ui, li)
   const nd = getDetail(ui, li)
-  const cy6 = [...yao6]; cy6[mi] = cy6[mi] === 1 ? 0 : 1
+
+  const cy6 = yao6.map((v, i) => (keys.includes(6 - i) ? (v === 1 ? 0 : 1) : v))
   const cids = yao6ToTrigramIds(cy6)
   if (!cids) throw new Error('invalid changed trigram')
   const { upperId: cui, lowerId: cli } = cids
@@ -205,8 +209,16 @@ export function computeHexagramChange(
   const cd = getDetail(cui, cli)
   const cub = baguaMap[cui], clb = baguaMap[cli]
   const ns = getHexagramSymbol(ui, li), cs = getHexagramSymbol(cui, cli)
-  const mn = YAO_LABELS[movingKey - 1]
-  const mc = yao6[mi] === 1 ? '阳变阴' : '阴变阳'
+
+  const movingName = keys.length === 0
+    ? '六爻皆静'
+    : keys.map(k => YAO_LABELS[k - 1]).join('、')
+  const movingChange = keys.length === 0
+    ? '无变爻'
+    : keys.length > 1
+      ? `${keys.length} 爻变`
+      : (yao6[6 - keys[0]] === 1 ? '阳变阴' : '阴变阳')
+  const movingIndex = keys.length === 0 ? -1 : 6 - keys[0]
 
   return {
     hexName: hn, changedHexName: chn,
@@ -214,10 +226,19 @@ export function computeHexagramChange(
     changedUpperName: cub.name, changedLowerName: clb.name,
     nowDetail: nd, changedDetail: cd,
     nowSymbol: ns, changedSymbol: cs,
-    movingName: mn, movingChange: mc,
-    yao6, changedYao6: cy6, movingIndex: mi,
+    movingName, movingChange,
+    yao6, changedYao6: cy6, movingIndex, movingKeys: keys,
     upperId: ui, lowerId: li,
     changedUpperId: cui, changedLowerId: cli,
   }
+}
+
+/** 根据六爻数组和单动爻位置（1-based，从下到上）计算变卦结果 */
+export function computeHexagramChange(
+  yao6: number[],
+  movingKey: number,
+  getDetail: (upperId: string, lowerId: string) => HexagramDetail | undefined,
+): DivineResult {
+  return computeHexagramChangeMulti(yao6, [movingKey], getDetail)
 }
 

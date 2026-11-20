@@ -11,6 +11,8 @@ import { HexagramDisplay } from '@/components/Yao'
 interface ThreeYaoHexagramProps {
   lines: [number, number, number, number, number, number]
   changingIndex?: number
+  /** 多个动爻下标（优先于 changingIndex） */
+  changingIndexes?: number[]
   interactive?: boolean
   size?: number
   autoRotate?: boolean
@@ -22,6 +24,7 @@ interface ThreeYaoHexagramProps {
 export default function ThreeYaoHexagram({
   lines,
   changingIndex,
+  changingIndexes,
   interactive = false,
   size = 320,
   autoRotate = false,
@@ -37,11 +40,13 @@ export default function ThreeYaoHexagram({
     if (interactive) onYaoClick?.(index)
   }
 
+  const changing = changingIndexes ?? (changingIndex !== undefined ? [changingIndex] : [])
+
   // 默认 2D 渲染，use3D=true + WebGL 支持时才启用 3D
   if (!webgl || !use3D) {
     return (
       <div style={{ width: size, height: Math.round(size * 0.85) }} className="flex items-center justify-center">
-        <HexagramDisplay yao6={lines} />
+        <HexagramDisplay yao6={lines} movingIndexes={changing} />
       </div>
     )
   }
@@ -64,7 +69,7 @@ export default function ThreeYaoHexagram({
               key={i}
               yang={yang === 1}
               index={i}
-              isChanging={changingIndex === i}
+              isChanging={changing.includes(i)}
               onClick={handleClick}
             />
           ))}

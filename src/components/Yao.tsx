@@ -61,22 +61,27 @@ export function YaoDisplay({ yao, big = false, movingIndex, animClass }: {
 }
 
 // 六爻显示
-export function HexagramDisplay({ yao6, movingIndex, animClass }: {
+export function HexagramDisplay({ yao6, movingIndex, movingIndexes, animClass }: {
   yao6: number[]
   movingIndex?: number
+  /** 多个动爻下标；优先于 movingIndex */
+  movingIndexes?: number[]
   animClass?: string
 }) {
+  const moving = movingIndexes ?? (movingIndex !== undefined ? [movingIndex] : [])
   return (
     <div className="flex flex-col items-center gap-[3px] my-2">
-      {[0,1,2,3,4,5].map(i => (
-        <YaoLine
-          key={i}
-          yang={yao6[i] === 1}
-          animClass={movingIndex !== undefined && i === movingIndex ? animClass : undefined}
-          className={movingIndex !== undefined && i === movingIndex
-            ? 'shadow-[0_0_12px_var(--accent),0_0_28px_var(--glow)] yl-moving' : ''}
-        />
-      ))}
+      {[0,1,2,3,4,5].map(i => {
+        const isMoving = moving.includes(i)
+        return (
+          <YaoLine
+            key={i}
+            yang={yao6[i] === 1}
+            animClass={isMoving ? animClass : undefined}
+            className={isMoving ? 'shadow-[0_0_12px_var(--accent),0_0_28px_var(--glow)] yl-moving' : ''}
+          />
+        )
+      })}
     </div>
   )
 }
