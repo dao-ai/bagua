@@ -58,6 +58,9 @@ export default function QuizPanel({ getCardsByType, reviewCard }: QuizPanelProps
   const [allComplete, setAllComplete] = useState(false)
   const [startTime] = useState(() => Date.now())
   const [levelStartTime, setLevelStartTime] = useState(() => Date.now())
+  // 用时在事件回调里计算并落到 state，避免渲染期调用 Date.now()（React 纯度规则）
+  const [totalSeconds, setTotalSeconds] = useState(0)
+  const [levelSeconds, setLevelSeconds] = useState(0)
 
   const level = levels[currentLevelIdx]
   const pool = useMemo(() => getCardsByType(level.type), [getCardsByType, level.type])
@@ -86,13 +89,14 @@ export default function QuizPanel({ getCardsByType, reviewCard }: QuizPanelProps
       setStreak(newStreak)
       if (newStreak >= level.required) {
         // Level passed!
+        setLevelSeconds(Math.floor((Date.now() - levelStartTime) / 1000))
         setLevelComplete(true)
       }
     } else {
       reviewCard(question.correct.id, 0) // mark as forgotten
       setStreak(0)
     }
-  }, [selected, question, streak, level.required, reviewCard])
+  }, [selected, question, streak, level.required, levelStartTime, reviewCard])
 
   const nextQuestion = () => {
     setSelected(null)
@@ -103,6 +107,7 @@ export default function QuizPanel({ getCardsByType, reviewCard }: QuizPanelProps
   const nextLevel = () => {
     const next = currentLevelIdx + 1
     if (next >= levels.length) {
+      setTotalSeconds(Math.floor((Date.now() - startTime) / 1000))
       setAllComplete(true)
     } else {
       setCurrentLevelIdx(next)
@@ -117,7 +122,7 @@ export default function QuizPanel({ getCardsByType, reviewCard }: QuizPanelProps
 
   // All levels complete
   if (allComplete) {
-    const totalTime = Math.floor((Date.now() - startTime) / 1000)
+    const totalTime = totalSeconds
     const mins = Math.floor(totalTime / 60)
     const secs = totalTime % 60
     return (
@@ -147,7 +152,7 @@ export default function QuizPanel({ getCardsByType, reviewCard }: QuizPanelProps
 
   // Level complete
   if (levelComplete) {
-    const levelTime = Math.floor((Date.now() - levelStartTime) / 1000)
+    const levelTime = levelSeconds
     return (
       <div className="text-center py-12">
         <div className="text-5xl mb-4">🎉</div>
