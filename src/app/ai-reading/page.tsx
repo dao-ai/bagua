@@ -6,9 +6,13 @@ import PageHeader from '@/components/PageHeader'
 import { RubyText } from '@/components/Ruby'
 import { baguaMap, getHexagramName, getHexagramSymbol, BAGUA_WUXING } from '@/data/bagua'
 import { hexagramOrder, getHexagramDetail } from '@/data/hexagrams'
+import { purgeLegacyApiKey, readApiKey, saveApiKey, clearStoredApiKey } from '@/lib/apiKeyStore'
 
 // DeepSeek API 配置
-const API_URL = 'https://api.deepseek.com/chat/completions'
+// 纯静态站没有后端，默认由浏览器直连 DeepSeek；如果不想让 Key 出现在前端，
+// 可通过 NEXT_PUBLIC_AI_ENDPOINT（构建期注入）指向自己的转发代理。
+const DEFAULT_API_URL = 'https://api.deepseek.com/chat/completions'
+const API_URL = process.env.NEXT_PUBLIC_AI_ENDPOINT || DEFAULT_API_URL
 
 interface HexData {
   upperId: string; lowerId: string
@@ -20,8 +24,6 @@ interface ChatMessage {
   role: 'user' | 'assistant'
   content: string
 }
-
-const STORAGE_KEY = 'bagua-api-key'
 
 /** 根据所选卦象生成系统提示词 */
 function buildSystemPrompt(hex: HexData): string {
@@ -63,14 +65,27 @@ export default function AIReadingPage() {
   const abortRef = useRef<AbortController | null>(null)
   const listEndRef = useRef<HTMLDivElement>(null)
 
-  // 启动时从 localStorage 读取 API Key
+  // 启动时从 sessionStorage 读取 API Key；同时清掉旧版本留在 localStorage 的明文 Key
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY)
+    purgeLegacyApiKey()
+    const saved = readApiKey()
     if (saved) {
       setApiKey(saved)
       setShowKeyInput(false)
     }
   }, [])
+
+  const saveApiKeyToSession = (value: string) => {
+    setApiKey(value)
+    saveApiKey(value)
+    setShowKeyInput(false)
+  }
+
+  const clearApiKey = () => {
+    setApiKey('')
+    clearStoredApiKey()
+    setShowKeyInput(true)
+  }
 
   // 组件卸载时取消进行中的请求
   useEffect(() => {
@@ -239,13 +254,26 @@ export default function AIReadingPage() {
               data-mcp-description="DeepSeek API Key，以 sk- 开头。在 platform.deepseek.com 获取。"
               className="flex-1 px-3 py-2 rounded-lg bg-[var(--bg2)] border border-[var(--border)] text-[var(--fg)] text-sm outline-none focus:border-[var(--accent)] caret-[var(--accent)]"
             />
-            <button onClick={() => {
-              localStorage.setItem(STORAGE_KEY, apiKey)
-              setShowKeyInput(false)
-            }}
+            <button onClick={() => saveApiKeyToSession(apiKey)}
               data-mcp-action="confirm-api-key"
-              data-mcp-description="确认并保存 DeepSeek API Key"
-              className="px-3 py-2 text-xs bg-[var(--accent)] text-[var(--bg)] rounded-lg cursor-pointer font-semibold whitespace-nowrap">确认并保存</button>
+              data-mcp-description="确认 DeepSeek API Key，只保存在当前浏览器会话"
+              className="px-3 py-2 text-xs bg-[var(--accent)] text-[var(--bg)] rounded-lg cursor-pointer font-semibold whitespace-nowrap">确认</button>
+          </div>
+          <p className="text-[10px] text-[var(--muted)] leading-relaxed mt-2">
+            Key 只存在当前浏览器会话（关闭页面即清除），不写入磁盘。请求由浏览器直连 DeepSeek，这是纯静态站的架构取舍；若不愿在前端暴露 Key，可用 <code className="text-[var(--accent)]">NEXT_PUBLIC_AI_ENDPOINT</code> 指向自建代理再构建。
+          </p>
+        </div>
+      )}
+
+      {/* Key 已配置时的精简状态条 */}
+      {!showKeyInput && (
+        <div className="max-w-[500px] mx-auto mb-4 flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-[var(--bg3)] border border-[var(--border)]">
+          <span className="text-[11px] text-[var(--muted)]">🔑 Key 已配置（仅本次会话有效）</span>
+          <div className="flex gap-3 shrink-0">
+            <button onClick={() => setShowKeyInput(true)}
+              className="text-[11px] text-[var(--accent)] cursor-pointer hover:underline">更换</button>
+            <button onClick={clearApiKey}
+              className="text-[11px] text-[var(--risk)] cursor-pointer hover:underline">清除</button>
           </div>
         </div>
       )}
@@ -409,7 +437,7 @@ export default function AIReadingPage() {
       )}
 
       <p className="text-xs text-center text-[var(--muted)] mt-4">
-        ⚡ 调用 DeepSeek API，需自行配置 API Key。可多轮对话追问卦象细节。
+        ⚡ 调用 DeepSeek API，需自行配置 API Key（仅存当前会话）。可多轮对话追问卦象细节。
       </p>
     </>
   )
