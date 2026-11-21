@@ -6,6 +6,26 @@
 
 🌐 **线上：** https://dao-ai.github.io/bagua/
 
+![八卦入门首页](docs/screenshots/01-home.png)
+
+---
+
+## 👀 界面速览
+
+| 起卦 · 抛铜钱 | 结果 · 占断依据 |
+| --- | --- |
+| ![抛铜钱](docs/screenshots/02-divine.png) | ![占断依据](docs/screenshots/03-divine-rule.png) |
+
+| 六十四卦 | 卦象关系图 |
+| --- | --- |
+| ![六十四卦](docs/screenshots/04-hexagrams.png) | ![卦象关系图](docs/screenshots/06-relations.png) |
+
+| 六爻排盘 | 学习中心 · 闪卡 |
+| --- | --- |
+| ![六爻排盘](docs/screenshots/07-liuyao.png) | ![学习中心闪卡](docs/screenshots/05-learn.png) |
+
+> 截图取自 1280 × 860 视口、默认暗色主题；页面均通过 `npm run dev` 本地运行后截取。
+
 ---
 
 ## ✨ 功能一览
