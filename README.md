@@ -136,7 +136,7 @@
 - [Tailwind CSS v4](https://tailwindcss.com/) — 样式
 - [shadcn/ui](https://ui.shadcn.com/) — 组件库（Dialog、Select、Command、Badge、Sonner 等 15 组件）
 - TypeScript（严格模式，零 `any`）
-- [Vitest](https://vitest.dev/) — 单元测试（201 tests）
+- [Vitest](https://vitest.dev/) — 单元测试（207 tests）
 - ESLint（`eslint-config-next`）
 - GitHub Actions — CI/CD（lint → test → build → deploy）
 - PWA — Web App Manifest + Service Worker（离线可用）
@@ -179,7 +179,7 @@ npx serve out
 ## 🧪 测试
 
 ```bash
-npm test           # 一次性运行（201 条用例）
+npm test           # 一次性运行（207 条用例）
 npm run test:watch # 监听模式
 ```
 
@@ -214,7 +214,7 @@ AI 解卦要调用 DeepSeek，需要你自己申请 Key（仓库里没有任何�
 ## 🧪 质量保障
 
 - **TypeScript** 严格模式，零 `any` 类型
-- **ESLint** (`eslint-config-next`) + **Vitest** (201 单元测试)
+- **ESLint** (`eslint-config-next`) + **Vitest** (207 单元测试)
 - **CI/CD** — push 自动 lint → test → build → deploy
 - 核心数据层（八卦、六爻、本命卦）全覆盖测试
 
