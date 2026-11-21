@@ -6,6 +6,26 @@
 
 🌐 **线上：** https://dao-ai.github.io/bagua/
 
+![八卦入门首页](docs/screenshots/01-home.png)
+
+---
+
+## 👀 界面速览
+
+| 起卦 · 抛铜钱 | 结果 · 占断依据 |
+| --- | --- |
+| ![抛铜钱](docs/screenshots/02-divine.png) | ![占断依据](docs/screenshots/03-divine-rule.png) |
+
+| 六十四卦 | 卦象关系图 |
+| --- | --- |
+| ![六十四卦](docs/screenshots/04-hexagrams.png) | ![卦象关系图](docs/screenshots/06-relations.png) |
+
+| 六爻排盘 | 学习中心 · 闪卡 |
+| --- | --- |
+| ![六爻排盘](docs/screenshots/07-liuyao.png) | ![学习中心闪卡](docs/screenshots/05-learn.png) |
+
+> 截图取自 1280 × 860 视口、默认暗色主题；页面均通过 `npm run dev` 本地运行后截取。
+
 ---
 
 ## ✨ 功能一览
@@ -116,7 +136,7 @@
 - [Tailwind CSS v4](https://tailwindcss.com/) — 样式
 - [shadcn/ui](https://ui.shadcn.com/) — 组件库（Dialog、Select、Command、Badge、Sonner 等 15 组件）
 - TypeScript（严格模式，零 `any`）
-- [Vitest](https://vitest.dev/) — 单元测试（201 tests）
+- [Vitest](https://vitest.dev/) — 单元测试（207 tests）
 - ESLint（`eslint-config-next`）
 - GitHub Actions — CI/CD（lint → test → build → deploy）
 - PWA — Web App Manifest + Service Worker（离线可用）
@@ -159,7 +179,7 @@ npx serve out
 ## 🧪 测试
 
 ```bash
-npm test           # 一次性运行（201 条用例）
+npm test           # 一次性运行（207 条用例）
 npm run test:watch # 监听模式
 ```
 
@@ -194,7 +214,7 @@ AI 解卦要调用 DeepSeek，需要你自己申请 Key（仓库里没有任何�
 ## 🧪 质量保障
 
 - **TypeScript** 严格模式，零 `any` 类型
-- **ESLint** (`eslint-config-next`) + **Vitest** (201 单元测试)
+- **ESLint** (`eslint-config-next`) + **Vitest** (207 单元测试)
 - **CI/CD** — push 自动 lint → test → build → deploy
 - 核心数据层（八卦、六爻、本命卦）全覆盖测试
 
